@@ -9,7 +9,8 @@ const AWAY = 0.6; // seconds a flier takes to fly up and away at the end of its 
 
 // `size` is how big it is drawn. `half` and `tall` are the part that bumps, a little smaller, so only
 // a real overlap counts. `lift` holds a flier above the path, `bob` bobs it, and `hop` bounces a ball.
-// A flier flies up and away at the end of its lane, instead of vanishing in the air.
+// A flier flies up and away at the end of its lane, instead of vanishing in the air, and a ball's
+// bounces, about 120 along each, fit the lane so it lands at the end.
 export const HAZARDS = {
   pinecone: { name: "pinecones", speed: 170, size: 22, half: 16, tall: 32, drop: DROP },
   acorn: { name: "acorns", speed: 210, size: 18, half: 13, tall: 26, drop: DROP },
@@ -34,6 +35,8 @@ export function hazardAt(lane, time) {
   const x = lane.from - rolled;
   if (x < lane.to) return null;
   const away = lift ? 1600 * Math.max(0, AWAY - (x - lane.to) / speed) ** 2 : 0;
-  const y = lift + bob * Math.sin((age - FALL) * 7) + hop * Math.abs(Math.sin(rolled / 38)) + away;
+  const length = lane.from - lane.to;
+  const bounce = hop * Math.abs(Math.sin(Math.PI * Math.max(1, Math.round(length / 120)) * rolled / length));
+  const y = lift + bob * Math.sin((age - FALL) * 7) + bounce + away;
   return { x, y, turn: -rolled / size };
 }

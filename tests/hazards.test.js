@@ -96,6 +96,21 @@ test("a mosquito flies up and away at the end of its lane instead of vanishing i
   assert.ok(last.y > 560, `off the top of the screen when it goes (${Math.round(last.y)} up)`);
 });
 
+test("a bouncing ball lands at the end of its lane, instead of vanishing mid-bounce", () => {
+  for (const place of [PLACES.prairie, PLACES.gulf]) {
+    for (const lane of place.lanes) {
+      const heights = [];
+      for (let step = 0; step < 2000; step++) {
+        const thing = hazardAt(lane, 10 * cycle(lane) - lane.offset + FALL + step * cycle(lane) / 2000);
+        if (thing) heights.push(thing.y);
+        else if (heights.length) break;
+      }
+      assert.ok(heights[0] < 2, `${place.name}: starts bouncing from the path`);
+      assert.ok(heights.at(-1) < 2, `${place.name}: last seen ${Math.round(heights.at(-1))} up`);
+    }
+  }
+});
+
 test("a pinecone dropping in bonks only when it comes down to the explorer's head", () => {
   const place = PLACES.woods;
   const [lane] = place.lanes;
