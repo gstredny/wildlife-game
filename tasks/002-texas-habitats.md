@@ -1,7 +1,7 @@
 # Texas habitats and a bigger Field Guide
 
 Date: 2026-09-30
-Status: implemented locally; browser QA and photograph downloads blocked
+Status: done locally (committed on main; not pushed, not deployed)
 
 ## Intent contract
 
@@ -23,9 +23,10 @@ The scope is a broad local field guide, not a claim to contain every species in 
 ## Done criteria
 
 - [x] `npm test`: rules, all roster/card/photo/painter links, recorded lines, and offline assets pass.
-- [ ] `node tools/browser-habitats.mjs`: all six areas exercised, all species discovered, guide replay,
-      saved progress, and offline return work; desktop and phone screenshots inspected.
-- [ ] `node tools/shot.mjs`: animal drawings inspected on the zoo sheet.
+- [x] `node tools/browser-habitats.mjs`: all six areas exercised, all species discovered, guide replay,
+      saved progress, and offline return work; desktop and phone screenshots inspected (a sample
+      covering every screen type, 2026-09-30).
+- [x] `node tools/shot.mjs`: animal drawings inspected on the zoo sheet (all 43 new, 2026-09-30).
 - [x] `git diff --check`: no whitespace errors.
 
 ## Attempt log (append-only)
@@ -74,3 +75,26 @@ The scope is a broad local field guide, not a claim to contain every species in 
   bullfrog, and leopard frog photos show the animal too small or hidden to see; 3) any CACHE rename makes
   every device re-download all 13 MB of voice clips; 4) the six-habitat start screen needs scrolling at
   1280x800 and 844x390; 5) the browser walk blocks Wikimedia, so the online photo path has no browser test.
+- Review fixes, George approved "fix 1-5" (2026-09-30). Committed the expansion as 2b16525, then one
+  commit per fix: 381820e voice clips keep their own cache (new test: an update downloads only new
+  clips and drops unused ones; real Chrome shows 98 game files + 276 clips in separate caches);
+  2648ae0 home screen fits (Chrome emulation fits at 1280x800, 1024x768, 915x412, 844x390, 667x375,
+  768x1024; 390x844 upright phone still scrolls 108px); a11be57, 5a06cbd, 94587ea, f45165b cleanup
+  (beach flag, water: null for dry places, mud bar follows the alligator, named animal lists, unused
+  icons). Pixel hashes identical for all places except the Gulf Shore losing a stray mud bar under the
+  spoonbill. 782f5b3 photo metadata in one file; 313d75f swapped pelican, kestrel, bullfrog and leopard
+  frog photos (George approved the before/after sheet); then `python3 tools/fetch-habitat-photos.py`
+  downloaded all 43 (51 local WebPs, 5,297 KB), and `tools/make-thumbs.sh` made 51 thumbnails
+  (823 KB). Full "All animals" guide in Chrome with the offline cache bypassed: 51 requests, 832 KB,
+  0.5 s (was 43 Wikimedia requests, 7,291 KB, 5.0 s). `npm test`: 32 passed, 0 failed, 0 skipped.
+- Mistake recorded: one command piped `npm test` into grep and chained `git commit` with `&&`; grep
+  succeeded, so the photo commit was made with 2 failing tests (stale expectations of remote photos).
+  Tests were updated and folded into that local, unpushed commit. Later commands check exit codes.
+- `node tools/shot.mjs .../tools/zoo.html?size=100&only=<43 new kinds>` in 4 groups: all 43 drawings
+  render in every frame and fit their tap boxes. Several share one body shape (armadillo, nutria,
+  opossum, otter look alike) and the kestrel reads poorly; that is a drawing-quality follow-up.
+- Final tree: `node tools/browser-habitats.mjs desktop phone` exit 0, "PASS: every requested habitat
+  and device mode", 12 of 12 runs passed with no page errors. The cards and guide now show local photos
+  in the walk (it still blocks Wikimedia, which no longer matters). `npm test`: 32 passed, 0 failed,
+  0 skipped. Remaining follow-ups (not done-criteria): drawing quality for look-alike animals, and
+  hiding the photo-source link when a card falls back to its drawing.
