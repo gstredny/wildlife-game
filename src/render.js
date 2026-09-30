@@ -9,6 +9,8 @@ import { THEMES, paintHabitatDetails, paintHabitatTree } from "./habitat-scenery
 import { animalAt, snapTarget } from "./trail.js";
 
 const EXPLORER_SIZE = 150;
+// Swimmers and the sand crab get no wading ripples at their feet.
+const NO_RIPPLES = new Set(["alligator", "cottonmouth", "watersnake", "crab", "seaTurtle"]);
 const ALERT_DISTANCE = 170;
 
 export function paintFrame(context, walk, view, snapping) {
@@ -48,7 +50,7 @@ function paintAnimal(context, walk, animal, at) {
   PAINTERS[animal.kind](context, animal.size, walk.time + animal.x * 0.013, { walking: at.walking, alert });
   context.restore();
   const { water } = walk.place;
-  if (water && animal.lane === "back" && at.x > water.from + 60 && at.x < water.to - 60 && !["alligator", "cottonmouth", "watersnake", "crab", "seaTurtle"].includes(animal.kind)) {
+  if (water && animal.lane === "back" && at.x > water.from + 60 && at.x < water.to - 60 && !NO_RIPPLES.has(animal.kind)) {
     paintWaterAtFeet(context, at.x, y, animal.size, walk.time);
   }
 }

@@ -56,10 +56,13 @@ const HABITATS = {
   }
 };
 
+// These stay put instead of wandering along the trail.
+const STILL = new Set(['alligator', 'cottonmouth', 'watersnake', 'boxTurtle', 'slider', 'seaTurtle']);
+
 function makePlace(key, habitat) {
   const animals = habitat.roster.map(([kind, size, lane = 'back'], index) => ({
     kind, size, lane, x: 650 + index * 520,
-    ...(lane === 'back' && !['alligator', 'cottonmouth', 'watersnake', 'boxTurtle', 'slider', 'seaTurtle'].includes(kind)
+    ...(lane === 'back' && !STILL.has(kind)
       ? { roam: 35, period: 17 + index % 5 * 3 } : {})
   }));
   const length = animals.at(-1).x + 650;
