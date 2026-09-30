@@ -175,6 +175,17 @@ const savedCount = await evaluate(`document.getElementById("place-${HABITAT}").q
 if (savedCount !== `${TOTAL} of ${TOTAL} found`) errors.push(`offline saved progress: ${savedCount}`);
 await press(`place-${HABITAT}`);
 await shot("offline-return");
+// Players: these finds belong to the first explorer; a new player starts with an empty Field Guide.
+await press("home-button");
+await press("players-button");
+await shot("players");
+await press("player-name");
+await send("Input.insertText", { text: "Emma" });
+await press("player-add");
+const newCount = await evaluate(`document.getElementById("collection-count").textContent`);
+if (!newCount.startsWith("0 of")) errors.push(`new player's count: ${newCount}`);
+await press("players-button");
+await shot("players-two");
 for (const error of errors) console.log("page error:", error);
 const ok = ranger && cards.length === TOTAL && errors.length === 0;
 console.log(ok ? `PASS: ${HABITAT}, ${TOTAL} animals found, Junior Ranger shown, no page errors` : "FAIL");

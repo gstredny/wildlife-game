@@ -2,12 +2,13 @@
 // the Junior Ranger cheer. The rules live in trail.js; drawing lives in render.js.
 import { againLines, cardSpeech, ANIMALS } from "./animals.js";
 import { fillCard } from "./card-view.js";
-import { loadFound, saveFound } from "./field-guide.js";
 import { fillGuide } from "./guide-view.js";
 import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
 import { FIRST_TIP, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
 import { fillPlaces, progress } from "./place-view.js";
+import { addPlayer, loadPlayers, recordFind, savePlayers } from "./players.js";
+import { fillPlayers } from "./players-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
 import { createWalk, inReach, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
@@ -18,7 +19,8 @@ const canvas = $("trail");
 const context = canvas.getContext("2d");
 const voice = createVoice();
 const sound = createSound();
-const found = loadFound();
+const players = loadPlayers();
+const found = new Set(players.list[players.current].found); // the current player's animals
 let place = PLACES.bayou;
 const keys = new Set();
 const SNAP_POSE = 0.7;
@@ -38,7 +40,7 @@ let view = viewFor(innerWidth, innerHeight, 0);
 
 // ---- Screens ----
 
-const PANELS = ["start", "card", "guide", "ranger"];
+const PANELS = ["start", "card", "guide", "ranger", "players"];
 function show(panel) {
   clearTimeout(guessing);
   $("card").classList.remove("guessing");
@@ -54,6 +56,7 @@ const openPanel = () => PANELS.find(name => !$(name).hidden) ?? null;
 function counts() {
   $("hud-count").textContent = progress(place, found);
   $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
+  $("players-button").textContent = `👤 ${players.current}`;
   fillPlaces($("places"), found, startWalk);
 }
 
@@ -92,7 +95,8 @@ function takePicture({ kind, first }) {
     voice.say(lines[Math.floor(Math.random() * lines.length)], { polite: true });
     return;
   }
-  saveFound(found);
+  recordFind(players, kind, Object.keys(PLACES).find(key => PLACES[key] === place));
+  savePlayers(players);
   counts();
   sound.play("found");
   rangerNext = placeKinds(place).every(each => found.has(each));
@@ -151,6 +155,22 @@ function openGuide() {
     voice.say(ANIMALS[kind].hint, { force: true });
   });
   show("guide");
+}
+
+// ---- Players ----
+
+function openPlayers() {
+  fillPlayers($("players-list"), players, pickPlayer);
+  show("players");
+}
+
+function pickPlayer(name) {
+  players.current = name;
+  savePlayers(players);
+  found.clear();
+  for (const kind of players.list[name].found) found.add(kind);
+  counts();
+  show("start");
 }
 
 // ---- Walking ----
@@ -248,7 +268,7 @@ addEventListener("keydown", event => {
   const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
   if (key === "Escape") {
     if (openPanel() === "card") closeCard();
-    else if (openPanel() === "guide" || openPanel() === "ranger") show(walk ? null : "start");
+    else if (["guide", "ranger", "players"].includes(openPanel())) show(walk ? null : "start");
     return;
   }
   if (!walk || openPanel()) return;
@@ -274,6 +294,15 @@ $("guide-close").addEventListener("click", () => show(walk ? null : "start"));
 $("home-button").addEventListener("click", goHome);
 $("ranger-close").addEventListener("click", () => show(null));
 $("ranger-home").addEventListener("click", goHome);
+$("players-button").addEventListener("click", openPlayers);
+$("players-close").addEventListener("click", () => show("start"));
+$("player-form").addEventListener("submit", event => {
+  event.preventDefault();
+  const name = addPlayer(players, $("player-name").value);
+  if (!name) return;
+  $("player-name").value = "";
+  pickPlayer(name);
+});
 
 // The speaker buttons turn the voice and the sounds off and on; the device remembers.
 function showVoice() {

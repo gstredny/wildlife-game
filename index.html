@@ -46,6 +46,7 @@
       <div id="places" class="places-grid"></div>
       <div class="start-actions">
         <button id="start-guide-button" class="soft-button" type="button">📖 Field Guide</button>
+        <button id="players-button" class="soft-button" type="button">👤 Explorer</button>
         <button id="start-voice-button" class="soft-button voice-toggle" type="button" aria-label="Turn the voice off">🔊</button>
       </div>
     </section>
@@ -86,6 +87,21 @@
       <label class="guide-filter">Explore your guide <select id="guide-place"><option value="all">All animals</option></select></label>
       <div id="guide-grid" class="guide-grid"></div>
       <p id="guide-hint" class="guide-hint" aria-live="polite">Tap an animal to hear about it.</p>
+    </section>
+
+    <section id="players" class="panel players-panel" hidden>
+      <div class="guide-head">
+        <div>
+          <p class="kicker">Players</p>
+          <h2>Who's exploring?</h2>
+        </div>
+        <button id="players-close" class="round-button" type="button" aria-label="Close players">✕</button>
+      </div>
+      <div id="players-list" class="players-list"></div>
+      <form id="player-form" class="player-form">
+        <input id="player-name" maxlength="20" autocomplete="off" placeholder="New player's name" aria-label="New player's name">
+        <button id="player-add" class="primary-button" type="submit">Add player</button>
+      </form>
     </section>
 
     <section id="ranger" class="panel ranger-panel" hidden>

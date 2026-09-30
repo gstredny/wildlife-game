@@ -36,6 +36,8 @@ const FILES = [
   "./src/photos.js",
   "./src/place-view.js",
   "./src/places.js",
+  "./src/players-view.js",
+  "./src/players.js",
   "./src/render.js",
   "./src/scenery.js",
   "./src/sound.js",

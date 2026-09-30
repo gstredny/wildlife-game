@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ANIMALS } from '../src/animals.js';
-import { loadFound, saveFound } from '../src/field-guide.js';
+import { loadPlayers, recordFind, savePlayers } from '../src/players.js';
 import { baseY } from '../src/layout.js';
 import { BOXES, PAINTERS } from '../src/painters.js';
 import { PLACES, placeKinds } from '../src/places.js';
@@ -36,12 +36,14 @@ for (const [key, place] of Object.entries(PLACES)) {
 
 test('shared species keep their discoveries when moving habitats and reloading', () => {
   const saved = storage();
-  const found = new Set();
-  const swamp = createWalk(PLACES.swamp, found);
+  const players = loadPlayers(saved);
+  const swamp = createWalk(PLACES.swamp, new Set());
   const gator = PLACES.swamp.animals.find(animal => animal.kind === 'alligator');
   assert.equal(snap(swamp, gator).first, true);
-  saveFound(found, saved);
-  const bayou = createWalk(PLACES.bayou, loadFound(saved));
+  recordFind(players, 'alligator', 'swamp');
+  savePlayers(players, saved);
+  const again = loadPlayers(saved);
+  const bayou = createWalk(PLACES.bayou, new Set(again.list[again.current].found));
   assert.equal(snap(bayou, PLACES.bayou.animals.find(animal => animal.kind === 'alligator')).first, false);
   assert.equal(bayou.found.size, 1);
 });
