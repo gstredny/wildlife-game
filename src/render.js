@@ -17,7 +17,7 @@ export function paintFrame(context, walk, view, snapping) {
   const seen = (x, reach) => x + reach > view.left && x - reach < view.left + view.width;
   const theme = THEMES[place.theme];
   paintSky(context, view, time, theme);
-  if (place.theme !== "gulf") paintFarWoods(context, view, theme);
+  if (!theme.beach) paintFarWoods(context, view, theme);
   paintBack(context, view, place, time, theme);
   paintHabitatDetails(context, view, place, time);
   for (const x of place.trees) if (seen(x, 200)) paintHabitatTree(context, x, place);
@@ -28,7 +28,7 @@ export function paintFrame(context, walk, view, snapping) {
     const at = animalAt(animal, time);
     if (seen(at.x, animal.size * 4)) paintAnimal(context, walk, animal, at);
   }
-  paintPath(context, view, place);
+  paintPath(context, view, place, theme);
   context.save();
   context.translate(walk.x, GROUND.path);
   context.scale(walk.facing, 1);

@@ -209,7 +209,7 @@ export function paintSign(context, x, words) {
 }
 
 // The path: packed dirt, and a wooden boardwalk where it crosses the bayou.
-export function paintPath(context, view, place) {
+export function paintPath(context, view, place, theme = {}) {
   const { pathTop, pathBottom } = GROUND;
   const dirt = context.createLinearGradient(0, pathTop, 0, pathBottom);
   dirt.addColorStop(0, "#d8bf8d");
@@ -224,7 +224,7 @@ export function paintPath(context, view, place) {
   }
   const from = Math.max(place.water.from - 40, view.left - 10);
   const to = Math.min(place.water.to + 40, view.left + view.width + 10);
-  if (to > from && place.theme !== "gulf") paintBoardwalk(context, from, to);
+  if (to > from && !theme.beach) paintBoardwalk(context, from, to);
 }
 
 function paintBoardwalk(context, from, to) {
@@ -256,7 +256,7 @@ export function paintFront(context, view, time, theme = {}) {
   const shift = view.left * depth;
   context.fillStyle = theme.front ?? "#6f9f45";
   context.fillRect(view.left, GROUND.pathBottom, view.width, 600 - GROUND.pathBottom + 40);
-  if (theme.grass === "#eddab1") return;
+  if (theme.beach) return;
   for (let index = Math.floor(shift / 28) - 1; index <= Math.floor((shift + view.width) / 28) + 1; index++) {
     const x = view.left + index * 28 - shift + hash(index) * 20;
     const y = GROUND.pathBottom + 4 + hash(index + 3) * 20;

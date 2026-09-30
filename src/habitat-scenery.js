@@ -6,7 +6,7 @@ export const THEMES = {
   woods: { sky: '#a2c7bb', low: '#e4edd5', far: '#638f67', near: '#44734c', grass: '#84a463', front: '#547b41' },
   backyard: { sky: '#90cce9', low: '#ebf5d6', far: '#9fbd82', near: '#729458', grass: '#a1c774', front: '#73a34e' },
   prairie: { sky: '#93cde7', low: '#f6edc8', far: '#b8bf88', near: '#a1b477', grass: '#c8c184', front: '#b7ab63' },
-  gulf: { sky: '#74bfdd', low: '#e3f5f6', far: '#80bdc5', near: '#60a7b4', grass: '#eddab1', front: '#e1cca0' }
+  gulf: { sky: '#74bfdd', low: '#e3f5f6', far: '#80bdc5', near: '#60a7b4', grass: '#eddab1', front: '#e1cca0', beach: true }
 };
 
 export function paintHabitatTree(c, x, place) {
