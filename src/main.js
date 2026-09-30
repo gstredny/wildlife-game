@@ -4,7 +4,7 @@ import { againLines, cardSpeech, ANIMALS } from "./animals.js";
 import { fillCard } from "./card-view.js";
 import { fillGuide } from "./guide-view.js";
 import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
-import { FIRST_TIP, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
+import { GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
 import { fillPlaces, progress } from "./place-view.js";
 import { addPlayer, loadPlayers, recordFind, savePlayers } from "./players.js";
@@ -32,7 +32,6 @@ let camera = 0;
 let hold = 0;
 let jumpHeld = false;
 let posing = 0;
-let tipped = false;
 let rangerNext = false;
 let cardFrom = null;
 let view = viewFor(innerWidth, innerHeight, 0);
@@ -74,7 +73,6 @@ function startWalk(key) {
   posing = 0;
   rangerNext = false;
   walk = createWalk(place, found);
-  tipped = found.size > 0;
   $("hud-place").textContent = place.name;
   counts();
   show(null);
@@ -213,11 +211,6 @@ function tick(dt) {
     counts();
   }
   if (result.end && !placeKinds(place).every(kind => found.has(kind))) voice.say(place.end, { polite: true });
-  const target = snapTarget(walk);
-  const fresh = target && !found.has(target.kind);
-  $("snap-button").classList.toggle("ready", Boolean(fresh));
-  // The first time an animal is close, Ranger Mike says how to snap it, once the welcome is over.
-  if (fresh && !tipped) tipped = voice.say(FIRST_TIP, { polite: true });
 }
 
 let last = performance.now();

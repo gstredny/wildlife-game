@@ -75,12 +75,10 @@ try {
 
   test('a delayed camera card cannot interrupt a newly chosen habitat', () => {
     click('place-swamp');
-    for (let i = 0; i < 80 && !$('snap-button').classList.contains('ready'); i++) {
+    for (let i = 0; i < 80 && timers.size === 0; i++) {
       key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
-    assert.ok($('snap-button').classList.contains('ready'));
-    click('snap-button');
-    assert.ok(timers.size > 0, 'a first discovery queued its card');
+    assert.ok(timers.size > 0, 'reaching the first hiding spot queued its card');
     click('home-button'); click('place-gulf'); flush();
     assert.equal($('hud-place').textContent, 'Gulf Shore');
     assert.equal($('card').hidden, true);
@@ -89,10 +87,9 @@ try {
 
   test('a new animal card asks what it is before telling', () => {
     click('place-swamp'); frame();
-    for (let i = 0; i < 300 && !$('snap-button').classList.contains('ready'); i++) {
+    for (let i = 0; i < 300 && timers.size === 0; i++) {
       key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
-    click('snap-button');
     const [[id, openCard]] = timers; timers.delete(id); openCard();
     assert.equal($('card').hidden, false);
     assert.ok($('card').classList.contains('guessing'), 'the answer starts hidden');
@@ -115,7 +112,7 @@ try {
         frame();
         if (!$('card').hidden) { click('card-close'); continue; }
         if (!$('ranger').hidden) { click('ranger-home'); break; }
-        if ($('snap-button').classList.contains('ready')) { click('snap-button'); flush(); continue; }
+        if (timers.size) { flush(); continue; }
         if ($('hud-count').textContent === `${placeKinds(place).length} of ${placeKinds(place).length} found`) { click('home-button'); break; }
         key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp');
       }

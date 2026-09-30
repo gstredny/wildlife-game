@@ -1,9 +1,11 @@
 // One walk along a trail: where the explorer is, where each animal is, and which animals are found.
-// No drawing here, so the rules can be tested without a browser.
+// An animal not found yet hides at its spot until the explorer gets there, like the goal of a little
+// Super Mario level. No drawing here, so the rules can be tested without a browser.
 import { hazardAt } from "./hazards.js";
 
 export const WALK_SPEED = 260;
-export const REACH = 230; // how close the explorer must be to take an animal's picture
+export const REACH = 230; // how close the explorer must be to take a found animal's picture again
+export const SPOT = 50; // how close the explorer must come to a hiding animal's spot to find it
 export const EDGE = 90; // the explorer stops this far from either end of the trail
 const JUMP_SPEED = 820; // straight up, so a jump rises about 145 over the path
 const GRAVITY = 2300;
@@ -47,15 +49,14 @@ export function inReach(walk, animal) {
   return Math.abs(animalAt(animal, walk.time).x - walk.x) <= REACH;
 }
 
-// The animal the explorer can photograph right now: one in reach, not-yet-found ones first, then closest.
+// The found animal the explorer can photograph again right now: the closest one in reach.
 export function snapTarget(walk) {
-  const inRange = walk.place.animals.filter(animal => inReach(walk, animal));
+  const inRange = walk.place.animals.filter(animal => walk.found.has(animal.kind) && inReach(walk, animal));
   const distance = animal => Math.abs(animalAt(animal, walk.time).x - walk.x);
-  return inRange.sort((first, second) =>
-    walk.found.has(first.kind) - walk.found.has(second.kind) || distance(first) - distance(second))[0] ?? null;
+  return inRange.sort((first, second) => distance(first) - distance(second))[0] ?? null;
 }
 
-// Walk toward a spot on the trail (a tap on the ground), or toward an animal to photograph it.
+// Walk toward a spot on the trail (a tap on the ground), or toward a found animal to photograph it.
 export function walkTo(walk, x, animal = null) {
   walk.target = { x: clamp(x, walk.place.length), animal };
 }
@@ -69,9 +70,10 @@ export function snap(walk, animal) {
 }
 
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
-// any walk to a tapped spot. Returns what happened: { snap } when a tapped animal comes into reach,
-// { stars } for how many stars were caught, { bump: true } when a pinecone hits, { end: true } the
-// first time the explorer reaches the end. A bump pauses a walk to a tapped spot; it carries on after.
+// any walk to a tapped spot. Returns what happened: { snap } when the explorer reaches a hiding animal
+// or a tapped animal comes into reach, { stars } for how many stars were caught, { bump: true } when a
+// pinecone hits, { end: true } the first time the explorer reaches the end. A bump pauses a walk to a
+// tapped spot; it carries on after.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
   walk.hurt = Math.max(0, walk.hurt - dt);
@@ -96,6 +98,8 @@ export function stepWalk(walk, dt, move = 0) {
   if (wall && walk.target) jump(walk);
   fall(walk, dt);
   const result = {};
+  const hiding = walk.place.animals.find(animal => !walk.found.has(animal.kind) && Math.abs(animal.x - walk.x) < SPOT);
+  if (hiding) result.snap = snap(walk, hiding);
   const stars = catchStars(walk);
   if (stars) result.stars = stars;
   if (!walk.hurt && bumpedBy(walk)) result.bump = true;

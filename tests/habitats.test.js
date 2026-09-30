@@ -18,10 +18,10 @@ test('six habitats cover all 60 animals, including the requested swamp wildlife'
 });
 
 for (const [key, place] of Object.entries(PLACES)) {
-  test(`a child can walk to and photograph every animal in ${place.name}`, () => {
+  test(`a child can walk to every animal's hiding spot in ${place.name}`, () => {
     const walk = createWalk(place);
     for (const animal of place.animals) {
-      walkTo(walk, animal.x, animal);
+      walkTo(walk, animal.x);
       let result;
       for (let frame = 0; frame < 1800; frame++) {
         result = stepWalk(walk, 1 / 60);

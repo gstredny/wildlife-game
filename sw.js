@@ -28,6 +28,7 @@ const FILES = [
   "./src/paint-explorer.js",
   "./src/paint-frogs.js",
   "./src/paint-hazards.js",
+  "./src/paint-hiding.js",
   "./src/paint-mammals.js",
   "./src/paint-raptors.js",
   "./src/paint-scaled-reptiles.js",

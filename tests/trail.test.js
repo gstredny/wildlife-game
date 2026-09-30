@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PLACES, placeKinds } from "../src/places.js";
-import { animalAt, createWalk, EDGE, jump, REACH, snap, snapTarget, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
+import { animalAtPoint, baseY } from "../src/layout.js";
+import { animalAt, createWalk, EDGE, jump, REACH, snap, snapTarget, SPOT, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
 
 const bayou = PLACES.bayou;
 const heron = bayou.animals.find(animal => animal.kind === "heron");
@@ -29,22 +30,42 @@ test("an animal wanders around its home and never leaves its range", () => {
   assert.ok(places.some(place => place.walking) && places.some(place => !place.walking));
 });
 
-test("only animals in reach can have their picture taken, new ones first", () => {
+test("an animal hides at its spot until the explorer gets there, then comes out for its picture", () => {
   const walk = createWalk(bayou);
-  assert.equal(snapTarget(walk), null);
+  walk.x = heron.x - 150;
+  assert.equal(snapTarget(walk), null, "no picture of a hiding animal");
+  assert.equal(animalAtPoint(walk, { x: heron.x, y: baseY(heron) - 10 }), null, "no tapping a hiding animal");
+  let result = {};
+  for (let frame = 0; frame < 120 && !result.snap; frame++) result = stepWalk(walk, 1 / 60, 1);
+  assert.deepEqual(result.snap, { kind: "heron", first: true });
+  assert.ok(Math.abs(walk.x - heron.x) < SPOT);
+  assert.ok(walk.found.has("heron"));
+});
+
+test("an animal already found is out in the open, and the camera can take its picture again", () => {
+  const walk = createWalk(bayou, new Set(["heron"]));
   walk.x = heron.x;
   assert.equal(snapTarget(walk).kind, "heron");
+  assert.equal(stepWalk(walk, 1 / 60).snap, undefined, "walking past it opens no card");
   walk.x = animalAt(heron, 0).x + REACH + 400;
   assert.notEqual(snapTarget(walk)?.kind, "heron");
 });
 
-test("tapping a far animal walks the explorer over and takes its picture", () => {
-  const walk = createWalk(bayou);
+test("tapping a found animal far away walks the explorer over for another picture", () => {
+  const walk = createWalk(bayou, new Set(placeKinds(bayou)));
   walkTo(walk, heron.x, heron);
   let result = {};
   for (let frame = 0; frame < 600 && !result.snap; frame++) result = stepWalk(walk, 1 / 60);
-  assert.deepEqual(result.snap, { kind: "heron", first: true });
-  assert.ok(walk.found.has("heron"));
+  assert.deepEqual(result.snap, { kind: "heron", first: false });
+  assert.equal(walk.target, null);
+});
+
+test("a walk to a tapped spot stops at the first animal hiding on the way", () => {
+  const walk = createWalk(bayou);
+  walkTo(walk, 3000);
+  let result = {};
+  for (let frame = 0; frame < 600 && !result.snap; frame++) result = stepWalk(walk, 1 / 60);
+  assert.equal(result.snap?.kind, bayou.animals[0].kind);
   assert.equal(walk.target, null);
 });
 
@@ -115,7 +136,7 @@ test("stars float along every trail, and a jump catches them", () => {
 
 test("a walk to a tapped spot hops over logs on the way", () => {
   const [log] = bayou.logs;
-  const walk = createWalk(bayou);
+  const walk = createWalk(bayou, new Set(placeKinds(bayou)));
   walkTo(walk, log.x + 300);
   for (let frame = 0; frame < 600 && walk.target; frame++) stepWalk(walk, 1 / 60);
   assert.ok(Math.abs(walk.x - (log.x + 300)) < 6);

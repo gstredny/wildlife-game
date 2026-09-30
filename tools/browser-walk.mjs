@@ -1,5 +1,5 @@
-// Plays the Bayou Trail in its own muted, headless Chrome with real input: walks right, snaps each
-// animal the camera button offers, reads every card, and ends as a Junior Ranger. Saves screenshots
+// Plays the Bayou Trail in its own muted, headless Chrome with real input: walks and jumps right to
+// each hiding animal, reads every card, and ends as a Junior Ranger. Saves screenshots
 // and fails on any page error. No packages (Node 22+).
 //
 //   python3 -m http.server 8790 --bind 127.0.0.1 &
@@ -134,12 +134,6 @@ for (let step = 0; step < 200; step++) {
     await shot(`card-${name.toLowerCase().replace(/\W+/g, "-")}`);
     await press("card-close");
     await sleep(300);
-    continue;
-  }
-  if (await evaluate(`document.getElementById("snap-button").classList.contains("ready")`)) {
-    if (cards.length === 0) await shot("camera-ready");
-    await press("snap-button");
-    await sleep(700);
     continue;
   }
   await walkRight(350);

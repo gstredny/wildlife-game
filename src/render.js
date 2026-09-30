@@ -1,10 +1,12 @@
-// Draws one moment of the walk: scenery, animals, logs, stars and pinecones, the explorer (blinking
-// after a bump), and the camera sparkle over the animal the explorer can photograph.
+// Draws one moment of the walk: scenery, found animals and the bushes where the others hide, logs,
+// stars and pinecones, the explorer (blinking after a bump), and the name of the animal the explorer
+// can photograph again.
 import { ANIMALS } from "./animals.js";
 import { baseY } from "./layout.js";
 import { paintCourse } from "./paint-course.js";
 import { paintExplorer } from "./paint-explorer.js";
 import { paintHazards } from "./paint-hazards.js";
+import { paintHidingSpot } from "./paint-hiding.js";
 import { BOXES, PAINTERS } from "./painters.js";
 import { GROUND, paintBack, paintFarWoods, paintFront, paintPath, paintSign, paintSky } from "./scenery.js";
 import { THEMES, paintHabitatDetails, paintHabitatTree } from "./habitat-scenery.js";
@@ -29,6 +31,10 @@ export function paintFrame(context, walk, view, snapping) {
   if (seen(place.length - 170, 80)) paintSign(context, place.length - 170, "Trail end");
   const target = snapTarget(walk);
   for (const animal of place.animals) {
+    if (!walk.found.has(animal.kind)) {
+      if (seen(animal.x, 120)) paintHidingSpot(context, animal.x, time + animal.x * 0.013);
+      continue;
+    }
     const at = animalAt(animal, time);
     if (seen(at.x, animal.size * 4)) paintAnimal(context, walk, animal, at);
   }
@@ -75,53 +81,10 @@ function paintWaterAtFeet(context, x, y, size, time) {
   context.stroke();
 }
 
-// A bouncing camera bubble over an animal not found yet, or its name over one already found.
+// The name over the found animal the camera can photograph again.
 function paintMarker(context, walk, animal) {
   const at = animalAt(animal, walk.time);
-  const top = baseY(animal) + BOXES[animal.kind].top * animal.size;
-  if (walk.found.has(animal.kind)) {
-    paintNameTag(context, at.x, top - 16, ANIMALS[animal.kind].name);
-    return;
-  }
-  const y = top - 34 - Math.abs(Math.sin(walk.time * 4)) * 10;
-  context.fillStyle = "rgba(255,255,255,.95)";
-  context.beginPath();
-  context.arc(at.x, y, 22, 0, Math.PI * 2);
-  context.fill();
-  context.beginPath();
-  context.moveTo(at.x - 8, y + 18);
-  context.lineTo(at.x, y + 30);
-  context.lineTo(at.x + 8, y + 18);
-  context.fill();
-  paintCameraIcon(context, at.x, y);
-  // Twinkles around the bubble.
-  context.fillStyle = "#ffd84d";
-  for (let index = 0; index < 3; index++) {
-    const angle = walk.time * 2 + index * 2.1;
-    paintTwinkle(context, at.x + Math.cos(angle) * 34, y + Math.sin(angle) * 30, 5 + Math.sin(walk.time * 6 + index) * 2);
-  }
-}
-
-function paintCameraIcon(context, x, y) {
-  context.fillStyle = "#2e3a46";
-  context.beginPath();
-  context.roundRect(x - 13, y - 8, 26, 18, 4);
-  context.fill();
-  context.fillRect(x - 5, y - 12, 10, 5);
-  context.fillStyle = "#9fd3f0";
-  context.beginPath();
-  context.arc(x, y + 1, 6, 0, Math.PI * 2);
-  context.fill();
-}
-
-function paintTwinkle(context, x, y, r) {
-  context.beginPath();
-  for (let point = 0; point < 8; point++) {
-    const reach = point % 2 ? r * 0.35 : r;
-    const angle = point * Math.PI / 4;
-    context.lineTo(x + Math.cos(angle) * reach, y + Math.sin(angle) * reach);
-  }
-  context.fill();
+  paintNameTag(context, at.x, baseY(animal) + BOXES[animal.kind].top * animal.size - 16, ANIMALS[animal.kind].name);
 }
 
 function paintNameTag(context, x, y, name) {

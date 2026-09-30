@@ -31,9 +31,10 @@ export function screenToWorld(view, pixelX, pixelY) {
   return { x: view.left + pixelX / view.scale, y: view.top + pixelY / view.scale };
 }
 
-// The animal under a tap, if any, nearest first.
+// The found animal under a tap, if any, nearest first. Hiding animals can't be tapped.
 export function animalAtPoint(walk, point) {
   const hits = walk.place.animals.filter(animal => {
+    if (!walk.found.has(animal.kind)) return false;
     const { x, facing } = animalAt(animal, walk.time);
     const box = BOXES[animal.kind];
     const [left, right] = facing > 0 ? [box.left, box.right] : [-box.right, -box.left];
