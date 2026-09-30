@@ -1,7 +1,7 @@
 # A better voice, guessing, players, jumping, and nine Katy animals
 
 Date: 2026-09-30
-Status: in progress
+Status: done and live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/)
 
 ## Intent contract (George's words)
 
@@ -33,7 +33,7 @@ After:
 - [x] `npm test`: all pass, including the recording check for every line (43 passed, 0 failed, 0 skipped).
 - [x] `node tools/browser-habitats.mjs desktop phone`: all six places, 12 runs, no page errors.
 - [x] Zoo sheet of the nine new drawings inspected; photo sheet of the nine new photos inspected.
-- [x] `git diff --check` clean. Pushed and live only when George says so.
+- [x] `git diff --check` clean. Pushed and live (George approved the push).
 
 ## Attempt log (append-only)
 
@@ -63,3 +63,8 @@ After:
 - Cache renamed wildlife-habitats-v3 so phones update.
 - Final tree (cache v3): `node tools/browser-habitats.mjs desktop phone`: "PASS: every requested habitat
   and device mode", 12 of 12 runs, no page errors. `npm test`: 43 passed, 0 failed, 0 skipped.
+- Deployed (George approved): `git push origin main` e2def01..50ab791; GitHub Pages "built 50ab791".
+  Live sw.js has CACHE "wildlife-habitats-v3"; voice manifest (ryan, 324 clips), crawfish photo,
+  snow goose thumbnail, paint-bat.js, players.js and a new clip all return 200.
+  `GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-walk.mjs phone prairie`: exit 0,
+  PASS, 15 animals, Junior Ranger, offline return, players step, no page errors.
