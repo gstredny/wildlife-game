@@ -27,8 +27,8 @@ async function worker(saved) {
     add: async request => { if (request.url.includes("broken")) throw new Error("offline"); cache.added.push(request.url); },
     match: async url => saved[String(url).replace(/^\.\//, "")]?.() };
   const context = { self: { addEventListener: (type, listener) => { listeners[type] = listener; }, skipWaiting() {},
-    location: { origin: "https://wildlife.example" } },
-  caches: { open: async () => cache, match: async request => saved[new URL(request.url).pathname.slice(1)]?.() ?? null },
+    location: { origin: "https://wildlife.example", href: "https://wildlife.example/sw.js" }, clients: { claim: async () => {} } },
+  caches: { open: async () => cache, keys: async () => [], match: async request => saved[new URL(request.url).pathname.slice(1)]?.() ?? null },
   Request: class { constructor(url) { this.url = url; } }, Response, URL, fetch: async () => new Response("network") };
   vm.runInNewContext(readFileSync(new URL("../sw.js", import.meta.url), "utf8"), context);
   return { listeners, cache };
@@ -42,6 +42,22 @@ test("installing the offline game saves every recording in the manifest, even if
   await done;
   assert.ok(cache.added.includes("./voice/a1.mp3") && cache.added.includes("./voice/b2.mp3"));
   assert.ok(cache.added.includes("./voice/manifest.json"));
+});
+
+test("an update keeps saved recordings, downloads only new ones, and drops unused ones", async () => {
+  const manifest = () => new Response(JSON.stringify({ clips: { "Hi!": "a1.mp3", "New!": "c3.mp3" } }));
+  const { listeners, cache } = await worker({ "voice/manifest.json": manifest, "voice/a1.mp3": () => new Response("hi") });
+  let done;
+  listeners.install({ waitUntil: promise => { done = promise; } });
+  await done;
+  assert.ok(cache.added.includes("./voice/c3.mp3"), "the new recording is downloaded");
+  assert.ok(!cache.added.includes("./voice/a1.mp3"), "a saved recording is not downloaded again");
+  const deleted = [];
+  cache.keys = async () => ["a1.mp3", "c3.mp3", "old.mp3"].map(file => ({ url: `https://wildlife.example/voice/${file}` }));
+  cache.delete = async request => deleted.push(request.url);
+  listeners.activate({ waitUntil: promise => { done = promise; } });
+  await done;
+  assert.deepEqual(deleted, ["https://wildlife.example/voice/old.mp3"]);
 });
 
 test("a saved recording is served in pieces when Safari asks for a range", async () => {

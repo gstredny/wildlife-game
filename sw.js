@@ -100,13 +100,29 @@ const FILES = [
   "./icons/icon-512.png"
 ];
 
+// Voice clips are named after what they say, so a saved clip never changes. They live in their own
+// cache that outlasts game updates: an update downloads only new clips.
+const VOICE = "wildlife-voice";
+const clipPaths = async cache => Object.values((await (await cache.match("./voice/manifest.json")).json()).clips)
+  .map(file => `./voice/${file}`);
+
 // The recorded voice clips are listed in voice/manifest.json, so they are cached from there, one by
 // one: a clip that fails to download is spoken by the device's voice instead of stopping the update.
 async function install() {
   const cache = await caches.open(CACHE);
   await cache.addAll(FILES.map(file => new Request(file, { cache: "reload" })));
-  const manifest = await (await cache.match("./voice/manifest.json")).json();
-  await Promise.allSettled(Object.values(manifest.clips).map(file => cache.add(new Request(`./voice/${file}`, { cache: "reload" }))));
+  const voice = await caches.open(VOICE);
+  await Promise.allSettled((await clipPaths(cache)).map(async path =>
+    (await voice.match(path)) ?? voice.add(new Request(path, { cache: "reload" }))));
+}
+
+// Drops old game caches, and clips the new voice/manifest.json no longer lists.
+async function activate() {
+  await Promise.all((await caches.keys()).filter(key => key !== CACHE && key !== VOICE).map(key => caches.delete(key)));
+  const wanted = new Set((await clipPaths(await caches.open(CACHE))).map(path => new URL(path, self.location.href).href));
+  const voice = await caches.open(VOICE);
+  await Promise.all((await voice.keys()).filter(request => !wanted.has(request.url)).map(request => voice.delete(request)));
+  await self.clients.claim();
 }
 
 self.addEventListener("install", event => {
@@ -114,11 +130,7 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(
-    keys.filter(key => key !== CACHE).map(key => caches.delete(key))
-  )).then(() => self.clients.claim()));
-});
+self.addEventListener("activate", event => event.waitUntil(activate()));
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET" || new URL(event.request.url).origin !== self.location.origin) return;
