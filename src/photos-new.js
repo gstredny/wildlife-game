@@ -3,12 +3,12 @@ export const NEW_PHOTOS = {
   "bullfrog": {
     "file": "art/animals/bullfrog.svg",
     "fallback": "art/animals/bullfrog.svg",
-    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/American_bullfrog_frog.jpg?width=960",
-    "credit": "Photo: Gary M. Stolz (USFWS), public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:American_bullfrog_frog.jpg",
-    "title": "File:American bullfrog frog.jpg",
-    "license": "public domain",
-    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/North-American-bullfrog1.jpg?width=960",
+    "credit": "Photo: Carl D. Howe, CC BY-SA 2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:North-American-bullfrog1.jpg",
+    "title": "File:North-American-bullfrog1.jpg",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/"
   },
   "nightHeron": {
     "file": "art/animals/nightHeron.svg",
@@ -33,12 +33,12 @@ export const NEW_PHOTOS = {
   "leopardFrog": {
     "file": "art/animals/leopardFrog.svg",
     "fallback": "art/animals/leopardFrog.svg",
-    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Southern_Leopard_Frog.jpg?width=960",
-    "credit": "Photo: Stephen Friedt, CC BY-SA 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Southern_Leopard_Frog.jpg",
-    "title": "File:Southern Leopard Frog.jpg",
-    "license": "CC BY-SA 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Southern_leopard_frog_%28Lithobates_sphenocephalus%29%2C_Liberty_Co._TX_%28April_2009%29.jpg?width=960",
+    "credit": "Photo: William L. Farr, CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Southern_leopard_frog_%28Lithobates_sphenocephalus%29%2C_Liberty_Co._TX_%28April_2009%29.jpg",
+    "title": "File:Southern leopard frog (Lithobates sphenocephalus), Liberty Co. TX (April 2009).jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "slider": {
     "file": "art/animals/slider.svg",
@@ -123,10 +123,10 @@ export const NEW_PHOTOS = {
   "pelican": {
     "file": "art/animals/pelican.svg",
     "fallback": "art/animals/pelican.svg",
-    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Brown_Pelican_in_flight.jpg?width=960",
-    "credit": "Photo: SpongeLover08, CC0 1.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Brown_Pelican_in_flight.jpg",
-    "title": "File:Brown Pelican in flight.jpg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Brown_Pelican_at_Seawolf_Park.jpg?width=960",
+    "credit": "Photo: LunarEcho87, CC0 1.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Brown_Pelican_at_Seawolf_Park.jpg",
+    "title": "File:Brown Pelican at Seawolf Park.jpg",
     "license": "CC0 1.0",
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
   },
@@ -333,12 +333,12 @@ export const NEW_PHOTOS = {
   "kestrel": {
     "file": "art/animals/kestrel.svg",
     "fallback": "art/animals/kestrel.svg",
-    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/American_Kestrel_%2835291062790%29.jpg?width=960",
-    "credit": "Photo: Marty Tow (NPS), public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:American_Kestrel_%2835291062790%29.jpg",
-    "title": "File:American Kestrel (35291062790).jpg",
-    "license": "public domain",
-    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/American_Kestrel_%2853468230687%29.jpg?width=960",
+    "credit": "Photo: Channel City Camera Club, CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:American_Kestrel_%2853468230687%29.jpg",
+    "title": "File:American Kestrel (53468230687).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
   },
   "meadowlark": {
     "file": "art/animals/meadowlark.svg",

@@ -31,10 +31,10 @@ These Commons photographs load when online until `tools/fetch-habitat-photos.py`
 local copies. Offline fallbacks are original game illustrations, explicitly labeled on the card.
 The license links below apply to photographs; illustrations are original Wildlife Game art.
 
-- **bullfrog**: [Photo: Gary M. Stolz (USFWS), public domain](https://commons.wikimedia.org/wiki/File:American_bullfrog_frog.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **bullfrog**: [Photo: Carl D. Howe, CC BY-SA 2.5](https://commons.wikimedia.org/wiki/File:North-American-bullfrog1.jpg) ([license](https://creativecommons.org/licenses/by-sa/2.5/)).
 - **nightHeron**: [Photo: Michael L. Baird, CC BY 2.0](https://commons.wikimedia.org/wiki/File:Black-crowned_Night-heron.jpg) ([license](https://creativecommons.org/licenses/by/2.0/)).
 - **woodDuck**: [Photo: Mehmet Karatay, CC BY-SA 3.0](https://commons.wikimedia.org/wiki/File:Wood_duck.jpg) ([license](https://creativecommons.org/licenses/by-sa/3.0/)).
-- **leopardFrog**: [Photo: Stephen Friedt, CC BY-SA 3.0](https://commons.wikimedia.org/wiki/File:Southern_Leopard_Frog.jpg) ([license](https://creativecommons.org/licenses/by-sa/3.0/)).
+- **leopardFrog**: [Photo: William L. Farr, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Southern_leopard_frog_%28Lithobates_sphenocephalus%29%2C_Liberty_Co._TX_%28April_2009%29.jpg) ([license](https://creativecommons.org/licenses/by-sa/4.0/)).
 - **slider**: [Photo: Rhondle, CC BY-SA 3.0](https://commons.wikimedia.org/wiki/File:Red-eared_slider.jpg) ([license](https://creativecommons.org/licenses/by-sa/3.0/)).
 - **cottonmouth**: [Photo: TimVickers, public domain](https://commons.wikimedia.org/wiki/File:Agkistrodon_piscivorus_%281%29.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
 - **watersnake**: [Photo: William L. Farr, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Plain-bellied_Watersnake_%28Nerodia_erythrogaster%29%2C_Chambers_Co.%2C_TX%2C_26_July_2013.jpg) ([license](https://creativecommons.org/licenses/by-sa/4.0/)).
@@ -43,7 +43,7 @@ The license links below apply to photographs; illustrations are original Wildlif
 - **raccoon**: [Photo: Mathias Appel, CC0 1.0](https://commons.wikimedia.org/wiki/File:Raccoon_%2816869245759%29.jpg) ([license](https://creativecommons.org/publicdomain/zero/1.0/)).
 - **cardinal**: [Photo: Ken Thomas, public domain](https://commons.wikimedia.org/wiki/File:Northern_Cardinal_Male-27527-2.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
 - **bobcat**: [Photo: Calibas, public domain](https://commons.wikimedia.org/wiki/File:Bobcat2.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
-- **pelican**: [Photo: SpongeLover08, CC0 1.0](https://commons.wikimedia.org/wiki/File:Brown_Pelican_in_flight.jpg) ([license](https://creativecommons.org/publicdomain/zero/1.0/)).
+- **pelican**: [Photo: LunarEcho87, CC0 1.0](https://commons.wikimedia.org/wiki/File:Brown_Pelican_at_Seawolf_Park.jpg) ([license](https://creativecommons.org/publicdomain/zero/1.0/)).
 - **egret**: [Photo: Mildeep, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:The_great_egret_%28Ardea_alba%29.jpg) ([license](https://creativecommons.org/licenses/by-sa/4.0/)).
 - **kingfisher**: [Photo: Courtney Celley (USFWS), public domain](https://commons.wikimedia.org/wiki/File:Belted_kingfisher_%2853267654093%29.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
 - **redwing**: [Photo: Stevielist, public domain](https://commons.wikimedia.org/wiki/File:Redwingblackbird2.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
@@ -64,7 +64,7 @@ The license links below apply to photographs; illustrations are original Wildlif
 - **toad**: [Photo: Kevin Young, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Incilius_nebulifer-lateral_view.jpg) ([license](https://creativecommons.org/licenses/by-sa/4.0/)).
 - **rabbit**: [Photo: William R. James (USFWS), public domain](https://commons.wikimedia.org/wiki/File:Eastern_cotton_tail_in_grass.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
 - **hawk**: [Photo: Daniel Ankele, public domain](https://commons.wikimedia.org/wiki/File:Red-Tailed_Hawk.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
-- **kestrel**: [Photo: Marty Tow (NPS), public domain](https://commons.wikimedia.org/wiki/File:American_Kestrel_%2835291062790%29.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **kestrel**: [Photo: Channel City Camera Club, CC BY 2.0](https://commons.wikimedia.org/wiki/File:American_Kestrel_%2853468230687%29.jpg) ([license](https://creativecommons.org/licenses/by/2.0/)).
 - **meadowlark**: [Photo: Andy Morffew, CC BY 2.0](https://commons.wikimedia.org/wiki/File:Eastern_Meadowlark_%288634451300%29.jpg) ([license](https://creativecommons.org/licenses/by/2.0/)).
 - **killdeer**: [Photo: ADJ82, CC BY 4.0](https://commons.wikimedia.org/wiki/File:Killdeer-27JAN2017.jpg) ([license](https://creativecommons.org/licenses/by/4.0/)).
 - **scissortail**: [Photo: Mike's Birds, CC BY-SA 2.0](https://commons.wikimedia.org/wiki/File:Scissor-tailed_flycatcher_%2816946223616%29.jpg) ([license](https://creativecommons.org/licenses/by-sa/2.0/)).
