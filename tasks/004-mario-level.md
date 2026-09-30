@@ -1,7 +1,7 @@
 # Make each place a Mario-style level
 
 Date: 2026-09-30
-Status: all four slices done and committed on main; push to GitHub Pages under way
+Status: done and live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/)
 
 ## Intent contract (George's words)
 
@@ -49,7 +49,7 @@ Slices 2–4 (George: "finish it all"):
   errors.
 - [x] Screenshots looked at: "?" bushes (bayou, beach, phone bayou), all six hazards, the flag down and
   raised, the Junior Ranger panel over the raised flag.
-- [ ] Pushed and live on GitHub Pages; the live page serves the new code.
+- [x] Pushed and live on GitHub Pages; the live page serves the new code.
 
 ## Attempt log (append-only)
 
@@ -74,3 +74,7 @@ Slices 2–4 (George: "finish it all"):
 - Voice: six new welcomes recorded, 13 old clips pruned (six welcomes, six trail-end lines, the tip).
   Final checks on eebae5a: `npm test` 66 passed, 0 failed, 0 skipped; `git diff --check` clean;
   `node tools/browser-habitats.mjs desktop phone` 12 of 12 PASS, no page errors.
+- Deployed: `git push origin main` d8d8982..2c38ea3; GitHub Pages "built 2c38ea3"; live sw.js is
+  wildlife-habitats-v4 and serves `src/paint-hiding.js` and the new clips. Live phone walk of the
+  Backyard (`GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-walk.mjs phone
+  backyard`): PASS, 11 animals, Junior Ranger shown, no page errors.
