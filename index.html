@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#2f5d3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Wildlife">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Walk the trails around Katy, Texas, and find real animals: herons, spoonbills, alligators, coyotes, deer and more.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <title>Wildlife Game</title>
+</head>
+<body>
+  <canvas id="trail" aria-label="A trail with animals to find"></canvas>
+
+  <header id="hud" class="hud" hidden>
+    <div class="hud-card">
+      <strong id="hud-place">Bayou Trail</strong>
+      <span id="hud-count">0 of 8 found</span>
+    </div>
+    <div class="hud-actions">
+      <button id="voice-button" class="round-button voice-toggle" type="button" aria-label="Turn the voice off">🔊</button>
+      <button id="guide-button" class="round-button" type="button" aria-label="Open the Field Guide">📖</button>
+      <button id="home-button" class="round-button" type="button" aria-label="Go home">⌂</button>
+    </div>
+  </header>
+
+  <div id="controls" class="controls" hidden>
+    <button id="left-button" class="walk-button" type="button" aria-label="Walk left">◀</button>
+    <button id="snap-button" class="snap-button" type="button" aria-label="Take a picture">📷</button>
+    <button id="right-button" class="walk-button" type="button" aria-label="Walk right">▶</button>
+  </div>
+  <div id="flash" class="flash"></div>
+
+  <main id="overlay" class="overlay">
+    <section id="start" class="panel start-panel">
+      <p class="kicker">Katy, Texas</p>
+      <h1>Wildlife Game</h1>
+      <p class="lead">Walk the trail. Find real animals. Snap their pictures for your Field Guide!</p>
+      <button id="place-bayou" class="place-card" type="button">
+        <span class="place-name">Bayou Trail</span>
+        <span class="place-blurb">Herons, gators and deer, like George Bush Park</span>
+        <span id="place-count" class="place-count">0 of 8 found</span>
+        <span class="place-go" aria-hidden="true">Walk ▶</span>
+      </button>
+      <div class="start-actions">
+        <button id="start-guide-button" class="soft-button" type="button">📖 Field Guide</button>
+        <button id="start-voice-button" class="soft-button voice-toggle" type="button" aria-label="Turn the voice off">🔊</button>
+      </div>
+    </section>
+
+    <section id="card" class="panel card-panel" hidden aria-live="polite">
+      <figure class="card-photo">
+        <img id="card-image" alt="">
+        <figcaption id="card-credit"></figcaption>
+      </figure>
+      <div class="card-words">
+        <p id="card-kicker" class="kicker">You found a new animal!</p>
+        <h2 id="card-name"></h2>
+        <p id="card-fact"></p>
+        <dl class="card-facts">
+          <dt>Eats</dt><dd id="card-eats"></dd>
+          <dt>Eaten by</dt><dd id="card-eaten"></dd>
+        </dl>
+        <div class="card-actions">
+          <button id="card-hear" class="round-button" type="button" aria-label="Hear it again">🔊</button>
+          <button id="card-close" class="primary-button" type="button">Keep exploring</button>
+          <a id="card-more" class="more-link" target="_blank" rel="noopener">Find out more 🔍</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide" class="panel guide-panel" hidden>
+      <div class="guide-head">
+        <div>
+          <p class="kicker">Field Guide</p>
+          <h2 id="guide-title">Bayou Trail</h2>
+        </div>
+        <button id="guide-close" class="round-button" type="button" aria-label="Close the Field Guide">✕</button>
+      </div>
+      <div id="guide-grid" class="guide-grid"></div>
+      <p id="guide-hint" class="guide-hint" aria-live="polite">Tap an animal to hear about it.</p>
+    </section>
+
+    <section id="ranger" class="panel ranger-panel" hidden>
+      <div class="badge" aria-hidden="true"><span>★</span></div>
+      <p class="kicker">Bayou Trail</p>
+      <h2>Junior Ranger!</h2>
+      <p>You found all eight animals. Great exploring!</p>
+      <div class="start-actions">
+        <button id="ranger-close" class="primary-button" type="button">Keep exploring</button>
+        <button id="ranger-home" class="soft-button" type="button">Home</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

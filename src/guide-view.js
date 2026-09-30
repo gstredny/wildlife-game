@@ -1,0 +1,44 @@
+// Builds the Field Guide: a photo and name for each animal found, and a dark shape with a
+// question mark for each one still out there.
+import { ANIMALS } from "./animals.js";
+import { BOXES, PAINTERS } from "./painters.js";
+import { PHOTOS } from "./photos.js";
+import { placeKinds } from "./places.js";
+
+export function fillGuide(grid, place, found, onPick) {
+  grid.replaceChildren(...placeKinds(place).map(kind => {
+    const slot = document.createElement("button");
+    slot.type = "button";
+    slot.className = "guide-slot";
+    const isFound = found.has(kind);
+    if (isFound) {
+      const photo = document.createElement("img");
+      photo.src = PHOTOS[kind].file;
+      photo.alt = "";
+      slot.append(photo, ANIMALS[kind].name);
+    } else {
+      slot.classList.add("missing");
+      slot.append(silhouette(kind), "Not found yet");
+    }
+    slot.setAttribute("aria-label", isFound ? ANIMALS[kind].name : "An animal not found yet");
+    slot.addEventListener("click", () => onPick(kind, isFound));
+    return slot;
+  }));
+}
+
+// The animal's drawing, filled in dark, so a child can guess what to look for.
+function silhouette(kind) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 240;
+  canvas.height = 180;
+  const context = canvas.getContext("2d");
+  const box = BOXES[kind];
+  const size = Math.min(200 / (box.right - box.left), 150 / -box.top);
+  context.translate(120 - (box.left + box.right) / 2 * size, 165);
+  PAINTERS[kind](context, size, 0, {});
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  context.globalCompositeOperation = "source-in";
+  context.fillStyle = "#0e1f15";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  return canvas;
+}
