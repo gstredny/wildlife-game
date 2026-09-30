@@ -1,4 +1,4 @@
-const CACHE = "wildlife-habitats-v4";
+const CACHE = "wildlife-habitats-v5";
 const FILES = [
   "./",
   "./index.html",
