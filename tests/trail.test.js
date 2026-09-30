@@ -82,15 +82,18 @@ test("pressing an arrow cancels a walk to a tapped spot", () => {
   assert.equal(walk.target, null);
 });
 
-test("reaching the end of the trail is reported once", () => {
+test("reaching the goal flag at the end of the trail is reported once, with every animal found", () => {
   const walk = createWalk(bayou);
+  assert.equal(walk.endedAt, null);
   const ends = [];
   for (let frame = 0; frame < 60 * 60; frame++) {
     jump(walk);
-    if (stepWalk(walk, 1 / 60, 1).end) ends.push(frame);
+    if (stepWalk(walk, 1 / 60, 1).end) ends.push(walk.time);
   }
   assert.equal(ends.length, 1);
+  assert.equal(walk.endedAt, ends[0], "the flag goes up from then");
   assert.equal(walk.x, bayou.length - EDGE);
+  assert.equal(walk.found.size, placeKinds(bayou).length, "no animal can be skipped on the way");
 });
 
 // Walks right for `seconds` at 60 frames a second, jumping whenever `hop` says so.

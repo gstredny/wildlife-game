@@ -28,7 +28,6 @@ export function paintFrame(context, walk, view, snapping) {
   paintHabitatDetails(context, view, place, time);
   for (const x of place.trees) if (seen(x, 200)) paintHabitatTree(context, x, place);
   if (seen(170, 80)) paintSign(context, 170, place.name);
-  if (seen(place.length - 170, 80)) paintSign(context, place.length - 170, "Trail end");
   const target = snapTarget(walk);
   for (const animal of place.animals) {
     if (!walk.found.has(animal.kind)) {

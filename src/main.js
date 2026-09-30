@@ -1,5 +1,5 @@
 // Wires the game together: the start screen, walking, taking pictures, the card, the Field Guide and
-// the Junior Ranger cheer. The rules live in trail.js; drawing lives in render.js.
+// the Junior Ranger cheer at the goal flag. The rules live in trail.js; drawing lives in render.js.
 import { againLines, cardSpeech, ANIMALS } from "./animals.js";
 import { fillCard } from "./card-view.js";
 import { fillGuide } from "./guide-view.js";
@@ -32,7 +32,6 @@ let camera = 0;
 let hold = 0;
 let jumpHeld = false;
 let posing = 0;
-let rangerNext = false;
 let cardFrom = null;
 let view = viewFor(innerWidth, innerHeight, 0);
 
@@ -71,7 +70,6 @@ function startWalk(key) {
   preview.x = 520;
   camera = 0;
   posing = 0;
-  rangerNext = false;
   walk = createWalk(place, found);
   $("hud-place").textContent = place.name;
   counts();
@@ -96,7 +94,6 @@ function takePicture({ kind, first }) {
   savePlayers(players);
   counts();
   sound.play("found");
-  rangerNext = placeKinds(place).every(each => found.has(each));
   release();
   const picturedWalk = walk;
   setTimeout(() => { if (walk === picturedWalk) openCard(kind, true, null); }, 450);
@@ -125,16 +122,22 @@ function tell(kind) {
 function closeCard() {
   voice.stop();
   if (cardFrom === "guide") return openGuide();
-  if (rangerNext) {
-    rangerNext = false;
+  show(walk ? null : "start");
+}
+
+// The goal flag: a fanfare while the flag goes up, then the Junior Ranger cheer with the stars caught.
+// Every hiding spot is on the way, so every animal here is found by now.
+function reachGoal() {
+  sound.play("ranger");
+  release();
+  const finished = walk;
+  setTimeout(() => {
+    if (walk !== finished) return;
     show("ranger");
     $("ranger-place").textContent = place.name;
-    $("ranger-message").textContent = `You found all ${placeKinds(place).length} animals here. Great exploring!`;
-    sound.play("ranger");
+    $("ranger-message").textContent = `You found all ${placeKinds(place).length} animals and caught ${walk.stars.size} of ${place.stars.length} stars!`;
     voice.say(place.ranger);
-    return;
-  }
-  show(walk ? null : "start");
+  }, 900);
 }
 
 function openGuide() {
@@ -210,7 +213,7 @@ function tick(dt) {
     sound.play("star");
     counts();
   }
-  if (result.end && !placeKinds(place).every(kind => found.has(kind))) voice.say(place.end, { polite: true });
+  if (result.end) reachGoal();
 }
 
 let last = performance.now();

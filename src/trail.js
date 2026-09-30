@@ -17,10 +17,11 @@ const PUSH = 0.3; // the first part of a bump, when the explorer slides back and
 const PUSH_SPEED = 330;
 
 // `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk;
-// `hurt` counts down the blinking after a bump, and `pushed` is which way the bump sends them.
+// `hurt` counts down the blinking after a bump, and `pushed` is which way the bump sends them;
+// `endedAt` is when the explorer reached the goal flag at the end, or null.
 export function createWalk(place, found = new Set()) {
   return { place, x: EDGE + 40, y: 0, vy: 0, facing: 1, moving: false, target: null, time: 0, found,
-    stars: new Set(), reachedEnd: false, hurt: 0, pushed: 0 };
+    stars: new Set(), endedAt: null, hurt: 0, pushed: 0 };
 }
 
 // Jumps, if the explorer is standing on the path or a log. Returns whether it jumped.
@@ -71,7 +72,7 @@ export function snap(walk, animal) {
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when the explorer reaches a hiding animal
 // or a tapped animal comes into reach, { stars } for how many stars were caught, { bump: true } when a
-// hazard hits, { end: true } the first time the explorer reaches the end. A bump pauses a walk to a
+// hazard hits, { end: true } the first time the explorer reaches the goal flag at the end. A bump pauses a walk to a
 // tapped spot; it carries on after.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
@@ -102,8 +103,8 @@ export function stepWalk(walk, dt, move = 0) {
   const stars = catchStars(walk);
   if (stars) result.stars = stars;
   if (!walk.hurt && bumpedBy(walk)) result.bump = true;
-  if (!walk.reachedEnd && walk.x >= walk.place.length - EDGE - 1) {
-    walk.reachedEnd = true;
+  if (walk.endedAt === null && walk.x >= walk.place.length - EDGE - 1) {
+    walk.endedAt = walk.time;
     result.end = true;
   }
   return result;

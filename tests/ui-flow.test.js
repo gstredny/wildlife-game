@@ -111,9 +111,12 @@ try {
       while (budget++ < 1400) {
         frame();
         if (!$('card').hidden) { click('card-close'); continue; }
-        if (!$('ranger').hidden) { click('ranger-home'); break; }
+        if (!$('ranger').hidden) {
+          assert.match($('ranger-message').textContent, new RegExp(`^You found all ${placeKinds(place).length} animals and caught \\d+ of ${place.stars.length} stars!$`));
+          click('ranger-home');
+          break;
+        }
         if (timers.size) { flush(); continue; }
-        if ($('hud-count').textContent === `${placeKinds(place).length} of ${placeKinds(place).length} found`) { click('home-button'); break; }
         key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp');
       }
       assert.ok(budget < 1400, `${place.name} did not complete`);
