@@ -1,9 +1,10 @@
-// Draws one moment of the walk: scenery, animals, logs and stars, the explorer, and the camera
-// sparkle over the animal the explorer can photograph.
+// Draws one moment of the walk: scenery, animals, logs, stars and pinecones, the explorer (blinking
+// after a bump), and the camera sparkle over the animal the explorer can photograph.
 import { ANIMALS } from "./animals.js";
 import { baseY } from "./layout.js";
 import { paintCourse } from "./paint-course.js";
 import { paintExplorer } from "./paint-explorer.js";
+import { paintHazards } from "./paint-hazards.js";
 import { BOXES, PAINTERS } from "./painters.js";
 import { GROUND, paintBack, paintFarWoods, paintFront, paintPath, paintSign, paintSky } from "./scenery.js";
 import { THEMES, paintHabitatDetails, paintHabitatTree } from "./habitat-scenery.js";
@@ -33,11 +34,14 @@ export function paintFrame(context, walk, view, snapping) {
   }
   paintPath(context, view, place, theme);
   paintCourse(context, walk, seen);
-  context.save();
-  context.translate(walk.x, GROUND.path - walk.y);
-  context.scale(walk.facing, 1);
-  paintExplorer(context, EXPLORER_SIZE, time, { walking: walk.moving && walk.vy === 0, snapping });
-  context.restore();
+  paintHazards(context, walk, seen);
+  if (!(Math.floor(walk.hurt * 12) % 2)) {
+    context.save();
+    context.translate(walk.x, GROUND.path - walk.y);
+    context.scale(walk.facing, 1);
+    paintExplorer(context, EXPLORER_SIZE, time, { walking: walk.moving && walk.vy === 0, snapping });
+    context.restore();
+  }
   paintFront(context, view, time, theme);
   if (target) paintMarker(context, walk, target);
 }

@@ -54,6 +54,10 @@ export function createSound(AudioContextClass = globalThis.AudioContext || globa
     hop() {
       tone({ from: NOTES.C5, to: NOTES.C6, length: 0.14, type: "square", gain: 0.12 });
     },
+    // Bonk: a pinecone bumped the explorer.
+    bonk() {
+      tone({ from: 330, to: 140, length: 0.22, type: "square", gain: 0.16 });
+    },
     // Ding-ding: a star caught.
     star() {
       tone({ from: NOTES.E5 * 2, length: 0.08, type: "triangle", gain: 0.3 });

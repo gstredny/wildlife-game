@@ -1,9 +1,11 @@
-// The obstacle course along a trail, like a Super Mario level: logs to jump over and stars to catch.
-// Every other gap between two animals has a log with stars arcing over it; the other gaps have stars
-// floating up high, caught with a jump. Heights are measured up from the path.
+// The obstacle course along a trail, like a Super Mario level: logs to jump over, stars to catch, and
+// pinecones rolling at the explorer. Every other gap between two animals has a log with stars arcing
+// over it; the other gaps have a pinecone lane, with stars floating up high, caught with a jump.
+// Heights are measured up from the path.
 export function layCourse(animals) {
   const logs = [];
   const stars = [];
+  const lanes = [];
   animals.slice(1).forEach((animal, index) => {
     const x = (animals[index].x + animal.x) / 2;
     if (index % 2 === 0) {
@@ -12,7 +14,8 @@ export function layCourse(animals) {
       for (const dx of [-75, 0, 75]) stars.push({ x: x + dx, y: log.h + (dx ? 85 : 125) });
     } else {
       for (const dx of [-55, 0, 55]) stars.push({ x: x + dx, y: dx ? 135 : 165 });
+      lanes.push({ from: animal.x - 120, to: animals[index].x + 120, offset: index * 0.37 });
     }
   });
-  return { logs, stars };
+  return { logs, stars, lanes };
 }

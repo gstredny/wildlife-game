@@ -1,5 +1,7 @@
 // One walk along a trail: where the explorer is, where each animal is, and which animals are found.
 // No drawing here, so the rules can be tested without a browser.
+import { hazardAt } from "./hazards.js";
+
 export const WALK_SPEED = 260;
 export const REACH = 230; // how close the explorer must be to take an animal's picture
 export const EDGE = 90; // the explorer stops this far from either end of the trail
@@ -8,11 +10,16 @@ const GRAVITY = 2300;
 const HALF = 26; // half the explorer's width, for bumping into logs
 const BODY = 150; // the explorer's height, for catching stars
 const STAR_REACH = 36;
+const BUMP = 1.2; // seconds the explorer blinks after a pinecone bump; nothing bumps them meanwhile
+const PUSH = 0.3; // the first part of a bump, when the explorer slides back and can't steer
+const PUSH_SPEED = 330;
+const CONE_HIT = 16; // less than a pinecone's size, so only a real overlap counts
 
-// `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk.
+// `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk;
+// `hurt` counts down the blinking after a bump, and `pushed` is which way the bump sends them.
 export function createWalk(place, found = new Set()) {
   return { place, x: EDGE + 40, y: 0, vy: 0, facing: 1, moving: false, target: null, time: 0, found,
-    stars: new Set(), reachedEnd: false };
+    stars: new Set(), reachedEnd: false, hurt: 0, pushed: 0 };
 }
 
 // Jumps, if the explorer is standing on the path or a log. Returns whether it jumped.
@@ -63,12 +70,15 @@ export function snap(walk, animal) {
 
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when a tapped animal comes into reach,
-// { stars } for how many stars were caught, { end: true } the first time the explorer reaches the end.
+// { stars } for how many stars were caught, { bump: true } when a pinecone hits, { end: true } the
+// first time the explorer reaches the end. A bump pauses a walk to a tapped spot; it carries on after.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
+  walk.hurt = Math.max(0, walk.hurt - dt);
+  const pushed = walk.hurt > BUMP - PUSH;
   if (move) walk.target = null;
-  let direction = move;
-  if (walk.target) {
+  let direction = pushed ? 0 : move;
+  if (walk.target && !pushed) {
     const { animal } = walk.target;
     if (animal && inReach(walk, animal)) return { snap: snap(walk, animal) };
     const goal = animal ? animalAt(animal, walk.time).x : walk.target.x;
@@ -78,15 +88,17 @@ export function stepWalk(walk, dt, move = 0) {
   }
   walk.moving = direction !== 0;
   if (direction) walk.facing = direction;
-  const next = clamp(walk.x + direction * WALK_SPEED * dt, walk.place.length);
+  const step = pushed ? walk.pushed * PUSH_SPEED * dt : direction * WALK_SPEED * dt;
+  const next = clamp(walk.x + step, walk.place.length);
   const wall = wallBetween(walk, walk.x, next);
-  walk.x = wall ? wall.x - direction * (wall.w / 2 + HALF) : next;
+  walk.x = wall ? wall.x - Math.sign(step) * (wall.w / 2 + HALF) : next;
   // A walk to a tapped spot hops over a log in the way.
   if (wall && walk.target) jump(walk);
   fall(walk, dt);
   const result = {};
   const stars = catchStars(walk);
   if (stars) result.stars = stars;
+  if (!walk.hurt && bumpedBy(walk)) result.bump = true;
   if (!walk.reachedEnd && walk.x >= walk.place.length - EDGE - 1) {
     walk.reachedEnd = true;
     result.end = true;
@@ -114,6 +126,18 @@ function fall(walk, dt) {
     walk.y = floor;
     walk.vy = 0;
   }
+}
+
+// Checks for a pinecone touching the explorer; on a hit, starts the bump: a little hop and a slide
+// away from the pinecone.
+function bumpedBy(walk) {
+  const cone = walk.place.lanes.map(lane => hazardAt(lane, walk.time))
+    .find(each => each && Math.abs(each.x - walk.x) < HALF + CONE_HIT && walk.y < each.y + CONE_HIT * 2);
+  if (!cone) return false;
+  walk.hurt = BUMP;
+  walk.pushed = Math.sign(walk.x - cone.x) || -1;
+  walk.vy = Math.max(walk.vy, 420);
+  return true;
 }
 
 function catchStars(walk) {

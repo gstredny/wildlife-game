@@ -207,6 +207,7 @@ function tick(dt) {
   const result = stepWalk(walk, posing > 0 ? 0 : dt, posing > 0 ? 0 : direction());
   if (posing > 0) walk.time += dt;
   if (result.snap) takePicture(result.snap);
+  if (result.bump) sound.play("bonk");
   if (result.stars) {
     sound.play("star");
     counts();

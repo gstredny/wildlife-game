@@ -42,7 +42,9 @@ predators, and a photo-source link.
 
 Walk with the arrow buttons in the bottom left (or the arrow keys, or A and D) and jump with the big
 orange button in the bottom right (or Space, the up arrow, or W). Logs block the path until you jump
-over them or onto them; stars float along the way, some only reachable with a jump. Tap anywhere on
+over them or onto them; stars float along the way, some only reachable with a jump. Pinecones drop
+onto the path and roll at you: jump over them. One that hits you bumps you back, and you blink for a
+moment; nobody loses. Tap anywhere on
 the trail to walk there, hopping over logs on the way. When an animal is close, a camera bubble bounces
 over it and the camera button lights up: tap the animal or the camera (or press Enter) to take its
 picture. Tap an animal far away and the explorer walks over to it.
@@ -119,9 +121,9 @@ Browser checks require the local server running. They save screenshots in `scree
 known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
 alert, and small poses with the tap boxes.
 
-Current verification (2026-09-30): `npm test` **43 passed, 0 failed, 0 skipped**;
+Current verification (2026-09-30): `npm test` **47 passed, 0 failed, 0 skipped**;
 `node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, no page errors).
-See [tasks/003-voice-guess-players-jumping.md](tasks/003-voice-guess-players-jumping.md).
+See [tasks/004-mario-level.md](tasks/004-mario-level.md).
 
 ## App icon
 
