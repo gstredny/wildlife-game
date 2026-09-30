@@ -1,6 +1,6 @@
 # Active handoff — Wildlife Game
 
-2026-09-30. Branch main. All work is committed locally; nothing is pushed or deployed.
+2026-09-30. Branch main, pushed. Live on GitHub Pages: https://gstredny.github.io/wildlife-game/
 
 Active task: [002-texas-habitats.md](002-texas-habitats.md).
 
@@ -15,7 +15,6 @@ passed on the final tree: exit 0, 12 runs (6 places x desktop/phone), no page er
 Zoo sheet: all 43 new drawings render and fit their tap boxes.
 
 Open:
-- Deploy: not done; no deploy target is recorded in this repo.
 - Drawing quality: several new drawings share one body shape (armadillo, nutria, opossum, otter)
   and the kestrel reads poorly.
 - Small: when a photo fails to load, the "Photo source and license" link still shows under the

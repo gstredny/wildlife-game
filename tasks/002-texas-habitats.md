@@ -1,7 +1,7 @@
 # Texas habitats and a bigger Field Guide
 
 Date: 2026-09-30
-Status: done locally (committed on main; not pushed, not deployed)
+Status: done and live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/)
 
 ## Intent contract
 
@@ -98,3 +98,8 @@ The scope is a broad local field guide, not a claim to contain every species in 
   in the walk (it still blocks Wikimedia, which no longer matters). `npm test`: 32 passed, 0 failed,
   0 skipped. Remaining follow-ups (not done-criteria): drawing quality for look-alike animals, and
   hiding the photo-source link when a card falls back to its drawing.
+- Deployed (George approved the push): `git push origin main` fb090d0..1eb53cc; GitHub Pages build
+  "built 1eb53cc". Live sw.js has CACHE "wildlife-habitats-v2"; pelican photo, thumbnail, voice
+  manifest, app manifest and home-screen icon all return 200. `GAME=https://gstredny.github.io/
+  wildlife-game/ node tools/browser-walk.mjs phone gulf` against the live site: exit 0, PASS, 9 animals,
+  Junior Ranger, offline return, no page errors.
