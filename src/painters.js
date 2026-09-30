@@ -14,10 +14,11 @@ import { FROG_BOXES, FROG_PAINTERS } from "./paint-frogs.js";
 import { TURTLE_BOXES, TURTLE_PAINTERS } from "./paint-turtles.js";
 import { SCALED_BOXES, SCALED_PAINTERS } from "./paint-scaled-reptiles.js";
 import { ARTHROPOD_BOXES, ARTHROPOD_PAINTERS } from "./paint-arthropods.js";
+import { BAT_BOX, paintBat } from "./paint-bat.js";
 
 export const PAINTERS = { ...BIRD_PAINTERS, ...MAMMAL_PAINTERS, alligator: paintAlligator, cicada: paintCicada,
   ...SONGBIRD_PAINTERS, ...WATERBIRD_PAINTERS, ...RAPTOR_PAINTERS, ...WOODLAND_PAINTERS,
-  ...FROG_PAINTERS, ...TURTLE_PAINTERS, ...SCALED_PAINTERS, ...ARTHROPOD_PAINTERS };
+  ...FROG_PAINTERS, ...TURTLE_PAINTERS, ...SCALED_PAINTERS, ...ARTHROPOD_PAINTERS, freeTailedBat: paintBat };
 export const BOXES = { ...BIRD_BOXES, ...MAMMAL_BOXES, alligator: ALLIGATOR_BOX, cicada: CICADA_BOX,
   ...SONGBIRD_BOXES, ...WATERBIRD_BOXES, ...RAPTOR_BOXES, ...WOODLAND_BOXES,
-  ...FROG_BOXES, ...TURTLE_BOXES, ...SCALED_BOXES, ...ARTHROPOD_BOXES };
+  ...FROG_BOXES, ...TURTLE_BOXES, ...SCALED_BOXES, ...ARTHROPOD_BOXES, freeTailedBat: BAT_BOX };

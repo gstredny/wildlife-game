@@ -9,9 +9,9 @@ import { animalAt, createWalk, snap, stepWalk, walkTo } from '../src/trail.js';
 
 const storage = () => ({ data: new Map(), getItem(key) { return this.data.get(key); }, setItem(key, value) { this.data.set(key, value); } });
 
-test('six habitats cover all 51 animals, including the requested swamp wildlife', () => {
+test('six habitats cover all 60 animals, including the requested swamp wildlife', () => {
   assert.equal(Object.keys(PLACES).length, 6);
-  assert.equal(Object.keys(ANIMALS).length, 51);
+  assert.equal(Object.keys(ANIMALS).length, 60);
   const residents = new Set(Object.values(PLACES).flatMap(placeKinds));
   assert.deepEqual([...residents].sort(), Object.keys(ANIMALS).sort());
   for (const kind of ['bullfrog', 'nightHeron', 'woodDuck', 'alligator']) assert.ok(placeKinds(PLACES.swamp).includes(kind));

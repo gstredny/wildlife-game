@@ -8,7 +8,8 @@ const HABITATS = {
     roster: [
       ['bullfrog', 74], ['nightHeron', 100], ['woodDuck', 83], ['leopardFrog', 63],
       ['slider', 70], ['dragonfly', 62, 'air'], ['heron', 132], ['ibis', 72],
-      ['spoonbill', 92], ['watersnake', 78], ['cottonmouth', 84], ['alligator', 30]
+      ['spoonbill', 92], ['watersnake', 78], ['whistlingDuck', 86], ['crawfish', 70],
+      ['cottonmouth', 84], ['alligator', 30]
     ]
   },
   bayou: {
@@ -17,7 +18,7 @@ const HABITATS = {
     roster: [
       ['cicada', 46, 'tree'], ['heron', 132], ['ibis', 72], ['spoonbill', 92],
       ['alligator', 30], ['egret', 125], ['kingfisher', 75, 'air'], ['redwing', 70],
-      ['nutria', 80], ['riverOtter', 80], ['coyote', 82], ['hog', 70], ['deer', 150]
+      ['nutria', 80], ['riverOtter', 80], ['freeTailedBat', 52, 'air'], ['coyote', 82], ['hog', 70], ['deer', 150]
     ]
   },
   woods: {
@@ -25,7 +26,7 @@ const HABITATS = {
     blurb: 'Shady oaks, woodpeckers, armadillos, and a watchful owl',
     roster: [
       ['squirrel', 82, 'tree'], ['woodpecker', 78, 'tree'], ['boxTurtle', 68],
-      ['armadillo', 90], ['raccoon', 95], ['opossum', 90], ['barredOwl', 110, 'tree'],
+      ['armadillo', 90], ['raccoon', 95], ['houstonToad', 52], ['opossum', 90], ['barredOwl', 110, 'tree'],
       ['bobcat', 95], ['coyote', 82], ['deer', 150]
     ]
   },
@@ -40,11 +41,11 @@ const HABITATS = {
   },
   prairie: {
     name: 'Katy Prairie', theme: 'prairie',
-    blurb: 'Tall grasses, meadowlarks, rabbits, and soaring hawks',
+    blurb: 'Prairie chickens, snow geese, cranes, and soaring hawks',
     roster: [
-      ['rabbit', 83], ['meadowlark', 78], ['killdeer', 70], ['kestrel', 78, 'perch'],
-      ['scissortail', 70, 'perch'], ['hawk', 115, 'perch'], ['monarch', 56, 'air'],
-      ['armadillo', 90], ['coyote', 82], ['deer', 150]
+      ['rabbit', 83], ['meadowlark', 78], ['attwaterChicken', 80], ['killdeer', 70], ['kestrel', 78, 'perch'],
+      ['snowGoose', 88], ['scissortail', 70, 'perch'], ['whiteTailedHawk', 112, 'perch'], ['hawk', 115, 'perch'],
+      ['caracara', 108], ['monarch', 56, 'air'], ['sandhillCrane', 140], ['armadillo', 90], ['coyote', 82], ['deer', 150]
     ]
   },
   gulf: {

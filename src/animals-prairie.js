@@ -53,5 +53,50 @@ export const PRAIRIE_ANIMALS = {
     "eatenBy": "Hawks and nest predators",
     "hint": "Look for a bird with a very long forked tail.",
     "source": "https://tpwmagazine.com/wildlife-conservation/12-beautiful-birds-texas/"
+  },
+  "attwaterChicken": {
+    "name": "Attwater’s prairie chicken",
+    "fact": "A male puffs up bright orange neck sacs and booms! Wild ones live only on the coastal prairies of Texas.",
+    "say": "Very few are left. The Houston Zoo raises chicks to set free on the prairie.",
+    "eats": "Green leaves, seeds, and insects",
+    "eatenBy": "Coyotes, raccoons, snakes, and other nest predators",
+    "hint": "Look for a striped brown bird with orange neck sacs.",
+    "source": "https://tpwd.texas.gov/huntwild/wild/species/apc/"
+  },
+  "whiteTailedHawk": {
+    "name": "White-tailed hawk",
+    "fact": "A white-tailed hawk is gray with rusty shoulders and a white tail. In the United States it lives mostly on Texas prairies.",
+    "say": "It can hang in the wind without flapping. You might spot one over the Katy Prairie!",
+    "eats": "Mice, rats, rabbits, lizards, and big insects",
+    "eatenBy": "Nest predators may take eggs and chicks",
+    "hint": "Look for a gray hawk with a bright white tail.",
+    "source": "https://www.allaboutbirds.org/guide/White-tailed_Hawk/overview"
+  },
+  "caracara": {
+    "name": "Crested caracara",
+    "fact": "A caracara has a black cap, an orange face, and long yellow legs. It looks like a hawk but is really a falcon!",
+    "say": "Only a few U.S. states have caracaras, and Texas is one. Look for them on the Katy Prairie!",
+    "eats": "Dead animals, insects, snakes, and small animals",
+    "eatenBy": "Nest predators may take eggs and chicks",
+    "hint": "Look for a tall bird with a black cap and orange face.",
+    "source": "https://www.allaboutbirds.org/guide/Crested_Caracara/overview"
+  },
+  "snowGoose": {
+    "name": "Snow goose",
+    "fact": "Most snow geese are white with black wing tips. A few are gray-blue. They fly in huge, noisy flocks!",
+    "say": "In winter, thousands still visit the Katy Prairie, but there were once far more.",
+    "eats": "Grasses, roots, and other plants",
+    "eatenBy": "Eagles, coyotes, and foxes",
+    "hint": "Look for a big white goose with black wing tips.",
+    "source": "https://tpwd.texas.gov/newsletters/state_parks_getaways/2009winter/closer-look.phtml"
+  },
+  "sandhillCrane": {
+    "name": "Sandhill crane",
+    "fact": "A sandhill crane is tall and gray, with long legs and a red cap. Its loud bugling call carries for miles!",
+    "say": "Sandhill cranes spend winter in wet fields around Houston and on the Katy Prairie.",
+    "eats": "Roots, grains, insects, and small animals",
+    "eatenBy": "Coyotes, bobcats, and eagles take eggs and chicks",
+    "hint": "Look for a tall gray bird with a red cap.",
+    "source": "https://tpwmagazine.com/archive/2020/dec/scout9_wildthing/"
   }
 };

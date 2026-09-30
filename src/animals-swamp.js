@@ -71,5 +71,23 @@ export const SWAMP_ANIMALS = {
     "eatenBy": "Birds, fish, and frogs, especially when young",
     "hint": "Look for see-through wings hovering near the reeds.",
     "source": "https://tpwmagazine.com/wildlife-conservation/meet-the-critters-of-texas-state-parks/"
+  },
+  "whistlingDuck": {
+    "name": "Black-bellied whistling-duck",
+    "fact": "This duck has a bright pink bill, long pink legs, and a black belly. It whistles instead of quacking!",
+    "say": "It nests in tree holes. You can hear flocks whistle over ponds on the Katy Prairie.",
+    "eats": "Seeds, plants, and insects",
+    "eatenBy": "Raccoons and snakes take eggs; big fish catch ducklings",
+    "hint": "Look for a duck with a pink bill and long pink legs.",
+    "source": "https://tpwmagazine.com/archive/2008/dec/scout4/"
+  },
+  "crawfish": {
+    "name": "Red swamp crayfish",
+    "fact": "A crawfish looks like a tiny lobster with two big claws. It builds mud chimneys at its burrow!",
+    "say": "Texas farmers raise crawfish in flooded rice fields. Katy was once rice-farm country!",
+    "eats": "Plants, small water animals, and rotting leaves",
+    "eatenBy": "Herons, egrets, and big fish",
+    "hint": "Look for a red-brown crawfish with big claws in muddy water.",
+    "source": "https://tpwd.texas.gov/education/resources/texas-junior-naturalists/bugs-bugs-bugs/common-freshwater-organisms"
   }
 };

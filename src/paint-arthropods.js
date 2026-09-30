@@ -1,5 +1,5 @@
-// The green darner, monarch, and ghost crab.
-import { eye, line, oval } from './paint-shapes.js';
+// The green darner, monarch, ghost crab, and crawfish.
+import { eye, line, oval, shape } from './paint-shapes.js';
 function paintDragonfly(c, size, time) {
   c.save(); c.scale(size, size);
   const flutter = Math.sin(time * 18) * 0.1;
@@ -44,9 +44,31 @@ function paintCrab(c, size, time, state = {}) {
   oval(c, 0, -0.27, 0.28, 0.18, '#e1d3a9');
   c.restore();
 }
-export const ARTHROPOD_PAINTERS = { dragonfly: paintDragonfly, monarch: paintMonarch, crab: paintCrab };
+// A red swamp crawfish from the side: a curled, segmented tail, then its shell, then big claws out front.
+function paintCrawfish(c, size, time, state = {}) {
+  c.save(); c.scale(size, size);
+  const step = state.walking ? Math.sin(time * 14) * 0.03 : 0;
+  for (let n = 0; n < 4; n++) line(c, [[-0.1 + n * 0.1, -0.2], [-0.13 + n * 0.1 + (n % 2 ? step : -step), -0.02]], '#8e3324', 0.03);
+  for (let n = 3; n >= 0; n--) oval(c, -0.3 - n * 0.13, -0.25 + n * 0.02, 0.1, 0.09 - n * 0.008, n % 2 ? '#b8452f' : '#a53a27');
+  shape(c, [[-0.7, -0.22], [-0.9, -0.34], [-0.93, -0.1]], '#9d3624');
+  oval(c, 0, -0.28, 0.26, 0.13, '#c24e33');
+  line(c, [[-0.16, -0.34], [0.12, -0.36]], '#9d3624', 0.02);
+  const pinch = state.alert ? Math.abs(Math.sin(time * 6)) * 0.06 : 0.02;
+  for (const [dy, color] of [[-0.05, '#a53a27'], [0, '#c9553a']]) {
+    line(c, [[0.16, -0.26 + dy], [0.36, -0.33 + dy], [0.5, -0.3 + dy]], color, 0.06);
+    oval(c, 0.61, -0.3 + dy, 0.13, 0.07, color, -0.1);
+    shape(c, [[0.68, -0.34 + dy], [0.92, -0.35 + dy - pinch], [0.72, -0.3 + dy]], color);
+    shape(c, [[0.68, -0.27 + dy], [0.9, -0.25 + dy + pinch], [0.72, -0.31 + dy]], color);
+  }
+  line(c, [[0.22, -0.34], [0.55, -0.52], [0.95, -0.48]], '#8e3324', 0.015);
+  eye(c, 0.22, -0.36, time);
+  c.restore();
+}
+
+export const ARTHROPOD_PAINTERS = { dragonfly: paintDragonfly, monarch: paintMonarch, crab: paintCrab, crawfish: paintCrawfish };
 export const ARTHROPOD_BOXES = {
   dragonfly: { left: -0.72, right: 0.42, top: -0.76 },
   monarch: { left: -0.55, right: 0.55, top: -1 },
-  crab: { left: -0.72, right: 0.72, top: -0.68 }
+  crab: { left: -0.72, right: 0.72, top: -0.68 },
+  crawfish: { left: -0.95, right: 0.96, top: -0.56 }
 };

@@ -44,5 +44,14 @@ export const BAYOU_ANIMALS = {
     "eatenBy": "Alligators and large predators",
     "hint": "Look for a sleek brown animal with a long tail.",
     "source": "https://tpwd.texas.gov/huntwild/wild/species/otter/"
+  },
+  "freeTailedBat": {
+    "name": "Mexican free-tailed bat",
+    "fact": "This small bat has velvety fur and a tail that pokes out at the back. Texas named it the state flying mammal!",
+    "say": "About 250,000 live under a bridge in Houston. At sunset they swirl out to hunt insects!",
+    "eats": "Moths, beetles, and other flying insects",
+    "eatenBy": "Hawks, owls, and raccoons",
+    "hint": "At sunset, look for a swirl of small bats leaving a bridge.",
+    "source": "https://tpwd.texas.gov/huntwild/wild/species/bats/bat-watching-sites/waugh-drive-bridge.phtml"
   }
 };

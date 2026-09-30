@@ -11,7 +11,9 @@ const BIRDS = {
   redwing: { body: '#283238', wing: '#192830', patch: '#f14a37', patchEdge: '#f8cc56' },
   meadowlark: { body: '#e7c54b', wing: '#8b8264', necklace: true, spots: true },
   scissortail: { body: '#b6c0c8', wing: '#4e6171', patch: '#edb394', fork: true, tail: 1.1 },
-  kingfisher: { body: '#edf0e8', wing: '#5c8f9d', crest: true, necklace: true, bill: 0.4 }
+  kingfisher: { body: '#edf0e8', wing: '#5c8f9d', crest: true, necklace: true, bill: 0.4 },
+  // Striped brown, with the male's orange neck sac and raised neck feathers.
+  attwaterChicken: { body: '#a88660', wing: '#7a5d40', bars: '#4d3a28', patch: '#f08a3c', crest: true, tail: 0.25, beak: '#8a7a60' }
 };
 
 function paintBird(c, size, time, state, bird) {
@@ -33,7 +35,7 @@ function paintBird(c, size, time, state, bird) {
   }
   if (bird.patch) oval(c, 0.07, -0.53, 0.14, 0.075, bird.patch, -0.25);
   if (bird.patchEdge) line(c, [[-0.04, -0.46], [0.12, -0.48]], bird.patchEdge, 0.045);
-  if (bird.bars) for (let n = 0; n < 4; n++) line(c, [[-0.23, -0.55 + n * 0.07], [0.1, -0.6 + n * 0.07]], '#eff5ed', 0.025);
+  if (bird.bars) for (let n = 0; n < 4; n++) line(c, [[-0.23, -0.55 + n * 0.07], [0.1, -0.6 + n * 0.07]], bird.bars === true ? '#eff5ed' : bird.bars, 0.025);
   if (bird.spots) for (let n = 0; n < 3; n++) oval(c, -0.16 + n * 0.09, -0.43, 0.025, 0.02, '#4c4841');
   oval(c, 0.24, -0.73, 0.18, 0.18, bird.body);
   if (bird.crest) shape(c, [[0.05, -0.8], [0.16, -1], [0.34, -0.8]], bird.body);

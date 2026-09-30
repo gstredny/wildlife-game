@@ -68,7 +68,7 @@ const click = id => $(id).trigger('click');
 try {
   test('home exposes all six habitats and the full collection count', () => {
     assert.equal($('places').children.length, 6);
-    assert.equal($('collection-count').textContent, '0 of 51 animals in your Field Guide');
+    assert.equal($('collection-count').textContent, '0 of 60 animals in your Field Guide');
     assert.equal($('guide-place').children.length, 6);
     frame();
   });
@@ -122,10 +122,10 @@ try {
       assert.ok(budget < 1400, `${place.name} did not complete`);
       assert.equal($('hud-count').textContent, `${placeKinds(place).length} of ${placeKinds(place).length} found`);
     }
-    assert.equal($('collection-count').textContent, '51 of 51 animals in your Field Guide');
-    assert.equal(JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.found.length, 51);
+    assert.equal($('collection-count').textContent, '60 of 60 animals in your Field Guide');
+    assert.equal(JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.found.length, 60);
     click('start-guide-button');
-    assert.equal($('guide-grid').children.length, 51);
+    assert.equal($('guide-grid').children.length, 60);
     const bullfrogSlot = $('guide-grid').children.find(slot => slot.attributes['aria-label'] === 'American bullfrog');
     assert.equal(bullfrogSlot.children[0].src, 'art/animals/thumbs/bullfrog.webp', 'the guide shows a small copy');
     for (const slot of $('guide-grid').children) {
@@ -139,7 +139,7 @@ try {
     click('card-close');
     assert.equal($('guide').hidden, false);
     $('guide-place').value = 'swamp'; $('guide-place').trigger('change');
-    assert.equal($('guide-grid').children.length, 12);
+    assert.equal($('guide-grid').children.length, 14);
     click('guide-close');
   });
 
@@ -148,15 +148,15 @@ try {
     click('players-button');
     assert.equal($('players').hidden, false);
     const [explorer] = $('players-list').children;
-    assert.match(explorer.children[1].textContent, /^51 of 51 animals/);
+    assert.match(explorer.children[1].textContent, /^60 of 60 animals/);
     assert.match(explorer.children[2].textContent, / · Gulf Shore · today /, 'the latest find comes first');
     $('player-name').value = ' Emma ';
     $('player-form').trigger('submit', { preventDefault() {} });
     assert.equal($('players-button').textContent, '👤 Emma');
-    assert.equal($('collection-count').textContent, '0 of 51 animals in your Field Guide');
+    assert.equal($('collection-count').textContent, '0 of 60 animals in your Field Guide');
     click('players-button');
     $('players-list').children[0].trigger('click');
-    assert.equal($('collection-count').textContent, '51 of 51 animals in your Field Guide');
+    assert.equal($('collection-count').textContent, '60 of 60 animals in your Field Guide');
     assert.equal(JSON.parse(saved.get('wildlife-players-v1')).current, 'Explorer');
   });
 

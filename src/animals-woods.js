@@ -71,5 +71,14 @@ export const WOODS_ANIMALS = {
     "eatenBy": "Raccoons, coyotes, and other predators",
     "hint": "Look in the leaves for a high, rounded turtle shell.",
     "source": "https://tpwmagazine.com/archive/2012/oct/scout5_wildthing_boxturtle/"
+  },
+  "houstonToad": {
+    "name": "Houston toad",
+    "fact": "A Houston toad is small, brown, and speckled. It lives only in Texas and is named for Houston!",
+    "say": "Very few are left. The Houston Zoo helps raise eggs and tadpoles to set free.",
+    "eats": "Crickets, spiders, and other insects",
+    "eatenBy": "Fire ants, snakes, and fish",
+    "hint": "Look for a small speckled brown toad in sandy woods.",
+    "source": "https://tpwd.texas.gov/huntwild/wild/species/htoad/"
   }
 };

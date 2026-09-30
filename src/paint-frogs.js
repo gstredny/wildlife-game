@@ -1,9 +1,10 @@
-// The bullfrog, leopard frog, and Gulf Coast toad.
+// The bullfrog, leopard frog, Gulf Coast toad, and Houston toad.
 import { eye, line, oval } from './paint-shapes.js';
 const FROGS = {
   bullfrog: { skin: '#6f9846', belly: '#ced493' },
   leopardFrog: { skin: '#7d9b5b', belly: '#e0dcb0', spots: true },
-  toad: { skin: '#ac9370', belly: '#d7c09a', bumps: true }
+  toad: { skin: '#ac9370', belly: '#d7c09a', bumps: true },
+  houstonToad: { skin: '#7d6b52', belly: '#e0d2b0', bumps: true }
 };
 function paintFrog(c, size, time, state, frog) {
   c.save(); c.scale(size, size);

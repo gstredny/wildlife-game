@@ -429,5 +429,90 @@ export const NEW_PHOTOS = {
     "title": "File:Kemps Ridley Turtle (Lepidochelys kempii) (6307264526).jpg",
     "license": "public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  "attwaterChicken": {
+    "file": "art/animals/attwaterChicken.webp",
+    "fallback": "art/animals/attwaterChicken.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Attwater%27s_Prairie_Chicken.jpg?width=960",
+    "credit": "Photo: George Lavendowski, U.S. Fish and Wildlife Service, public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Attwater%27s_Prairie_Chicken.jpg",
+    "title": "File:Attwater's Prairie Chicken.jpg",
+    "license": "public domain"
+  },
+  "whiteTailedHawk": {
+    "file": "art/animals/whiteTailedHawk.webp",
+    "fallback": "art/animals/whiteTailedHawk.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/White-tailed_Hawks,_Hidalgo_County,_Texas.jpg?width=960",
+    "credit": "Photo: Michael Hurben, CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:White-tailed_Hawks,_Hidalgo_County,_Texas.jpg",
+    "title": "File:White-tailed Hawks, Hidalgo County, Texas.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "caracara": {
+    "file": "art/animals/caracara.webp",
+    "fallback": "art/animals/caracara.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Crested_Caracara_(26020679542).jpg?width=960",
+    "credit": "Photo: Don Faulkner, CC BY-SA 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Crested_Caracara_(26020679542).jpg",
+    "title": "File:Crested Caracara (26020679542).jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/"
+  },
+  "snowGoose": {
+    "file": "art/animals/snowGoose.webp",
+    "fallback": "art/animals/snowGoose.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Snow_goose_bombay_hook_12.31.19_DSC_0322.jpg?width=960",
+    "credit": "Photo: lwolfartist, CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Snow_goose_bombay_hook_12.31.19_DSC_0322.jpg",
+    "title": "File:Snow goose bombay hook 12.31.19 DSC 0322.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
+  },
+  "whistlingDuck": {
+    "file": "art/animals/whistlingDuck.webp",
+    "fallback": "art/animals/whistlingDuck.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Black_Bellied_Whistling_Ducks_Brazos_Bend_SP_Texas_2023.jpg?width=960",
+    "credit": "Photo: Larry D. Moore, CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Black_Bellied_Whistling_Ducks_Brazos_Bend_SP_Texas_2023.jpg",
+    "title": "File:Black Bellied Whistling Ducks Brazos Bend SP Texas 2023.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "crawfish": {
+    "file": "art/animals/crawfish.webp",
+    "fallback": "art/animals/crawfish.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Procambarus_clarkii.jpg?width=960",
+    "credit": "Photo: Mike Murphy, public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Procambarus_clarkii.jpg",
+    "title": "File:Procambarus clarkii.jpg",
+    "license": "public domain"
+  },
+  "freeTailedBat": {
+    "file": "art/animals/freeTailedBat.webp",
+    "fallback": "art/animals/freeTailedBat.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Tadarida_brasiliensis_2.jpg?width=960",
+    "credit": "Photo: Ann Froschauer, U.S. Fish and Wildlife Service, public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Tadarida_brasiliensis_2.jpg",
+    "title": "File:Tadarida brasiliensis 2.jpg",
+    "license": "public domain"
+  },
+  "houstonToad": {
+    "file": "art/animals/houstonToad.webp",
+    "fallback": "art/animals/houstonToad.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Houston_toad_(1).jpg?width=960",
+    "credit": "Photo: Robert Thomas, U.S. Fish and Wildlife Service, public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Houston_toad_(1).jpg",
+    "title": "File:Houston toad (1).jpg",
+    "license": "public domain"
+  },
+  "sandhillCrane": {
+    "file": "art/animals/sandhillCrane.webp",
+    "fallback": "art/animals/sandhillCrane.svg",
+    "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Lesser_Sandhill.jpg?width=960",
+    "credit": "Photo: Frankyboy5, public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Lesser_Sandhill.jpg",
+    "title": "File:Lesser Sandhill.jpg",
+    "license": "public domain"
   }
 };
