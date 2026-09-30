@@ -1,7 +1,8 @@
 # Wildlife Game
 
-A walking game for young children about the real animals around Katy, Texas. A young explorer walks
-a trail, jumps over logs, catches stars, finds animals hiding along it, and snaps their pictures. Each
+A game for young children about the real animals around Katy, Texas. Each place is a little level,
+like a Super Mario level: a young explorer runs and jumps along a trail, dodges what comes at them,
+catches stars, finds the animals hiding in bushes along the way, and ends at a goal flag. Each
 new animal opens a card with a real photo and the question "What animal is this?"; when the child is
 ready, **Tell me!** shows the name and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
 goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
@@ -26,8 +27,8 @@ The home screen has six illustrated places. Each has its own scenery and animals
 There are **60 different animals**. Nine are Katy specials: animals that live only in Texas (the
 Houston toad, Attwater's prairie chicken), that in the U.S. live mostly in Texas (the white-tailed
 hawk, crested caracara), or that Katy and Houston are known for (snow geese and sandhill cranes on the
-Katy Prairie, whistling-ducks, crawfish, and Houston's bridge bats). Shared animals count once in your collection. Finding every
-animal in an area earns that area's Junior Ranger cheer. The Field Guide lets you browse all
+Katy Prairie, whistling-ducks, crawfish, and Houston's bridge bats). Shared animals count once in your collection. Reaching the goal
+flag at the end of a place earns its Junior Ranger cheer. The Field Guide lets you browse all
 animals or choose one habitat; missing animals give a clue and name the places where you can find them.
 
 The Gulf Shore is a Galveston day trip. Cards explain seasonal visitors and rare sightings rather
@@ -41,13 +42,22 @@ predators, and a photo-source link.
 ## How to play
 
 Walk with the arrow buttons in the bottom left (or the arrow keys, or A and D) and jump with the big
-orange button in the bottom right (or Space, the up arrow, or W). Logs block the path until you jump
-over them or onto them; stars float along the way, some only reachable with a jump. Pinecones drop
-onto the path and roll at you: jump over them. One that hits you bumps you back, and you blink for a
-moment; nobody loses. Tap anywhere on
-the trail to walk there, hopping over logs on the way. When an animal is close, a camera bubble bounces
-over it and the camera button lights up: tap the animal or the camera (or press Enter) to take its
-picture. Tap an animal far away and the explorer walks over to it.
+orange button in the bottom right (or Space, the up arrow, or W). Tap anywhere on the trail to walk
+there, hopping over logs on the way.
+
+- **Find the animals.** Every animal not found yet hides in a rustling bush with a bouncing **?** over
+  it. Walk into the bush: the animal comes out, the camera flashes, and its card opens.
+- **Dodge what comes at you.** Each place sends something along the path: mosquitoes on the Swamp
+  Boardwalk, acorns on the Bayou Trail, pinecones in the Woodland Walk, fire ants in the Backyard,
+  tumbleweeds on the Katy Prairie, and beach balls on the Gulf Shore. Jump over them. One that hits you
+  bumps you back, and you blink for a moment; nobody loses.
+- **Jump.** Logs block the path until you jump over them or onto them; stars float along the way,
+  some only reachable with a jump.
+- **Reach the goal flag.** The flag at the end goes up, and the Junior Ranger cheer shows how many
+  stars you caught.
+
+Animals you have found stay out in the open: tap one (or the camera, or Enter, near one) to take its
+picture again.
 
 **Players:** the 👤 button on the home screen shows who is exploring. Each player has their own Field
 Guide, and the players screen lists how many animals each found and their five latest finds, with the
@@ -121,7 +131,7 @@ Browser checks require the local server running. They save screenshots in `scree
 known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
 alert, and small poses with the tap boxes.
 
-Current verification (2026-09-30): `npm test` **47 passed, 0 failed, 0 skipped**;
+Current verification (2026-09-30): `npm test` **66 passed, 0 failed, 0 skipped**;
 `node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, no page errors).
 See [tasks/004-mario-level.md](tasks/004-mario-level.md).
 
