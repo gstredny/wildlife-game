@@ -1,7 +1,7 @@
 // Verified Commons photo references and the local illustration fallbacks.
 export const NEW_PHOTOS = {
   "bullfrog": {
-    "file": "art/animals/bullfrog.svg",
+    "file": "art/animals/bullfrog.webp",
     "fallback": "art/animals/bullfrog.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/North-American-bullfrog1.jpg?width=960",
     "credit": "Photo: Carl D. Howe, CC BY-SA 2.5",
@@ -11,7 +11,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/"
   },
   "nightHeron": {
-    "file": "art/animals/nightHeron.svg",
+    "file": "art/animals/nightHeron.webp",
     "fallback": "art/animals/nightHeron.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Black-crowned_Night-heron.jpg?width=960",
     "credit": "Photo: Michael L. Baird, CC BY 2.0",
@@ -21,7 +21,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
   },
   "woodDuck": {
-    "file": "art/animals/woodDuck.svg",
+    "file": "art/animals/woodDuck.webp",
     "fallback": "art/animals/woodDuck.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Wood_duck.jpg?width=960",
     "credit": "Photo: Mehmet Karatay, CC BY-SA 3.0",
@@ -31,7 +31,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
   "leopardFrog": {
-    "file": "art/animals/leopardFrog.svg",
+    "file": "art/animals/leopardFrog.webp",
     "fallback": "art/animals/leopardFrog.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Southern_leopard_frog_%28Lithobates_sphenocephalus%29%2C_Liberty_Co._TX_%28April_2009%29.jpg?width=960",
     "credit": "Photo: William L. Farr, CC BY-SA 4.0",
@@ -41,7 +41,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "slider": {
-    "file": "art/animals/slider.svg",
+    "file": "art/animals/slider.webp",
     "fallback": "art/animals/slider.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Red-eared_slider.jpg?width=960",
     "credit": "Photo: Rhondle, CC BY-SA 3.0",
@@ -51,7 +51,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
   "cottonmouth": {
-    "file": "art/animals/cottonmouth.svg",
+    "file": "art/animals/cottonmouth.webp",
     "fallback": "art/animals/cottonmouth.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Agkistrodon_piscivorus_%281%29.jpg?width=960",
     "credit": "Photo: TimVickers, public domain",
@@ -61,7 +61,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "watersnake": {
-    "file": "art/animals/watersnake.svg",
+    "file": "art/animals/watersnake.webp",
     "fallback": "art/animals/watersnake.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Plain-bellied_Watersnake_%28Nerodia_erythrogaster%29%2C_Chambers_Co.%2C_TX%2C_26_July_2013.jpg?width=960",
     "credit": "Photo: William L. Farr, CC BY-SA 4.0",
@@ -71,7 +71,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "dragonfly": {
-    "file": "art/animals/dragonfly.svg",
+    "file": "art/animals/dragonfly.webp",
     "fallback": "art/animals/dragonfly.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Common_Green_Darner.jpg?width=960",
     "credit": "Photo: Mike Ostrowski, CC BY-SA 2.0",
@@ -81,7 +81,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/"
   },
   "riverOtter": {
-    "file": "art/animals/riverOtter.svg",
+    "file": "art/animals/riverOtter.webp",
     "fallback": "art/animals/riverOtter.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/River_Otter-27527.jpg?width=960",
     "credit": "Photo: Ken Thomas, public domain",
@@ -91,7 +91,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "raccoon": {
-    "file": "art/animals/raccoon.svg",
+    "file": "art/animals/raccoon.webp",
     "fallback": "art/animals/raccoon.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Raccoon_%2816869245759%29.jpg?width=960",
     "credit": "Photo: Mathias Appel, CC0 1.0",
@@ -101,7 +101,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
   },
   "cardinal": {
-    "file": "art/animals/cardinal.svg",
+    "file": "art/animals/cardinal.webp",
     "fallback": "art/animals/cardinal.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Northern_Cardinal_Male-27527-2.jpg?width=960",
     "credit": "Photo: Ken Thomas, public domain",
@@ -111,7 +111,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "bobcat": {
-    "file": "art/animals/bobcat.svg",
+    "file": "art/animals/bobcat.webp",
     "fallback": "art/animals/bobcat.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Bobcat2.jpg?width=960",
     "credit": "Photo: Calibas, public domain",
@@ -121,7 +121,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "pelican": {
-    "file": "art/animals/pelican.svg",
+    "file": "art/animals/pelican.webp",
     "fallback": "art/animals/pelican.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Brown_Pelican_at_Seawolf_Park.jpg?width=960",
     "credit": "Photo: LunarEcho87, CC0 1.0",
@@ -131,7 +131,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
   },
   "egret": {
-    "file": "art/animals/egret.svg",
+    "file": "art/animals/egret.webp",
     "fallback": "art/animals/egret.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/The_great_egret_%28Ardea_alba%29.jpg?width=960",
     "credit": "Photo: Mildeep, CC BY-SA 4.0",
@@ -141,7 +141,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "kingfisher": {
-    "file": "art/animals/kingfisher.svg",
+    "file": "art/animals/kingfisher.webp",
     "fallback": "art/animals/kingfisher.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Belted_kingfisher_%2853267654093%29.jpg?width=960",
     "credit": "Photo: Courtney Celley (USFWS), public domain",
@@ -151,7 +151,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "redwing": {
-    "file": "art/animals/redwing.svg",
+    "file": "art/animals/redwing.webp",
     "fallback": "art/animals/redwing.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Redwingblackbird2.jpg?width=960",
     "credit": "Photo: Stevielist, public domain",
@@ -161,7 +161,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "nutria": {
-    "file": "art/animals/nutria.svg",
+    "file": "art/animals/nutria.webp",
     "fallback": "art/animals/nutria.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Close_up_of_nutria_or_coypu_myocastor_coypus.jpg?width=960",
     "credit": "Photo: Christine Eustis (USFWS), public domain",
@@ -171,7 +171,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "opossum": {
-    "file": "art/animals/opossum.svg",
+    "file": "art/animals/opossum.webp",
     "fallback": "art/animals/opossum.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Virginia_opossum_during_daytime.jpg?width=960",
     "credit": "Photo: PookieFugglestein, CC0 1.0",
@@ -181,7 +181,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
   },
   "armadillo": {
-    "file": "art/animals/armadillo.svg",
+    "file": "art/animals/armadillo.webp",
     "fallback": "art/animals/armadillo.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Armadillo2.jpg?width=960",
     "credit": "Photo: Mwcolgan8, public domain",
@@ -191,7 +191,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "squirrel": {
-    "file": "art/animals/squirrel.svg",
+    "file": "art/animals/squirrel.webp",
     "fallback": "art/animals/squirrel.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Fox_squirrel.JPG?width=960",
     "credit": "Photo: Keithbob, public domain",
@@ -201,7 +201,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "barredOwl": {
-    "file": "art/animals/barredOwl.svg",
+    "file": "art/animals/barredOwl.webp",
     "fallback": "art/animals/barredOwl.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Barred-owl-full-size.jpg?width=960",
     "credit": "Photo: Hardyplants, public domain",
@@ -211,7 +211,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "woodpecker": {
-    "file": "art/animals/woodpecker.svg",
+    "file": "art/animals/woodpecker.webp",
     "fallback": "art/animals/woodpecker.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Red-bellied_Woodpecker.jpg?width=960",
     "credit": "Photo: Ken Thomas, public domain",
@@ -221,7 +221,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "boxTurtle": {
-    "file": "art/animals/boxTurtle.svg",
+    "file": "art/animals/boxTurtle.webp",
     "fallback": "art/animals/boxTurtle.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Three-toed_Box_Turtle.jpg?width=960",
     "credit": "Photo: Carnopod, public domain",
@@ -231,7 +231,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "blueJay": {
-    "file": "art/animals/blueJay.svg",
+    "file": "art/animals/blueJay.webp",
     "fallback": "art/animals/blueJay.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Bluejay.jpg?width=960",
     "credit": "Photo: Hardyplants, public domain",
@@ -241,7 +241,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "mockingbird": {
-    "file": "art/animals/mockingbird.svg",
+    "file": "art/animals/mockingbird.webp",
     "fallback": "art/animals/mockingbird.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Northern_Mockingbird_closeup.jpg?width=960",
     "credit": "Photo: Keenanhye, CC BY 4.0",
@@ -251,7 +251,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
   },
   "dove": {
-    "file": "art/animals/dove.svg",
+    "file": "art/animals/dove.webp",
     "fallback": "art/animals/dove.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Mourning_Dove-27527.jpg?width=960",
     "credit": "Photo: Ken Thomas, public domain",
@@ -261,7 +261,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "grackle": {
-    "file": "art/animals/grackle.svg",
+    "file": "art/animals/grackle.webp",
     "fallback": "art/animals/grackle.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Great-tailed_Grackle_%2813968094544%29.jpg?width=960",
     "credit": "Photo: Andy Morffew, CC BY 2.0",
@@ -271,7 +271,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
   },
   "hummingbird": {
-    "file": "art/animals/hummingbird.svg",
+    "file": "art/animals/hummingbird.webp",
     "fallback": "art/animals/hummingbird.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/RubyThroatedHummingbird.jpg?width=960",
     "credit": "Photo: Joe Schneid, CC BY 3.0",
@@ -281,7 +281,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
   "anole": {
-    "file": "art/animals/anole.svg",
+    "file": "art/animals/anole.webp",
     "fallback": "art/animals/anole.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Native_Florida_Green_Anole.jpg?width=960",
     "credit": "Photo: Jnikiel, CC BY 4.0",
@@ -291,7 +291,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
   },
   "monarch": {
-    "file": "art/animals/monarch.svg",
+    "file": "art/animals/monarch.webp",
     "fallback": "art/animals/monarch.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Monarch_butterfly_-_%285%29.jpg?width=960",
     "credit": "Photo: liz west, CC BY 2.0",
@@ -301,7 +301,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
   },
   "toad": {
-    "file": "art/animals/toad.svg",
+    "file": "art/animals/toad.webp",
     "fallback": "art/animals/toad.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Incilius_nebulifer-lateral_view.jpg?width=960",
     "credit": "Photo: Kevin Young, CC BY-SA 4.0",
@@ -311,7 +311,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "rabbit": {
-    "file": "art/animals/rabbit.svg",
+    "file": "art/animals/rabbit.webp",
     "fallback": "art/animals/rabbit.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Eastern_cotton_tail_in_grass.jpg?width=960",
     "credit": "Photo: William R. James (USFWS), public domain",
@@ -321,7 +321,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "hawk": {
-    "file": "art/animals/hawk.svg",
+    "file": "art/animals/hawk.webp",
     "fallback": "art/animals/hawk.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Red-Tailed_Hawk.jpg?width=960",
     "credit": "Photo: Daniel Ankele, public domain",
@@ -331,7 +331,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "kestrel": {
-    "file": "art/animals/kestrel.svg",
+    "file": "art/animals/kestrel.webp",
     "fallback": "art/animals/kestrel.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/American_Kestrel_%2853468230687%29.jpg?width=960",
     "credit": "Photo: Channel City Camera Club, CC BY 2.0",
@@ -341,7 +341,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
   },
   "meadowlark": {
-    "file": "art/animals/meadowlark.svg",
+    "file": "art/animals/meadowlark.webp",
     "fallback": "art/animals/meadowlark.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Eastern_Meadowlark_%288634451300%29.jpg?width=960",
     "credit": "Photo: Andy Morffew, CC BY 2.0",
@@ -351,7 +351,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/"
   },
   "killdeer": {
-    "file": "art/animals/killdeer.svg",
+    "file": "art/animals/killdeer.webp",
     "fallback": "art/animals/killdeer.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Killdeer-27JAN2017.jpg?width=960",
     "credit": "Photo: ADJ82, CC BY 4.0",
@@ -361,7 +361,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
   },
   "scissortail": {
-    "file": "art/animals/scissortail.svg",
+    "file": "art/animals/scissortail.webp",
     "fallback": "art/animals/scissortail.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Scissor-tailed_flycatcher_%2816946223616%29.jpg?width=960",
     "credit": "Photo: Mike's Birds, CC BY-SA 2.0",
@@ -371,7 +371,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/"
   },
   "gull": {
-    "file": "art/animals/gull.svg",
+    "file": "art/animals/gull.webp",
     "fallback": "art/animals/gull.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Laughing_Gull_adult_summer%2C_Daytona_Beach%2C_Florida.jpg?width=960",
     "credit": "Photo: VJAnderson, CC BY-SA 4.0",
@@ -381,7 +381,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "tern": {
-    "file": "art/animals/tern.svg",
+    "file": "art/animals/tern.webp",
     "fallback": "art/animals/tern.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/LEAST_TERN.jpg?width=960",
     "credit": "Photo: Peter Wallack, CC BY-SA 3.0",
@@ -391,7 +391,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
   "avocet": {
-    "file": "art/animals/avocet.svg",
+    "file": "art/animals/avocet.webp",
     "fallback": "art/animals/avocet.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/American_avocet_%2884260%29.jpg?width=960",
     "credit": "Photo: Rhododendrites, CC BY-SA 4.0",
@@ -401,7 +401,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "plover": {
-    "file": "art/animals/plover.svg",
+    "file": "art/animals/plover.webp",
     "fallback": "art/animals/plover.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Piping_Plover_%2812776646935%29.jpg?width=960",
     "credit": "Photo: Jacob Gross (USFWS), public domain",
@@ -411,7 +411,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/"
   },
   "crab": {
-    "file": "art/animals/crab.svg",
+    "file": "art/animals/crab.webp",
     "fallback": "art/animals/crab.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Ocypode_quadrata.png?width=960",
     "credit": "Photo: Zammerman, CC BY 4.0",
@@ -421,7 +421,7 @@ export const NEW_PHOTOS = {
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
   },
   "seaTurtle": {
-    "file": "art/animals/seaTurtle.svg",
+    "file": "art/animals/seaTurtle.webp",
     "fallback": "art/animals/seaTurtle.svg",
     "remote": "https://commons.wikimedia.org/wiki/Special:FilePath/Kemps_Ridley_Turtle_%28Lepidochelys_kempii%29_%286307264526%29.jpg?width=960",
     "credit": "Photo: Keenan Adams (USFWS), public domain",

@@ -107,7 +107,8 @@ try {
     $('guide-grid').children.find(slot => slot.attributes['aria-label'] === 'American bullfrog').trigger('click');
     assert.equal($('card-name').textContent, ANIMALS.bullfrog.name);
     assert.equal($('card-say').textContent, ANIMALS.bullfrog.say);
-    assert.match($('card-credit').textContent, /^Drawing:/);
+    assert.equal($('card-image').src, 'art/animals/bullfrog.webp', 'the saved photo shows offline');
+    assert.match($('card-credit').textContent, /^Photo:/);
     click('card-close');
     assert.equal($('guide').hidden, false);
     $('guide-place').value = 'swamp'; $('guide-place').trigger('change');
@@ -116,10 +117,10 @@ try {
   });
 
 
-  test('new animal photos use verified sources online and labeled art if loading fails', () => {
+  test('new animal photos load from the device and show labeled art if loading fails', () => {
     navigator.onLine = true;
     fillCard('bullfrog', false);
-    assert.match($('card-image').src, /^https:\/\/commons\.wikimedia\.org/);
+    assert.equal($('card-image').src, 'art/animals/bullfrog.webp');
     assert.match($('card-credit').textContent, /^Photo:/);
     $('card-image').trigger('error');
     assert.equal($('card-image').src, 'art/animals/bullfrog.svg');
