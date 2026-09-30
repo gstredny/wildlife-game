@@ -121,6 +121,11 @@ let walked = 0;
 for (let step = 0; step < 200; step++) {
   if (await visible("ranger")) break;
   if (await visible("card")) {
+    // A new animal's card asks "What animal is this?" first; "Tell me!" shows the answer.
+    if (await evaluate(`document.getElementById("card").classList.contains("guessing")`)) {
+      if (cards.length === 0) await shot("card-guess");
+      await press("card-tell");
+    }
     const name = await evaluate(`document.getElementById("card-name").textContent`);
     cards.push(name);
     await sleep(700);

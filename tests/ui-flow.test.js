@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { fillCard } from '../src/card-view.js';
 import { ANIMALS } from '../src/animals.js';
+import { GUESSES } from '../src/lines.js';
 import { PLACES, placeKinds } from '../src/places.js';
 
 class Element {
@@ -41,7 +42,8 @@ elements.get('guide-place').value = 'all';
 const $ = id => elements.get(id) ?? [...elements.values()].flatMap(element => element.children).find(child => child.id === id);
 const events = {};
 const frames = [];
-const timers = [];
+const timers = new Map();
+let timerId = 0;
 const saved = new Map();
 let now = performance.now();
 const globals = {
@@ -52,13 +54,14 @@ const globals = {
   Option: function(text, value) { this.text = text; this.value = value; },
   addEventListener: (type, callback) => { (events[type] ??= []).push(callback); },
   requestAnimationFrame: callback => frames.push(callback),
-  setTimeout: callback => { timers.push(callback); return timers.length; }
+  setTimeout: callback => { timers.set(++timerId, callback); return timerId; },
+  clearTimeout: id => timers.delete(id)
 };
 const originals = new Map(Object.keys(globals).map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
 for (const [key, value] of Object.entries(globals)) Object.defineProperty(globalThis, key, { value, configurable: true, writable: true });
 await import('../src/main.js');
 const frame = () => { now += 50; frames.shift()(now); };
-const flush = () => { while (timers.length) timers.shift()(); };
+const flush = () => { for (const [id, callback] of timers) { timers.delete(id); callback(); } };
 const key = (type, value) => { for (const callback of events[type] ?? []) callback({ key: value, preventDefault() {} }); };
 const click = id => $(id).trigger('click');
 
@@ -77,11 +80,28 @@ try {
     }
     assert.ok($('snap-button').classList.contains('ready'));
     click('snap-button');
-    assert.ok(timers.length > 0, 'a first discovery queued its card');
+    assert.ok(timers.size > 0, 'a first discovery queued its card');
     click('home-button'); click('place-gulf'); flush();
     assert.equal($('hud-place').textContent, 'Gulf Shore');
     assert.equal($('card').hidden, true);
     click('home-button');
+  });
+
+  test('a new animal card asks what it is before telling', () => {
+    click('place-swamp'); frame();
+    for (let i = 0; i < 300 && !$('snap-button').classList.contains('ready'); i++) {
+      key('keydown', 'ArrowRight'); frame();
+    }
+    click('snap-button');
+    const [[id, openCard]] = timers; timers.delete(id); openCard();
+    assert.equal($('card').hidden, false);
+    assert.ok($('card').classList.contains('guessing'), 'the answer starts hidden');
+    assert.ok(GUESSES.includes($('card-kicker').textContent));
+    click('card-tell');
+    assert.ok(!$('card').classList.contains('guessing'));
+    assert.equal($('card-kicker').textContent, 'You found a new animal!');
+    assert.equal(timers.size, 0, 'telling early stops the wait');
+    click('card-close'); click('home-button');
   });
 
   test('the live screen flow discovers all animals, replays the guide, and changes habitats', () => {
