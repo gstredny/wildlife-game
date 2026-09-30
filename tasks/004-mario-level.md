@@ -86,3 +86,10 @@ Slices 2–4 (George: "finish it all"):
   bush gets reached; a mosquito's last height is off the top of the screen. `npm test` 68 passed,
   0 failed, 0 skipped; `node tools/browser-habitats.mjs desktop phone` 12 of 12 PASS, no page errors.
   Cache wildlife-habitats-v5.
+- George: "Checked every one to make sure they all work." After the mosquito fix: live site
+  `GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-habitats.mjs desktop phone`
+  12 of 12 PASS. Screenshots of all six hazards at a child waiting at the bush (each reaches them) and
+  at the lane end: rollers and ants stop at the log, the mosquito flies off, but a tumbleweed or beach
+  ball could vanish mid-bounce beside the log. Fix (eb9ef10): a ball's bounces fit its lane, so it
+  lands at the end; test checks the first and last height on every prairie and gulf lane. `npm test`
+  69 passed, 0 failed, 0 skipped; local browser check 12 of 12 PASS. Cache wildlife-habitats-v6.

@@ -131,7 +131,7 @@ Browser checks require the local server running. They save screenshots in `scree
 known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
 alert, and small poses with the tap boxes.
 
-Current verification (2026-09-30): `npm test` **68 passed, 0 failed, 0 skipped**;
+Current verification (2026-09-30): `npm test` **69 passed, 0 failed, 0 skipped**;
 `node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, no page errors).
 See [tasks/004-mario-level.md](tasks/004-mario-level.md).
 

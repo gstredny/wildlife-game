@@ -8,10 +8,10 @@ Mario-style level: animals not found yet hide in "?" bushes you run into; each p
 hazard at you (mosquitoes, acorns, pinecones, fire ants, tumbleweeds, beach balls), and a hit bumps
 you back with a blink, no game over; the level ends at a goal flag with the Junior Ranger cheer and
 the stars caught. Ranger Mike's six welcomes re-recorded. Hazards now reach a child waiting at a
-bush (they used to vanish just short). Cache wildlife-habitats-v5.
+bush (they used to vanish just short), and balls land at the log. Cache wildlife-habitats-v6.
 
-Verified: `npm test` 68 passed, 0 failed, 0 skipped. `node tools/browser-habitats.mjs desktop phone`
-12 of 12 PASS on the final tree; live phone walk of the Backyard PASS.
+Verified: `npm test` 69 passed, 0 failed, 0 skipped. `node tools/browser-habitats.mjs desktop phone`
+12 of 12 PASS on the final tree, local and live.
 
 Previous task: [003-voice-guess-players-jumping.md](003-voice-guess-players-jumping.md).
 
