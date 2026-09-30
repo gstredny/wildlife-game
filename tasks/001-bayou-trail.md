@@ -1,7 +1,7 @@
 # Bayou Trail: the first walk
 
 Date: 2026-09-30
-Status: in progress
+Status: slice 1 done and committed on `main`; not pushed (no GitHub repo yet)
 
 ## Intent contract (George's words)
 
@@ -39,11 +39,11 @@ Assumptions (George vetoes in one line):
 
 ## Done criteria
 
-- [ ] `npm test`: all checks pass (discovery rules, Field Guide saving, every line recorded).
-- [ ] `node tools/browser-walk.mjs`: headless, muted Chrome walks the whole trail on a computer and a
+- [x] `npm test`: all checks pass (discovery rules, Field Guide saving, every line recorded).
+- [x] `node tools/browser-walk.mjs`: headless, muted Chrome walks the whole trail on a computer and a
       sideways phone, finds all eight animals, and saves screenshots; screenshots inspected.
-- [ ] Every animal card shows its real photo, and CREDITS.md lists each photo's author and license.
-- [ ] Offline: the service worker caches every file the game loads (a test checks the list).
+- [x] Every animal card shows its real photo, and CREDITS.md lists each photo's author and license.
+- [x] Offline: the service worker caches every file the game loads (a test checks the list).
 
 ## Attempt log (append-only)
 
@@ -59,3 +59,7 @@ Assumptions (George vetoes in one line):
 - `npm test`: 18 passed, 0 failed, 0 skipped.
 - `node tools/browser-walk.mjs desktop` and `phone`: both PASS (all eight found, Junior Ranger
   shown, no page errors); screenshots inspected: trail, camera bubble, cards, boardwalk, Field Guide.
+- Final run after the helpers finished: `npm test` 18 passed, 0 failed, 0 skipped;
+  `browser-walk.mjs desktop` PASS and `phone` PASS. The phone Field Guide first cut off its second
+  row; it now shows all eight in one row on short screens. Committed in 8 commits (6f41c6f..023307f).
+- Not done: pushing to GitHub and GitHub Pages (George's call), and trying it on a real phone.
