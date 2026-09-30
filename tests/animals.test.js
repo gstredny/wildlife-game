@@ -26,6 +26,6 @@ test("every animal has a learning card, a credited image, narration, and a clue"
 test("each place says hello, marks the trail's end and cheers the Junior Ranger", () => {
   for (const place of Object.values(PLACES)) {
     for (const field of ["name", "blurb", "welcome", "end", "ranger"]) assert.ok(place[field], `${place.name} has no ${field}`);
-    assert.ok(place.water.from < place.water.bar && place.water.bar < place.water.to);
+    if (place.water?.bar !== undefined) assert.ok(place.water.from < place.water.bar && place.water.bar < place.water.to);
   }
 });

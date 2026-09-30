@@ -47,8 +47,8 @@ function paintAnimal(context, walk, animal, at) {
   // Each animal gets its own clock, so the ibises don't bob in step.
   PAINTERS[animal.kind](context, animal.size, walk.time + animal.x * 0.013, { walking: at.walking, alert });
   context.restore();
-  const { from, to } = walk.place.water;
-  if (animal.lane === "back" && at.x > from + 60 && at.x < to - 60 && !["alligator", "cottonmouth", "watersnake", "crab", "seaTurtle"].includes(animal.kind)) {
+  const { water } = walk.place;
+  if (water && animal.lane === "back" && at.x > water.from + 60 && at.x < water.to - 60 && !["alligator", "cottonmouth", "watersnake", "crab", "seaTurtle"].includes(animal.kind)) {
     paintWaterAtFeet(context, at.x, y, animal.size, walk.time);
   }
 }

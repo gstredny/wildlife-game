@@ -75,9 +75,9 @@ export function paintBack(context, view, place, time, theme = {}) {
   meadow.addColorStop(1, theme.front ?? "#7fae55");
   context.fillStyle = meadow;
   context.fillRect(view.left, 370, view.width, GROUND.pathTop - 368);
-  const { from, to } = place.water;
-  if (to < view.left || from > view.left + view.width) return;
-  paintBayou(context, place.water, time);
+  const { water } = place;
+  if (!water || water.to < view.left || water.from > view.left + view.width) return;
+  paintBayou(context, water, time);
 }
 
 function paintBayou(context, { from, to, bar }, time) {
@@ -112,7 +112,7 @@ function paintBayou(context, { from, to, bar }, time) {
     context.stroke();
   }
   paintReeds(context, from, to, top, time);
-  paintMudBar(context, bar);
+  if (bar !== undefined) paintMudBar(context, bar);
 }
 
 // Cattails along the far edge of the water.
@@ -222,6 +222,7 @@ export function paintPath(context, view, place, theme = {}) {
     context.ellipse(x + hash(x) * 30, pathTop + 12 + hash(x + 5) * 70, 3 + hash(x + 2) * 4, 2, 0, 0, Math.PI * 2);
     context.fill();
   }
+  if (!place.water) return;
   const from = Math.max(place.water.from - 40, view.left - 10);
   const to = Math.min(place.water.to + 40, view.left + view.width + 10);
   if (to > from && !theme.beach) paintBoardwalk(context, from, to);

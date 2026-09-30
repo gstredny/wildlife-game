@@ -68,8 +68,10 @@ function makePlace(key, habitat) {
     ...animals.filter(animal => animal.lane === 'tree').map(animal => animal.x),
     ...(key === 'woods' ? animals.map(animal => animal.x - 140) : [])
   ])].sort((a, b) => a - b);
-  const water = key === 'swamp' || key === 'gulf' ? { from: 150, to: length - 150, bar: animals.at(-1).x }
-    : key === 'bayou' ? { from: 950, to: 5530, bar: 2730 } : { from: -300, to: -100, bar: -200 };
+  // The alligator basks on a mud bar; places without water have `water: null`.
+  const bar = animals.find(animal => animal.kind === 'alligator')?.x;
+  const water = key === 'swamp' || key === 'gulf' ? { from: 150, to: length - 150, bar }
+    : key === 'bayou' ? { from: 950, to: 5530, bar } : null;
   return {
     name: habitat.name, icon: habitat.icon, theme: habitat.theme, blurb: habitat.blurb,
     welcome: `Welcome to ${habitat.name}! I'm Ranger Mike. ${animals.length} animals live here. Walk along and tap an animal to take its picture!`,
