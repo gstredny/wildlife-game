@@ -1,7 +1,7 @@
 // One walk along a trail: where the explorer is, where each animal is, and which animals are found.
 // An animal not found yet hides at its spot until the explorer gets there, like the goal of a little
 // Super Mario level. No drawing here, so the rules can be tested without a browser.
-import { hazardAt } from "./hazards.js";
+import { hazardAt, HAZARDS } from "./hazards.js";
 
 export const WALK_SPEED = 260;
 export const REACH = 230; // how close the explorer must be to take a found animal's picture again
@@ -12,10 +12,9 @@ const GRAVITY = 2300;
 const HALF = 26; // half the explorer's width, for bumping into logs
 const BODY = 150; // the explorer's height, for catching stars
 const STAR_REACH = 36;
-const BUMP = 1.2; // seconds the explorer blinks after a pinecone bump; nothing bumps them meanwhile
+const BUMP = 1.2; // seconds the explorer blinks after a bump; nothing bumps them meanwhile
 const PUSH = 0.3; // the first part of a bump, when the explorer slides back and can't steer
 const PUSH_SPEED = 330;
-const CONE_HIT = 16; // less than a pinecone's size, so only a real overlap counts
 
 // `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk;
 // `hurt` counts down the blinking after a bump, and `pushed` is which way the bump sends them.
@@ -72,7 +71,7 @@ export function snap(walk, animal) {
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when the explorer reaches a hiding animal
 // or a tapped animal comes into reach, { stars } for how many stars were caught, { bump: true } when a
-// pinecone hits, { end: true } the first time the explorer reaches the end. A bump pauses a walk to a
+// hazard hits, { end: true } the first time the explorer reaches the end. A bump pauses a walk to a
 // tapped spot; it carries on after.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
@@ -132,14 +131,16 @@ function fall(walk, dt) {
   }
 }
 
-// Checks for a pinecone touching the explorer; on a hit, starts the bump: a little hop and a slide
-// away from the pinecone.
+// Checks for a hazard touching the explorer, from their feet to their head; on a hit, starts the
+// bump: a little hop and a slide away from it.
 function bumpedBy(walk) {
-  const cone = walk.place.lanes.map(lane => hazardAt(lane, walk.time))
-    .find(each => each && Math.abs(each.x - walk.x) < HALF + CONE_HIT && walk.y < each.y + CONE_HIT * 2);
-  if (!cone) return false;
+  const touching = (thing, { half, tall }) => thing && Math.abs(thing.x - walk.x) < HALF + half &&
+    walk.y < thing.y + tall && thing.y < walk.y + BODY;
+  const thing = walk.place.lanes.map(lane => [hazardAt(lane, walk.time), HAZARDS[lane.kind]])
+    .find(([each, kind]) => touching(each, kind))?.[0];
+  if (!thing) return false;
   walk.hurt = BUMP;
-  walk.pushed = Math.sign(walk.x - cone.x) || -1;
+  walk.pushed = Math.sign(walk.x - thing.x) || -1;
   walk.vy = Math.max(walk.vy, 420);
   return true;
 }
