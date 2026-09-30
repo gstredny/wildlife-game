@@ -1,0 +1,4 @@
+screenshots/
+.venv/
+.DS_Store
+node_modules/
