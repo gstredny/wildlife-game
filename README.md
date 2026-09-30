@@ -2,7 +2,7 @@
 
 A walking game for young children about the real animals around Katy, Texas. A young explorer walks
 a trail, finds animals hiding along it, and snaps their pictures. Each new animal opens a card with a
-real photo online (or a labeled offline illustration), and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
+real photo, and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
 goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
 tapping one gives a clue.
 
@@ -66,15 +66,17 @@ fish game's README shows (`SSL_CERT_FILE=...`). Bump the cache name in `sw.js` a
 
 ## Photos and offline illustrations
 
-The original eight animals have local WebP photographs. All 43 new animals have verified Wikimedia
-Commons photo references, author/license credits, and original local SVG illustrations. Until
-photographs are downloaded, the new cards load real photos online and use a clearly labeled
-illustration when offline or when a photo fails. The illustration is never credited as a photograph.
+All 51 animals have local WebP photographs from Wikimedia Commons, saved for offline play. The
+Field Guide shows 400px copies from `art/animals/thumbs/`. Each new animal also has an original SVG
+illustration: a card shows it, clearly labeled, only if its photo fails to load, or before a new
+animal's photo is downloaded. The illustration is never credited as a photograph.
 
-To store the expanded photographs locally (requires network access and `cwebp`):
+To download a new animal's photo, then refresh the thumbnails (requires network access and `cwebp`):
 
 ```sh
-python3 tools/fetch-habitat-photos.py
+python3 tools/fetch-habitat-photos.py newAnimal
+tools/make-thumbs.sh
+node tools/cache-files.mjs
 ```
 
 The downloader preserves each successful file, updates the image catalog, and regenerates the
