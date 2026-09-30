@@ -14,8 +14,9 @@ export function fillGuide(grid, place, found, onPick) {
     if (isFound) {
       const photo = document.createElement("img");
       const reference = PHOTOS[kind];
+      // A small copy from tools/make-thumbs.sh; an animal without one shows its full picture.
       photo.onerror = () => { photo.onerror = null; photo.src = reference.fallback ?? reference.file; };
-      photo.src = reference.file.endsWith(".svg") && navigator.onLine ? reference.remote : reference.file;
+      photo.src = reference.file.replace("art/animals/", "art/animals/thumbs/");
       photo.alt = "";
       slot.append(photo, ANIMALS[kind].name);
     } else {

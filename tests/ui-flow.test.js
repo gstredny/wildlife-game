@@ -1,7 +1,7 @@
 // Exercise the actual screen wiring without depending on a browser process.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fillCard } from '../src/card-view.js';
 import { ANIMALS } from '../src/animals.js';
 import { PLACES, placeKinds } from '../src/places.js';
@@ -104,7 +104,12 @@ try {
     assert.equal(JSON.parse(saved.get('wildlife-found-v1')).length, 51);
     click('start-guide-button');
     assert.equal($('guide-grid').children.length, 51);
-    $('guide-grid').children.find(slot => slot.attributes['aria-label'] === 'American bullfrog').trigger('click');
+    const bullfrogSlot = $('guide-grid').children.find(slot => slot.attributes['aria-label'] === 'American bullfrog');
+    assert.equal(bullfrogSlot.children[0].src, 'art/animals/thumbs/bullfrog.webp', 'the guide shows a small copy');
+    for (const slot of $('guide-grid').children) {
+      assert.ok(existsSync(new URL(`../${slot.children[0].src}`, import.meta.url)), `${slot.children[0].src} is missing`);
+    }
+    bullfrogSlot.trigger('click');
     assert.equal($('card-name').textContent, ANIMALS.bullfrog.name);
     assert.equal($('card-say').textContent, ANIMALS.bullfrog.say);
     assert.equal($('card-image').src, 'art/animals/bullfrog.webp', 'the saved photo shows offline');
