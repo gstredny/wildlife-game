@@ -19,8 +19,21 @@ test("every trail has hazards coming along it, between the logs", () => {
     for (const each of place.lanes) {
       assert.ok(each.from > each.to, "they head toward the start of the trail");
       assert.ok(place.logs.every(log => log.x + log.w / 2 < each.to || log.x - log.w / 2 > each.from), "no log in the way");
-      assert.ok(place.animals.every(animal => animal.x < each.to - 60 || animal.x > each.from + 60), "hiding spots are safe");
     }
+  }
+});
+
+test("hazards come all the way to a child waiting at a bush, and stop at the log behind it", () => {
+  for (const place of Object.values(PLACES)) {
+    const [lane] = place.lanes;
+    const bush = place.animals.filter(animal => animal.x < lane.to + 200).at(-1);
+    const log = place.logs.filter(each => each.x < bush.x).at(-1);
+    assert.ok(lane.to < bush.x && lane.to > log.x + log.w / 2, `${place.name}: the lane runs past the bush to the log`);
+    const walk = createWalk(place, new Set([bush.kind]));
+    walk.x = bush.x;
+    let bumped = false;
+    for (let frame = 0; frame < cycle(lane) * 60 && !bumped; frame++) bumped = Boolean(stepWalk(walk, 1 / 60).bump);
+    assert.ok(bumped, `${place.name}: the ${HAZARDS[lane.kind].name} reach a child standing at the bush`);
   }
 });
 
@@ -71,6 +84,17 @@ for (const place of Object.values(PLACES)) {
     assert.ok(walk.x > (hazardAt(lane, walk.time)?.x ?? -Infinity), "the hazard is behind the explorer");
   });
 }
+
+test("a mosquito flies up and away at the end of its lane instead of vanishing in the air", () => {
+  const [lane] = PLACES.swamp.lanes;
+  let last = null;
+  for (let step = 0; step < 1000; step++) {
+    const thing = hazardAt(lane, 10 * cycle(lane) - lane.offset + step * cycle(lane) / 1000);
+    if (thing) last = thing;
+    else if (last) break;
+  }
+  assert.ok(last.y > 560, `off the top of the screen when it goes (${Math.round(last.y)} up)`);
+});
 
 test("a pinecone dropping in bonks only when it comes down to the explorer's head", () => {
   const place = PLACES.woods;
