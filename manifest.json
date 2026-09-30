@@ -1,0 +1,14 @@
+{
+  "name": "Wildlife Game",
+  "short_name": "Wildlife",
+  "description": "Walk the trails around Katy, Texas, and find real animals.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "background_color": "#1f3b2c",
+  "theme_color": "#2f5d3a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
