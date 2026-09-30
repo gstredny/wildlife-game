@@ -1,4 +1,5 @@
 import { layCourse } from './course.js';
+import { HAZARDS } from './hazards.js';
 // Six places to explore around Katy and on a trip to the Texas coast.
 // Entries are [species, drawing size, lane]. A shared species counts once in the Field Guide.
 // `hazard` is what comes at the explorer there (see hazards.js).
@@ -80,8 +81,7 @@ function makePlace(key, habitat) {
     : key === 'bayou' ? { from: 950, to: 5530, bar } : null;
   return {
     name: habitat.name, theme: habitat.theme, blurb: habitat.blurb,
-    welcome: `Welcome to ${habitat.name}! I'm Ranger Mike. ${animals.length} animals live here. Walk along and tap an animal to take its picture!`,
-    end: `That's the end of ${habitat.name}! Walk back to look for the animals you missed.`,
+    welcome: `Welcome to ${habitat.name}! I'm Ranger Mike. ${animals.length} animals are hiding here. Run to each question mark to find them, and jump over the ${HAZARDS[habitat.hazard].name}!`,
     ranger: `You found every animal in ${habitat.name}! You're a Junior Ranger!`,
     length, trees, water, animals, ...layCourse(animals, habitat.hazard)
   };
