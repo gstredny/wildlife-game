@@ -1,8 +1,9 @@
 # Wildlife Game
 
 A walking game for young children about the real animals around Katy, Texas. A young explorer walks
-a trail, finds animals hiding along it, and snaps their pictures. Each new animal opens a card with a
-real photo, and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
+a trail, jumps over logs, catches stars, finds animals hiding along it, and snaps their pictures. Each
+new animal opens a card with a real photo and the question "What animal is this?"; when the child is
+ready, **Tell me!** shows the name and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
 goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
 tapping one gives a clue.
 
@@ -15,14 +16,17 @@ The home screen has six illustrated places. Each has its own scenery and animals
 
 | Place | Animals to find | What you will meet |
 | --- | ---: | --- |
-| Swamp Boardwalk | 12 | Bullfrogs, night herons, wood ducks, sliders, water snakes, and alligators |
-| Bayou Trail | 13 | Wading birds, kingfishers, river otters, coyotes, hogs, and white-tailed deer |
-| Woodland Walk | 10 | Raccoons, opossums, armadillos, bobcats, squirrels, woodpeckers, and an owl |
+| Swamp Boardwalk | 14 | Bullfrogs, night herons, whistling-ducks, crawfish, sliders, water snakes, and alligators |
+| Bayou Trail | 14 | Wading birds, kingfishers, river otters, free-tailed bats, coyotes, hogs, and deer |
+| Woodland Walk | 11 | Raccoons, opossums, armadillos, bobcats, a Houston toad, woodpeckers, and an owl |
 | Backyard Safari | 11 | Cardinals, blue jays, mockingbirds, hummingbirds, butterflies, anoles, and toads |
-| Katy Prairie | 10 | Cottontails, meadowlarks, killdeer, kestrels, hawks, and scissor-tailed flycatchers |
+| Katy Prairie | 15 | Attwater's prairie chickens, snow geese, sandhill cranes, caracaras, and white-tailed hawks |
 | Gulf Shore | 9 | Pelicans, gulls, terns, avocets, plovers, ghost crabs, and a rare sea turtle |
 
-There are **51 different animals**. Shared animals count once in your collection. Finding every
+There are **60 different animals**. Nine are Katy specials: animals that live only in Texas (the
+Houston toad, Attwater's prairie chicken), that in the U.S. live mostly in Texas (the white-tailed
+hawk, crested caracara), or that Katy and Houston are known for (snow geese and sandhill cranes on the
+Katy Prairie, whistling-ducks, crawfish, and Houston's bridge bats). Shared animals count once in your collection. Finding every
 animal in an area earns that area's Junior Ranger cheer. The Field Guide lets you browse all
 animals or choose one habitat; missing animals give a clue and name the places where you can find them.
 
@@ -36,10 +40,16 @@ predators, and a photo-source link.
 
 ## How to play
 
-Walk with the arrow buttons in the bottom corners (or the arrow keys, or A and D). Tap anywhere on the
-trail to walk there. When an animal is close, a camera bubble bounces over it and the camera button
-lights up: tap the animal or the camera (or press Space) to take its picture. Tap an animal far away
-and the explorer walks over to it.
+Walk with the arrow buttons in the bottom left (or the arrow keys, or A and D) and jump with the big
+orange button in the bottom right (or Space, the up arrow, or W). Logs block the path until you jump
+over them or onto them; stars float along the way, some only reachable with a jump. Tap anywhere on
+the trail to walk there, hopping over logs on the way. When an animal is close, a camera bubble bounces
+over it and the camera button lights up: tap the animal or the camera (or press Enter) to take its
+picture. Tap an animal far away and the explorer walks over to it.
+
+**Players:** the 👤 button on the home screen shows who is exploring. Each player has their own Field
+Guide, and the players screen lists how many animals each found and their five latest finds, with the
+place and time. Players are saved on this device only.
 
 ## Play on a Mac
 
@@ -51,22 +61,26 @@ Open <http://localhost:8790>.
 
 ## The voice
 
-Every line is recorded ahead of time in `voice/` with Kokoro-82M (Apache-2.0), voice `am_michael`,
-so it sounds the same on every phone and works offline. After changing any spoken words (facts,
-lines, clues), record again; `npm test` fails until you do. The recorder is the fish game's; its
-Python setup is in the fish game's README (`tools/voice-requirements.txt`, Python 3.10 to 3.12).
+Every line is recorded ahead of time in `voice/` with Qwen3-TTS 1.7B (Apache-2.0), speaker `ryan`,
+running on the Mac's GPU through mlx-audio, so it sounds the same on every phone and works offline.
+After changing any spoken words (facts, lines, clues), record again; `npm test` fails until you do.
+The recorder writes each clip back down with a small speech-to-text model and records it again (up to
+three tries) when the words don't match, then lists any line still off to listen to by ear. Words the
+voice says wrong are respelled for the voice only in `tools/say-like.json` (`"roseate": "Rosie-it"`).
 
 ```sh
+python3.12 -m venv .venv && .venv/bin/pip install -r tools/voice-requirements.txt   # once, Apple-silicon Mac
 node tools/voice-lines.mjs > /tmp/lines.json
 .venv/bin/python tools/make-voice.py /tmp/lines.json voice --prune
 ```
 
-On a work Mac that inspects HTTPS, point Python at a certificate bundle built from the keychain, as the
-fish game's README shows (`SSL_CERT_FILE=...`). Bump the cache name in `sw.js` afterwards.
+The first run downloads about 3 GB of models. On a work Mac that inspects HTTPS, point Python at a
+certificate bundle built from the keychain, as the fish game's README shows (`SSL_CERT_FILE=...`).
+Bump the cache name in `sw.js` afterwards.
 
 ## Photos and offline illustrations
 
-All 51 animals have local WebP photographs from Wikimedia Commons, saved for offline play. The
+All 60 animals have local WebP photographs from Wikimedia Commons, saved for offline play. The
 Field Guide shows 400px copies from `art/animals/thumbs/`. Each new animal also has an original SVG
 illustration: a card shows it, clearly labeled, only if its photo fails to load, or before a new
 animal's photo is downloaded. The illustration is never credited as a photograph.
@@ -105,9 +119,9 @@ Browser checks require the local server running. They save screenshots in `scree
 known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
 alert, and small poses with the tap boxes.
 
-Current verification: **31 tests passed, 0 failed, 0 skipped**. Actual browser rendering and local
-expanded photo downloads could not be verified in the restricted implementation session; see
-[tasks/002-texas-habitats.md](tasks/002-texas-habitats.md). No deployment was performed.
+Current verification (2026-09-30): `npm test` **43 passed, 0 failed, 0 skipped**;
+`node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, no page errors).
+See [tasks/003-voice-guess-players-jumping.md](tasks/003-voice-guess-players-jumping.md).
 
 ## App icon
 

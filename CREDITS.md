@@ -17,8 +17,8 @@ downloads and crops them.
 
 ## Voice
 
-Ranger Mike's voice is Kokoro-82M (Apache-2.0), voice `am_michael`, recorded ahead of time with
-`tools/make-voice.py`.
+Ranger Mike's voice is Qwen3-TTS 1.7B CustomVoice (Apache-2.0), speaker `ryan`, recorded ahead of time
+with `tools/make-voice.py`. A small Parakeet speech-to-text model checks each clip while recording.
 
 ## Drawings, sounds and code
 
@@ -74,3 +74,12 @@ The license links below apply to photographs; illustrations are original Wildlif
 - **plover**: [Photo: Jacob Gross (USFWS), public domain](https://commons.wikimedia.org/wiki/File:Piping_Plover_%2812776646935%29.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
 - **crab**: [Photo: Zammerman, CC BY 4.0](https://commons.wikimedia.org/wiki/File:Ocypode_quadrata.png) ([license](https://creativecommons.org/licenses/by/4.0/)).
 - **seaTurtle**: [Photo: Keenan Adams (USFWS), public domain](https://commons.wikimedia.org/wiki/File:Kemps_Ridley_Turtle_%28Lepidochelys_kempii%29_%286307264526%29.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **attwaterChicken**: [Photo: George Lavendowski, U.S. Fish and Wildlife Service, public domain](https://commons.wikimedia.org/wiki/File:Attwater%27s_Prairie_Chicken.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **whiteTailedHawk**: [Photo: Michael Hurben, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:White-tailed_Hawks,_Hidalgo_County,_Texas.jpg) ([license](https://creativecommons.org/licenses/by-sa/4.0/)).
+- **caracara**: [Photo: Don Faulkner, CC BY-SA 2.0](https://commons.wikimedia.org/wiki/File:Crested_Caracara_(26020679542).jpg) ([license](https://creativecommons.org/licenses/by-sa/2.0/)).
+- **snowGoose**: [Photo: lwolfartist, CC BY 2.0](https://commons.wikimedia.org/wiki/File:Snow_goose_bombay_hook_12.31.19_DSC_0322.jpg) ([license](https://creativecommons.org/licenses/by/2.0/)).
+- **whistlingDuck**: [Photo: Larry D. Moore, CC BY 4.0](https://commons.wikimedia.org/wiki/File:Black_Bellied_Whistling_Ducks_Brazos_Bend_SP_Texas_2023.jpg) ([license](https://creativecommons.org/licenses/by/4.0/)).
+- **crawfish**: [Photo: Mike Murphy, public domain](https://commons.wikimedia.org/wiki/File:Procambarus_clarkii.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **freeTailedBat**: [Photo: Ann Froschauer, U.S. Fish and Wildlife Service, public domain](https://commons.wikimedia.org/wiki/File:Tadarida_brasiliensis_2.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **houstonToad**: [Photo: Robert Thomas, U.S. Fish and Wildlife Service, public domain](https://commons.wikimedia.org/wiki/File:Houston_toad_(1).jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
+- **sandhillCrane**: [Photo: Frankyboy5, public domain](https://commons.wikimedia.org/wiki/File:Lesser_Sandhill.jpg) ([license](https://creativecommons.org/publicdomain/mark/1.0/)).
