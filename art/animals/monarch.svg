@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+<rect width="960" height="720" fill="#e0ead4"/>
+<ellipse cx="-0.25" cy="-0.58" rx="0.2241" ry="0.36" fill="#29342d" transform=" translate(480 620) scale(540 540) rotate(-17.188733853924695 -0.25 -0.58)"/>
+<ellipse cx="-0.24" cy="-0.58" rx="0.1909" ry="0.31" fill="#eaaa40" transform=" translate(480 620) scale(540 540) rotate(-17.188733853924695 -0.24 -0.58)"/>
+<ellipse cx="-0.21" cy="-0.23" rx="0.1909" ry="0.18" fill="#2e3930" transform=" translate(480 620) scale(540 540) rotate(0 -0.21 -0.23)"/>
+<ellipse cx="-0.21" cy="-0.23" rx="0.1577" ry="0.14" fill="#df8e37" transform=" translate(480 620) scale(540 540) rotate(0 -0.21 -0.23)"/>
+<path d="M0,-0.4 L-0.18,-0.78 " fill="none" stroke="#354135" stroke-width="0.022" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<path d="M0,-0.4 L-0.28,-0.66 " fill="none" stroke="#354135" stroke-width="0.022" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<path d="M0,-0.4 L-0.38,-0.54 " fill="none" stroke="#354135" stroke-width="0.022" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<ellipse cx="-0.24" cy="-0.85" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 -0.24 -0.85)"/>
+<ellipse cx="-0.3409765181769476" cy="-0.75" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 -0.3409765181769476 -0.75)"/>
+<ellipse cx="-0.3491156912190818" cy="-0.6499999999999999" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 -0.3491156912190818 -0.6499999999999999)"/>
+<ellipse cx="-0.25693440096718406" cy="-0.5499999999999999" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 -0.25693440096718406 -0.5499999999999999)"/>
+<ellipse cx="0.25" cy="-0.58" rx="0.2241" ry="0.36" fill="#29342d" transform=" translate(480 620) scale(540 540) rotate(17.188733853924695 0.25 -0.58)"/>
+<ellipse cx="0.24" cy="-0.58" rx="0.1909" ry="0.31" fill="#eaaa40" transform=" translate(480 620) scale(540 540) rotate(17.188733853924695 0.24 -0.58)"/>
+<ellipse cx="0.21" cy="-0.23" rx="0.1909" ry="0.18" fill="#2e3930" transform=" translate(480 620) scale(540 540) rotate(0 0.21 -0.23)"/>
+<ellipse cx="0.21" cy="-0.23" rx="0.1577" ry="0.14" fill="#df8e37" transform=" translate(480 620) scale(540 540) rotate(0 0.21 -0.23)"/>
+<path d="M0,-0.4 L0.18,-0.78 " fill="none" stroke="#354135" stroke-width="0.022" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<path d="M0,-0.4 L0.28,-0.66 " fill="none" stroke="#354135" stroke-width="0.022" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<path d="M0,-0.4 L0.38,-0.54 " fill="none" stroke="#354135" stroke-width="0.022" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<ellipse cx="0.24" cy="-0.85" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 0.24 -0.85)"/>
+<ellipse cx="0.3409765181769476" cy="-0.75" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 0.3409765181769476 -0.75)"/>
+<ellipse cx="0.3491156912190818" cy="-0.6499999999999999" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 0.3491156912190818 -0.6499999999999999)"/>
+<ellipse cx="0.25693440096718406" cy="-0.5499999999999999" rx="0.015" ry="0.015" fill="#fff1ce" transform=" translate(480 620) scale(540 540) rotate(0 0.25693440096718406 -0.5499999999999999)"/>
+<ellipse cx="0" cy="-0.43" rx="0.055" ry="0.3" fill="#283931" transform=" translate(480 620) scale(540 540) rotate(0 0 -0.43)"/>
+<path d="M0,-0.7 L-0.1,-0.87 " fill="none" stroke="#283931" stroke-width="0.025" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+<path d="M0,-0.7 L0.1,-0.87 " fill="none" stroke="#283931" stroke-width="0.025" stroke-linecap="round" stroke-linejoin="round" transform=" translate(480 620) scale(540 540)"/>
+</svg>

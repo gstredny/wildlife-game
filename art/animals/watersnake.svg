@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+<rect width="960" height="720" fill="#e0ead4"/>
+<path d="M-1,-0.05 L-0.63,-0.23 L-0.24,-0.09 L0.17,-0.3 L0.55,-0.19 " fill="none" stroke="#727e62" stroke-width="0.12" stroke-linecap="round" stroke-linejoin="round" transform=" translate(541.578947368421 620) scale(410.52631578947364 410.52631578947364)"/>
+<path d="M-0.75,-0.15 L-0.27,-0.05 L0.19,-0.24 L0.55,-0.14 " fill="none" stroke="#c7b983" stroke-width="0.035" stroke-linecap="round" stroke-linejoin="round" transform=" translate(541.578947368421 620) scale(410.52631578947364 410.52631578947364)"/>
+<ellipse cx="0.61" cy="-0.19" rx="0.15" ry="0.08" fill="#839171" transform=" translate(541.578947368421 620) scale(410.52631578947364 410.52631578947364) rotate(0 0.61 -0.19)"/>
+<ellipse cx="0.66" cy="-0.22" rx="0.032" ry="0.032" fill="#172523" transform=" translate(541.578947368421 620) scale(410.52631578947364 410.52631578947364) rotate(0 0.66 -0.22)"/>
+<ellipse cx="0.67" cy="-0.23" rx="0.009" ry="0.009" fill="#fff" transform=" translate(541.578947368421 620) scale(410.52631578947364 410.52631578947364) rotate(0 0.67 -0.23)"/>
+</svg>

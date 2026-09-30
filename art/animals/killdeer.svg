@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+<rect width="960" height="720" fill="#e0ead4"/>
+<path d="M-0.08,-0.45 L-0.08,-0.03 L0.039999999999999994,-0.02 " fill="none" stroke="#e1a24a" stroke-width="0.025" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<path d="M0.12,-0.45 L0.12,-0.03 L0.24,-0.02 " fill="none" stroke="#e1a24a" stroke-width="0.025" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<path d="M-0.25,-0.45 L-0.5,-0.43 L-0.3,-0.32 Z " fill="#9b8d71" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<ellipse cx="0" cy="-0.45" rx="0.32" ry="0.19" fill="#e9e2c9" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0 -0.45)"/>
+<ellipse cx="-0.07" cy="-0.465" rx="0.24" ry="0.13" fill="#9b8d71" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 -0.07 -0.465)"/>
+<path d="M0.16,-0.45 L0.07,-0.53 L0.22,-0.65 " fill="none" stroke="#e9e2c9" stroke-width="0.13" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<ellipse cx="0.22" cy="-0.65" rx="0.14" ry="0.13" fill="#a39677" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.22 -0.65)"/>
+<path d="M0.33,-0.67 L0.62,-0.62 L0.33,-0.5900000000000001 Z " fill="#4a4d42" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<path d="M0.13,-0.49 L0.28,-0.47000000000000003 " fill="none" stroke="#383e38" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<path d="M0.13,-0.41 L0.28,-0.39 " fill="none" stroke="#383e38" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<ellipse cx="0.26" cy="-0.675" rx="0.032" ry="0.032" fill="#172523" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.26 -0.675)"/>
+<ellipse cx="0.27" cy="-0.685" rx="0.009" ry="0.009" fill="#fff" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.27 -0.685)"/>
+</svg>

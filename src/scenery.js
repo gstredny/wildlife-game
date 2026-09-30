@@ -10,10 +10,10 @@ export function hash(n) {
   return x - Math.floor(x);
 }
 
-export function paintSky(context, view, time) {
+export function paintSky(context, view, time, theme = {}) {
   const sky = context.createLinearGradient(0, view.top, 0, 360);
-  sky.addColorStop(0, SKY_TOP);
-  sky.addColorStop(1, SKY_LOW);
+  sky.addColorStop(0, theme.sky ?? SKY_TOP);
+  sky.addColorStop(1, theme.low ?? SKY_LOW);
   context.fillStyle = sky;
   context.fillRect(view.left, view.top, view.width, 380 - view.top);
   // A warm Texas sun with a soft glow.
@@ -47,9 +47,9 @@ function paintClouds(context, view, time) {
 }
 
 // Rolling far woods, two rows, sliding slowly.
-export function paintFarWoods(context, view) {
-  paintTreeRow(context, view, 0.22, 345, 60, "#8fb58f", 0);
-  paintTreeRow(context, view, 0.4, 372, 70, "#6c9a6a", 500);
+export function paintFarWoods(context, view, theme = {}) {
+  paintTreeRow(context, view, 0.22, 345, 60, theme.far ?? "#8fb58f", 0);
+  paintTreeRow(context, view, 0.4, 372, 70, theme.near ?? "#6c9a6a", 500);
 }
 
 function paintTreeRow(context, view, depth, baseY, height, color, seed) {
@@ -69,10 +69,10 @@ function paintTreeRow(context, view, depth, baseY, height, color, seed) {
 }
 
 // Behind the path: a meadow, and the bayou where the place has water.
-export function paintBack(context, view, place, time) {
+export function paintBack(context, view, place, time, theme = {}) {
   const meadow = context.createLinearGradient(0, 370, 0, GROUND.pathTop);
-  meadow.addColorStop(0, "#9cc46e");
-  meadow.addColorStop(1, "#7fae55");
+  meadow.addColorStop(0, theme.grass ?? "#9cc46e");
+  meadow.addColorStop(1, theme.front ?? "#7fae55");
   context.fillStyle = meadow;
   context.fillRect(view.left, 370, view.width, GROUND.pathTop - 368);
   const { from, to } = place.water;
@@ -224,7 +224,7 @@ export function paintPath(context, view, place) {
   }
   const from = Math.max(place.water.from - 40, view.left - 10);
   const to = Math.min(place.water.to + 40, view.left + view.width + 10);
-  if (to > from) paintBoardwalk(context, from, to);
+  if (to > from && place.theme !== "gulf") paintBoardwalk(context, from, to);
 }
 
 function paintBoardwalk(context, from, to) {
@@ -251,11 +251,12 @@ function paintBoardwalk(context, from, to) {
 }
 
 // Grass tufts and Texas wildflowers along the front edge, sliding a little faster than the path.
-export function paintFront(context, view, time) {
+export function paintFront(context, view, time, theme = {}) {
   const depth = 1.15;
   const shift = view.left * depth;
-  context.fillStyle = "#6f9f45";
+  context.fillStyle = theme.front ?? "#6f9f45";
   context.fillRect(view.left, GROUND.pathBottom, view.width, 600 - GROUND.pathBottom + 40);
+  if (theme.grass === "#eddab1") return;
   for (let index = Math.floor(shift / 28) - 1; index <= Math.floor((shift + view.width) / 28) + 1; index++) {
     const x = view.left + index * 28 - shift + hash(index) * 20;
     const y = GROUND.pathBottom + 4 + hash(index + 3) * 20;

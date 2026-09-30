@@ -4,7 +4,8 @@ import { ANIMALS } from "./animals.js";
 import { baseY } from "./layout.js";
 import { paintExplorer } from "./paint-explorer.js";
 import { BOXES, PAINTERS } from "./painters.js";
-import { GROUND, paintBack, paintFarWoods, paintFront, paintOak, paintPath, paintSign, paintSky } from "./scenery.js";
+import { GROUND, paintBack, paintFarWoods, paintFront, paintPath, paintSign, paintSky } from "./scenery.js";
+import { THEMES, paintHabitatDetails, paintHabitatTree } from "./habitat-scenery.js";
 import { animalAt, snapTarget } from "./trail.js";
 
 const EXPLORER_SIZE = 150;
@@ -14,10 +15,12 @@ export function paintFrame(context, walk, view, snapping) {
   const { place, time } = walk;
   context.setTransform(view.scale, 0, 0, view.scale, -view.left * view.scale, -view.top * view.scale);
   const seen = (x, reach) => x + reach > view.left && x - reach < view.left + view.width;
-  paintSky(context, view, time);
-  paintFarWoods(context, view);
-  paintBack(context, view, place, time);
-  for (const x of place.trees) if (seen(x, 200)) paintOak(context, x, x);
+  const theme = THEMES[place.theme];
+  paintSky(context, view, time, theme);
+  if (place.theme !== "gulf") paintFarWoods(context, view, theme);
+  paintBack(context, view, place, time, theme);
+  paintHabitatDetails(context, view, place, time);
+  for (const x of place.trees) if (seen(x, 200)) paintHabitatTree(context, x, place);
   if (seen(170, 80)) paintSign(context, 170, place.name);
   if (seen(place.length - 170, 80)) paintSign(context, place.length - 170, "Trail end");
   const target = snapTarget(walk);
@@ -31,7 +34,7 @@ export function paintFrame(context, walk, view, snapping) {
   context.scale(walk.facing, 1);
   paintExplorer(context, EXPLORER_SIZE, time, { walking: walk.moving, snapping });
   context.restore();
-  paintFront(context, view, time);
+  paintFront(context, view, time, theme);
   if (target) paintMarker(context, walk, target);
 }
 
@@ -45,7 +48,7 @@ function paintAnimal(context, walk, animal, at) {
   PAINTERS[animal.kind](context, animal.size, walk.time + animal.x * 0.013, { walking: at.walking, alert });
   context.restore();
   const { from, to } = walk.place.water;
-  if (animal.lane === "back" && at.x > from + 60 && at.x < to - 60 && animal.kind !== "alligator") {
+  if (animal.lane === "back" && at.x > from + 60 && at.x < to - 60 && !["alligator", "cottonmouth", "watersnake", "crab", "seaTurtle"].includes(animal.kind)) {
     paintWaterAtFeet(context, at.x, y, animal.size, walk.time);
   }
 }

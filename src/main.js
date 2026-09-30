@@ -7,6 +7,7 @@ import { fillGuide } from "./guide-view.js";
 import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
 import { FIRST_TIP, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
+import { fillPlaces, progress } from "./place-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
 import { createWalk, inReach, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
@@ -18,12 +19,12 @@ const context = canvas.getContext("2d");
 const voice = createVoice();
 const sound = createSound();
 const found = loadFound();
-const place = PLACES.bayou;
+let place = PLACES.bayou;
 const keys = new Set();
 const SNAP_POSE = 0.7;
 
 let walk = null; // the walk under way, or null on the start screen
-const preview = createWalk(place, new Set());
+let preview = createWalk(place, new Set());
 preview.x = 520;
 let camera = 0;
 let hold = 0;
@@ -47,9 +48,9 @@ function show(panel) {
 const openPanel = () => PANELS.find(name => !$(name).hidden) ?? null;
 
 function counts() {
-  const total = placeKinds(place).length;
-  const have = placeKinds(place).filter(kind => found.has(kind)).length;
-  $("hud-count").textContent = $("place-count").textContent = `${have} of ${total} found`;
+  $("hud-count").textContent = progress(place, found);
+  $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
+  fillPlaces($("places"), found, startWalk);
 }
 
 function goHome() {
@@ -59,7 +60,13 @@ function goHome() {
   show("start");
 }
 
-function startWalk() {
+function startWalk(key) {
+  place = PLACES[key];
+  preview = createWalk(place);
+  preview.x = 520;
+  camera = 0;
+  posing = 0;
+  rangerNext = false;
   walk = createWalk(place, found);
   tipped = found.size > 0;
   $("hud-place").textContent = place.name;
@@ -86,7 +93,8 @@ function takePicture({ kind, first }) {
   sound.play("found");
   rangerNext = placeKinds(place).every(each => found.has(each));
   release();
-  setTimeout(() => openCard(kind, true, null), 450);
+  const picturedWalk = walk;
+  setTimeout(() => { if (walk === picturedWalk) openCard(kind, true, null); }, 450);
 }
 
 function openCard(kind, isNew, from) {
@@ -103,6 +111,8 @@ function closeCard() {
   if (rangerNext) {
     rangerNext = false;
     show("ranger");
+    $("ranger-place").textContent = place.name;
+    $("ranger-message").textContent = `You found all ${placeKinds(place).length} animals here. Great exploring!`;
     sound.play("ranger");
     voice.say(place.ranger);
     return;
@@ -111,11 +121,15 @@ function closeCard() {
 }
 
 function openGuide() {
-  $("guide-title").textContent = place.name;
+  const scope = $("guide-place").value;
+  const guidePlace = scope === "all" ? { animals: Object.keys(ANIMALS).map(kind => ({ kind })) } : PLACES[scope];
+  $("guide-title").textContent = scope === "all" ? "Texas wildlife" : guidePlace.name;
+  $("guide-progress").textContent = progress(guidePlace, found);
   $("guide-hint").textContent = "Tap an animal to hear about it.";
-  fillGuide($("guide-grid"), place, found, (kind, isFound) => {
+  fillGuide($("guide-grid"), guidePlace, found, (kind, isFound) => {
     if (isFound) return openCard(kind, false, "guide");
-    $("guide-hint").textContent = ANIMALS[kind].hint;
+    const homes = Object.values(PLACES).filter(each => placeKinds(each).includes(kind)).map(each => each.name);
+    $("guide-hint").textContent = `${ANIMALS[kind].hint} Explore: ${homes.join(", ")}.`;
     voice.say(ANIMALS[kind].hint, { force: true });
   });
   show("guide");
@@ -230,11 +244,14 @@ addEventListener("keyup", event => keys.delete(event.key.length === 1 ? event.ke
 addEventListener("blur", release);
 addEventListener("resize", resize);
 
-$("place-bayou").addEventListener("click", startWalk);
 $("snap-button").addEventListener("click", () => walk && trySnap());
 $("card-close").addEventListener("click", closeCard);
-$("guide-button").addEventListener("click", openGuide);
-$("start-guide-button").addEventListener("click", openGuide);
+$("guide-button").addEventListener("click", () => {
+  $("guide-place").value = Object.keys(PLACES).find(key => PLACES[key] === place);
+  openGuide();
+});
+$("start-guide-button").addEventListener("click", () => { $("guide-place").value = "all"; openGuide(); });
+$("guide-place").addEventListener("change", openGuide);
 $("guide-close").addEventListener("click", () => show(walk ? null : "start"));
 $("home-button").addEventListener("click", goHome);
 $("ranger-close").addEventListener("click", () => show(null));
@@ -274,6 +291,7 @@ if ("serviceWorker" in navigator) {
 }
 
 resize();
+for (const [key, each] of Object.entries(PLACES)) $("guide-place").add(new Option(each.name, key));
 showVoice();
 counts();
 show("start");

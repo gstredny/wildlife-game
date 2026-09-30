@@ -41,13 +41,9 @@
     <section id="start" class="panel start-panel">
       <p class="kicker">Katy, Texas</p>
       <h1>Wildlife Game</h1>
-      <p class="lead">Walk the trail. Find real animals. Snap their pictures for your Field Guide!</p>
-      <button id="place-bayou" class="place-card" type="button">
-        <span class="place-name">Bayou Trail</span>
-        <span class="place-blurb">Herons, gators and deer, like George Bush Park</span>
-        <span id="place-count" class="place-count">0 of 8 found</span>
-        <span class="place-go" aria-hidden="true">Walk ▶</span>
-      </button>
+      <p class="lead">Where will you explore today?</p>
+      <p id="collection-count" class="collection-count"></p>
+      <div id="places" class="places-grid"></div>
       <div class="start-actions">
         <button id="start-guide-button" class="soft-button" type="button">📖 Field Guide</button>
         <button id="start-voice-button" class="soft-button voice-toggle" type="button" aria-label="Turn the voice off">🔊</button>
@@ -58,11 +54,13 @@
       <figure class="card-photo">
         <img id="card-image" alt="">
         <figcaption id="card-credit"></figcaption>
+        <a id="card-photo-source" class="photo-source" target="_blank" rel="noopener">Photo source and license</a>
       </figure>
       <div class="card-words">
         <p id="card-kicker" class="kicker">You found a new animal!</p>
         <h2 id="card-name"></h2>
         <p id="card-fact"></p>
+        <p id="card-say"></p>
         <dl class="card-facts">
           <dt>Eats</dt><dd id="card-eats"></dd>
           <dt>Eaten by</dt><dd id="card-eaten"></dd>
@@ -80,18 +78,20 @@
         <div>
           <p class="kicker">Field Guide</p>
           <h2 id="guide-title">Bayou Trail</h2>
+          <p id="guide-progress"></p>
         </div>
         <button id="guide-close" class="round-button" type="button" aria-label="Close the Field Guide">✕</button>
       </div>
+      <label class="guide-filter">Explore your guide <select id="guide-place"><option value="all">All animals</option></select></label>
       <div id="guide-grid" class="guide-grid"></div>
       <p id="guide-hint" class="guide-hint" aria-live="polite">Tap an animal to hear about it.</p>
     </section>
 
     <section id="ranger" class="panel ranger-panel" hidden>
       <div class="badge" aria-hidden="true"><span>★</span></div>
-      <p class="kicker">Bayou Trail</p>
+      <p id="ranger-place" class="kicker">Bayou Trail</p>
       <h2>Junior Ranger!</h2>
-      <p>You found all eight animals. Great exploring!</p>
+      <p id="ranger-message"></p>
       <div class="start-actions">
         <button id="ranger-close" class="primary-button" type="button">Keep exploring</button>
         <button id="ranger-home" class="soft-button" type="button">Home</button>

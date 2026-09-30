@@ -1,6 +1,8 @@
 // Real photos shown on the cards. Every photo is free to share; see CREDITS.md.
 // tools/fetch-photos.py downloads and crops them.
+import { NEW_PHOTOS } from "./photos-new.js";
 export const PHOTOS = {
+  ...NEW_PHOTOS,
   cicada: { file: "art/animals/cicada.webp", credit: "Photo: xpda, CC BY-SA 4.0", source: "https://commons.wikimedia.org/wiki/File:Neotibicen_superbus_P1500620a.jpg" },
   spoonbill: { file: "art/animals/spoonbill.webp", credit: "Photo: Giles Laurent, CC BY-SA 4.0", source: "https://commons.wikimedia.org/wiki/File:042_Roseate_spoonbill_in_Encontro_das_%C3%81guas_State_Park_Photo_by_Giles_Laurent.jpg" },
   ibis: { file: "art/animals/ibis.webp", credit: "Photo: Rhododendrites, CC BY-SA 4.0", source: "https://commons.wikimedia.org/wiki/File:White_ibis_(10239).jpg" },

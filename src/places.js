@@ -1,35 +1,84 @@
-// The trails a child can walk. Distances are in world units: the screen is 600 units tall, and the
-// explorer walks about 260 units a second. Each animal lives near `x` and wanders `roam` units either
-// way (`period` seconds there and back). `lane` says where it lives: "back" is the grass and shallow
-// water behind the path, "tree" is on a tree trunk. `size` is its height (see src/painters.js).
-export const PLACES = {
+// Six places to explore around Katy and on a trip to the Texas coast.
+// Entries are [species, drawing size, lane]. A shared species counts once in the Field Guide.
+const HABITATS = {
+  swamp: {
+    name: 'Swamp Boardwalk', icon: '🐊', theme: 'swamp',
+    blurb: 'Bullfrogs, wood ducks, and night herons among the cypress trees',
+    roster: [
+      ['bullfrog', 74], ['nightHeron', 100], ['woodDuck', 83], ['leopardFrog', 63],
+      ['slider', 70], ['dragonfly', 62, 'air'], ['heron', 132], ['ibis', 72],
+      ['spoonbill', 92], ['watersnake', 78], ['cottonmouth', 84], ['alligator', 30]
+    ]
+  },
   bayou: {
-    name: "Bayou Trail",
-    blurb: "Herons, gators and deer, like George Bush Park",
-    welcome: "Welcome to the Bayou Trail! I'm Ranger Mike. Eight animals live along this trail. Walk along, and tap an animal to take its picture!",
-    end: "That's the end of the Bayou Trail! Walk back to find the animals you missed.",
-    ranger: "You found all eight animals on the Bayou Trail! You're a Junior Ranger!",
-    length: 5600,
-    // The bayou runs behind the path here, and the path becomes a boardwalk. The alligator basks on
-    // the mud bar.
-    water: { from: 1150, to: 3350, bar: 3120 },
-    // Big trees behind the path. The cicada sings on the first one.
-    trees: [320, 760, 3700, 4200, 4750, 5150],
-    animals: [
-      { kind: "cicada", x: 760, lane: "tree", size: 46 },
-      { kind: "heron", x: 1520, lane: "back", size: 132, roam: 30, period: 30 },
-      { kind: "ibis", x: 1960, lane: "back", size: 72, roam: 90, period: 14 },
-      { kind: "ibis", x: 2080, lane: "back", size: 68, roam: 70, period: 17 },
-      { kind: "ibis", x: 2170, lane: "back", size: 72, roam: 80, period: 12 },
-      { kind: "spoonbill", x: 2600, lane: "back", size: 92, roam: 70, period: 20 },
-      { kind: "alligator", x: 3120, lane: "back", size: 30, roam: 20, period: 40 },
-      { kind: "coyote", x: 3950, lane: "back", size: 82, roam: 160, period: 16 },
-      { kind: "hog", x: 4480, lane: "back", size: 70, roam: 60, period: 22 },
-      { kind: "deer", x: 5000, lane: "back", size: 150, roam: 40, period: 26 }
+    name: 'Bayou Trail', icon: '🦌', theme: 'bayou',
+    blurb: 'Water birds, playful otters, coyotes, and white-tailed deer',
+    roster: [
+      ['cicada', 46, 'tree'], ['heron', 132], ['ibis', 72], ['spoonbill', 92],
+      ['alligator', 30], ['egret', 125], ['kingfisher', 75, 'air'], ['redwing', 70],
+      ['nutria', 80], ['riverOtter', 80], ['coyote', 82], ['hog', 70], ['deer', 150]
+    ]
+  },
+  woods: {
+    name: 'Woodland Walk', icon: '🦉', theme: 'woods',
+    blurb: 'Shady oaks, woodpeckers, armadillos, and a watchful owl',
+    roster: [
+      ['squirrel', 82, 'tree'], ['woodpecker', 78, 'tree'], ['boxTurtle', 68],
+      ['armadillo', 90], ['raccoon', 95], ['opossum', 90], ['barredOwl', 110, 'tree'],
+      ['bobcat', 95], ['coyote', 82], ['deer', 150]
+    ]
+  },
+  backyard: {
+    name: 'Backyard Safari', icon: '🦋', theme: 'backyard',
+    blurb: 'Meet the birds, butterflies, and little creatures next door',
+    roster: [
+      ['cardinal', 75, 'tree'], ['blueJay', 78, 'tree'], ['mockingbird', 76],
+      ['dove', 78], ['grackle', 80], ['hummingbird', 48, 'air'], ['anole', 60, 'tree'],
+      ['monarch', 56, 'air'], ['toad', 61], ['squirrel', 82], ['cicada', 46, 'tree']
+    ]
+  },
+  prairie: {
+    name: 'Katy Prairie', icon: '🌾', theme: 'prairie',
+    blurb: 'Tall grasses, meadowlarks, rabbits, and soaring hawks',
+    roster: [
+      ['rabbit', 83], ['meadowlark', 78], ['killdeer', 70], ['kestrel', 78, 'perch'],
+      ['scissortail', 70, 'perch'], ['hawk', 115, 'perch'], ['monarch', 56, 'air'],
+      ['armadillo', 90], ['coyote', 82], ['deer', 150]
+    ]
+  },
+  gulf: {
+    name: 'Gulf Shore', icon: '🐚', theme: 'gulf',
+    blurb: 'A Galveston day trip: pelicans, sandpipers, crabs, and sea turtles',
+    roster: [
+      ['pelican', 118], ['gull', 77], ['tern', 67], ['avocet', 106],
+      ['plover', 61], ['crab', 58], ['seaTurtle', 120], ['egret', 125], ['spoonbill', 92]
     ]
   }
 };
 
+function makePlace(key, habitat) {
+  const animals = habitat.roster.map(([kind, size, lane = 'back'], index) => ({
+    kind, size, lane, x: 650 + index * 520,
+    ...(lane === 'back' && !['alligator', 'cottonmouth', 'watersnake', 'boxTurtle', 'slider', 'seaTurtle'].includes(kind)
+      ? { roam: 35, period: 17 + index % 5 * 3 } : {})
+  }));
+  const length = animals.at(-1).x + 650;
+  const trees = [...new Set([
+    ...(key === 'gulf' || key === 'prairie' ? [] : [280, length - 300]),
+    ...animals.filter(animal => animal.lane === 'tree').map(animal => animal.x),
+    ...(key === 'woods' ? animals.map(animal => animal.x - 140) : [])
+  ])].sort((a, b) => a - b);
+  const water = key === 'swamp' || key === 'gulf' ? { from: 150, to: length - 150, bar: animals.at(-1).x }
+    : key === 'bayou' ? { from: 950, to: 5530, bar: 2730 } : { from: -300, to: -100, bar: -200 };
+  return {
+    name: habitat.name, icon: habitat.icon, theme: habitat.theme, blurb: habitat.blurb,
+    welcome: `Welcome to ${habitat.name}! I'm Ranger Mike. ${animals.length} animals live here. Walk along and tap an animal to take its picture!`,
+    end: `That's the end of ${habitat.name}! Walk back to look for the animals you missed.`,
+    ranger: `You found every animal in ${habitat.name}! You're a Junior Ranger!`,
+    length, trees, water, animals
+  };
+}
+export const PLACES = Object.fromEntries(Object.entries(HABITATS).map(([key, habitat]) => [key, makePlace(key, habitat)]));
 export function placeKinds(place) {
   return [...new Set(place.animals.map(animal => animal.kind))];
 }

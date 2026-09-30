@@ -22,6 +22,8 @@ export function cameraFor(walk, viewWidth) {
 }
 
 export function baseY(animal) {
+  if (animal.lane === "air") return GROUND.back - 155;
+  if (animal.lane === "perch") return GROUND.back - 90;
   return animal.lane === "tree" ? GROUND.back - TRUNK_HEIGHT : GROUND.back;
 }
 

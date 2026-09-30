@@ -6,9 +6,10 @@ import { animalAt, createWalk, EDGE, REACH, snap, snapTarget, stepWalk, walkTo, 
 const bayou = PLACES.bayou;
 const heron = bayou.animals.find(animal => animal.kind === "heron");
 
-test("the Bayou Trail has the eight animals George asked for", () => {
-  assert.deepEqual(placeKinds(bayou).sort(),
-    ["alligator", "cicada", "coyote", "deer", "hog", "ibis", "spoonbill", "heron"].sort());
+test("the Bayou Trail keeps its original animals and adds more local wildlife", () => {
+  for (const kind of ["alligator", "cicada", "coyote", "deer", "hog", "ibis", "spoonbill", "heron", "riverOtter", "kingfisher"]) {
+    assert.ok(placeKinds(bayou).includes(kind), `${kind} belongs on Bayou Trail`);
+  }
 });
 
 test("arrow keys walk the explorer and stop at the ends of the trail", () => {

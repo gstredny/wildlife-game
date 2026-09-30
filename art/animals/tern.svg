@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+<rect width="960" height="720" fill="#e0ead4"/>
+<path d="M-0.08,-0.45 L-0.08,-0.03 L0.039999999999999994,-0.02 " fill="none" stroke="#4c5d58" stroke-width="0.025" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<path d="M0.12,-0.45 L0.12,-0.03 L0.24,-0.02 " fill="none" stroke="#4c5d58" stroke-width="0.025" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<path d="M-0.25,-0.45 L-0.5,-0.43 L-0.3,-0.32 Z " fill="#bec8cc" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<ellipse cx="0" cy="-0.45" rx="0.32" ry="0.19" fill="#f9faf5" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0 -0.45)"/>
+<ellipse cx="-0.07" cy="-0.465" rx="0.24" ry="0.13" fill="#bec8cc" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 -0.07 -0.465)"/>
+<path d="M0.16,-0.45 L0.07,-0.55 L0.22,-0.67 " fill="none" stroke="#f9faf5" stroke-width="0.13" stroke-linecap="round" stroke-linejoin="round" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<ellipse cx="0.22" cy="-0.67" rx="0.14" ry="0.13" fill="#f9faf5" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.22 -0.67)"/>
+<ellipse cx="0.2" cy="-0.755" rx="0.13" ry="0.06" fill="#273839" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.2 -0.755)"/>
+<path d="M0.33,-0.6900000000000001 L0.62,-0.64 L0.33,-0.6100000000000001 Z " fill="#edc957" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0)"/>
+<ellipse cx="0.26" cy="-0.6950000000000001" rx="0.032" ry="0.032" fill="#172523" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.26 -0.6950000000000001)"/>
+<ellipse cx="0.27" cy="-0.7050000000000001" rx="0.009" ry="0.009" fill="#fff" transform=" translate(412.5 620) scale(482.1428571428571 482.1428571428571) translate(0 0) rotate(0 0.27 -0.7050000000000001)"/>
+</svg>

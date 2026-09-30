@@ -1,7 +1,13 @@
+import { SWAMP_ANIMALS } from "./animals-swamp.js";
+import { BAYOU_ANIMALS } from "./animals-bayou.js";
+import { WOODS_ANIMALS } from "./animals-woods.js";
+import { BACKYARD_ANIMALS } from "./animals-backyard.js";
+import { PRAIRIE_ANIMALS } from "./animals-prairie.js";
+import { GULF_ANIMALS } from "./animals-gulf.js";
 // The real animals of the trails around Katy, Texas: what the card shows and what the ranger says.
 // `hello` + `fact` + `say` is read aloud on the card. `lines` are short lines for meeting the animal
 // again. `hint` is the ranger's clue for an animal not found yet.
-export const ANIMALS = {
+const ORIGINAL_ANIMALS = {
   cicada: {
     name: "Cicada", hello: "This is a cicada!",
     fact: "Cicadas are the bugs that buzz so loud on hot Texas summer days. Only the boy cicadas sing. They click little drums on their sides to make the buzz!",
@@ -75,6 +81,15 @@ export const ANIMALS = {
     hint: "Look at the edge of the woods."
   }
 };
+
+// All habitats share this species catalog, so the same animal is collected only once.
+export const ANIMALS = { ...ORIGINAL_ANIMALS, ...SWAMP_ANIMALS, ...BAYOU_ANIMALS, ...WOODS_ANIMALS,
+  ...BACKYARD_ANIMALS, ...PRAIRIE_ANIMALS, ...GULF_ANIMALS };
+for (const animal of Object.values(ANIMALS)) {
+  animal.hello ??= `This is ${/^[aeiou]/i.test(animal.name) ? "an" : "a"} ${animal.name.toLowerCase()}!`;
+  animal.lines ??= [animal.fact, animal.say, `It eats ${animal.eats.toLowerCase()}.`];
+  animal.source ??= "https://tpwd.texas.gov/huntwild/wild/species/";
+}
 
 export function cardSpeech(kind) {
   const animal = ANIMALS[kind];

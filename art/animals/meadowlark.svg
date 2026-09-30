@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+<rect width="960" height="720" fill="#e0ead4"/>
+<path d="M-0.17,-0.37 L-0.65,-0.16 L-0.45,-0.06 L-0.07,-0.25 Z " fill="#8b8264" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0)"/>
+<path d="M-0.12,-0.3 L-0.12,-0.07 L0,-0.02 " fill="none" stroke="#695849" stroke-width="0.035" stroke-linecap="round" stroke-linejoin="round" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0)"/>
+<path d="M0.13,-0.3 L0.13,-0.07 L0.25,-0.02 " fill="none" stroke="#695849" stroke-width="0.035" stroke-linecap="round" stroke-linejoin="round" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0)"/>
+<ellipse cx="0" cy="-0.46" rx="0.33" ry="0.3" fill="#e7c54b" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(-11.459155902616464 0 -0.46)"/>
+<ellipse cx="-0.04" cy="-0.44" rx="0.26" ry="0.17" fill="#8b8264" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(-14.32394487827058 -0.04 -0.44)"/>
+<ellipse cx="-0.16" cy="-0.43" rx="0.025" ry="0.02" fill="#4c4841" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(0 -0.16 -0.43)"/>
+<ellipse cx="-0.07" cy="-0.43" rx="0.025" ry="0.02" fill="#4c4841" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(0 -0.07 -0.43)"/>
+<ellipse cx="0.01999999999999999" cy="-0.43" rx="0.025" ry="0.02" fill="#4c4841" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(0 0.01999999999999999 -0.43)"/>
+<ellipse cx="0.24" cy="-0.73" rx="0.18" ry="0.18" fill="#e7c54b" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(0 0.24 -0.73)"/>
+<path d="M0.11,-0.63 L0.22,-0.56 L0.35,-0.6 " fill="none" stroke="#333b3d" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0)"/>
+<path d="M0.38,-0.77 L0.56,-0.72 L0.38,-0.67 Z " fill="#576153" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0)"/>
+<ellipse cx="0.3" cy="-0.78" rx="0.032" ry="0.032" fill="#172523" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(0 0.3 -0.78)"/>
+<ellipse cx="0.31" cy="-0.79" rx="0.009" ry="0.009" fill="#fff" transform=" translate(441.0576923076923 620) scale(519.2307692307692 519.2307692307692) translate(0 0) rotate(0 0.31 -0.79)"/>
+</svg>

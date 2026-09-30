@@ -152,13 +152,21 @@ h1, h2 { margin: 4px 0 8px; line-height: 1.05; }
 h1 { font-size: clamp(34px, 8vmin, 60px); }
 h2 { font-size: clamp(26px, 5.5vmin, 40px); }
 
-.start-panel { width: min(100%, 560px); text-align: center; }
+.start-panel { width: min(100%, 1020px); text-align: center; }
+.collection-count { margin: 0 0 18px; color: var(--sun); font-weight: 700; }
+.places-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.place-icon { font-size: 40px; line-height: 1.2; }
+.place-preview { width: calc(100% + 36px); height: 100px; object-fit: cover; margin: -16px -18px 8px; border-radius: 20px 20px 0 0; }
+.guide-filter { display: flex; gap: 12px; align-items: center; margin: 10px 0 16px; }
+.guide-filter select { font: inherit; padding: 10px; border-radius: 12px; background: #fff7e6; color: #1f3b2c; max-width: 100%; }
+.panel { touch-action: pan-y; }
+button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid var(--sun); outline-offset: 4px; }
 .lead { font-size: clamp(16px, 3vmin, 20px); margin: 0 0 16px; }
 .place-card {
   width: 100%;
   display: grid;
   gap: 4px;
-  padding: 16px 20px;
+  padding: 16px 18px 60px;
   border: 0;
   border-radius: 20px;
   background: linear-gradient(135deg, #5d9fb0, #4f7d3a);
@@ -166,10 +174,16 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
   box-shadow: 0 6px 0 #2c4f33;
 }
 .place-card:active { transform: translateY(3px); box-shadow: 0 3px 0 #2c4f33; }
-.place-name { font-size: clamp(22px, 4.5vmin, 30px); font-weight: 800; }
+.place-name { font-size: clamp(19px, 3.5vmin, 26px); font-weight: 800; }
 .place-blurb { font-size: 15px; opacity: 0.95; }
 .place-count { font-size: 15px; color: var(--sun); font-weight: 700; }
 .place-card { position: relative; }
+.habitat-swamp { background: linear-gradient(135deg, #4b827d, #365d4b); }
+.habitat-bayou { background: linear-gradient(135deg, #5d9fb0, #4f7d3a); }
+.habitat-woods { background: linear-gradient(135deg, #64894c, #3e5838); }
+.habitat-backyard { background: linear-gradient(135deg, #997e47, #668547); }
+.habitat-prairie { background: linear-gradient(135deg, #a2843e, #687b38); }
+.habitat-gulf { background: linear-gradient(135deg, #328aa8, #4b6f8d); }
 .place-go {
   position: absolute;
   right: 18px;
@@ -221,6 +235,8 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
   background: #33503e;
 }
 .card-photo figcaption { margin-top: 6px; font-size: 12px; opacity: 0.75; }
+.photo-source { color: var(--cream); font-size: 12px; }
+.card-photo img { object-fit: contain; }
 .card-words p { margin: 0 0 10px; font-size: clamp(15px, 2.6vmin, 19px); line-height: 1.35; }
 .card-facts {
   display: grid;
@@ -303,8 +319,12 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
   .card-facts { margin-bottom: 8px; }
   .primary-button { min-height: 44px; font-size: 17px; }
   .lead { margin-bottom: 10px; }
-  /* All eight animals in one row, so the Field Guide fits without scrolling. */
-  .guide-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+  .guide-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+  .start-panel h1 { font-size: 32px; }
+  .start-panel { padding: 16px; }
+  .place-icon { font-size: 26px; }
+  .place-preview { width: calc(100% + 24px); height: 74px; margin: -10px -12px 6px; }
+  .place-card { padding: 10px 12px 48px; }
   .guide-slot { font-size: 12px; border-radius: 12px; padding-bottom: 6px; }
   .guide-slot.missing::after { font-size: 17px; top: 2px; right: 6px; }
   .guide-panel h2 { font-size: 26px; margin-bottom: 10px; }
@@ -312,6 +332,11 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
 
 /* Tall, narrow screens: photo on top. */
 @media (max-aspect-ratio: 4/5) {
+  .places-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .card-panel { grid-template-columns: 1fr; }
   .guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snap-button.ready, .badge, .flash.go { animation: none; }
 }

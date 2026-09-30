@@ -2,30 +2,37 @@
 
 A walking game for young children about the real animals around Katy, Texas. A young explorer walks
 a trail, finds animals hiding along it, and snaps their pictures. Each new animal opens a card with a
-real photo, and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
+real photo online (or a labeled offline illustration), and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
 goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
 tapping one gives a clue.
 
 It is a sister to [Little Fish, Big Ocean](https://github.com/gstredny/fish-game), built the same
 way: plain JavaScript modules, no build step, works offline.
 
-## The Bayou Trail
+## Choose a habitat
 
-The first trail is a bayou like George Bush Park: a meadow, a boardwalk over the water, and the edge
-of the woods. Eight animals live along it:
+The home screen has six illustrated places. Each has its own scenery and animals:
 
-- a **cicada** buzzing on a live oak,
-- a **great blue heron**, standing still in the water,
-- a busy group of **white ibises**,
-- a pink **roseate spoonbill**,
-- an **American alligator** basking on a mud bar,
-- a **coyote** trotting along,
-- a **wild hog** rooting in the dirt,
-- a **white-tailed deer** at the edge of the woods, which lifts its white tail like a flag when you
-  come close.
+| Place | Animals to find | What you will meet |
+| --- | ---: | --- |
+| Swamp Boardwalk | 12 | Bullfrogs, night herons, wood ducks, sliders, water snakes, and alligators |
+| Bayou Trail | 13 | Wading birds, kingfishers, river otters, coyotes, hogs, and white-tailed deer |
+| Woodland Walk | 10 | Raccoons, opossums, armadillos, bobcats, squirrels, woodpeckers, and an owl |
+| Backyard Safari | 11 | Cardinals, blue jays, mockingbirds, hummingbirds, butterflies, anoles, and toads |
+| Katy Prairie | 10 | Cottontails, meadowlarks, killdeer, kestrels, hawks, and scissor-tailed flycatchers |
+| Gulf Shore | 9 | Pelicans, gulls, terns, avocets, plovers, ghost crabs, and a rare sea turtle |
 
-Finding all eight makes you a **Junior Ranger**. More places are planned in
-[tasks/001-bayou-trail.md](tasks/001-bayou-trail.md).
+There are **51 different animals**. Shared animals count once in your collection. Finding every
+animal in an area earns that area's Junior Ranger cheer. The Field Guide lets you browse all
+animals or choose one habitat; missing animals give a clue and name the places where you can find them.
+
+The Gulf Shore is a Galveston day trip. Cards explain seasonal visitors and rare sightings rather
+than suggesting every animal will be visible on every real outing. This is a local learning
+collection, not a complete inventory of Texas wildlife.
+
+Facts link to [Texas Parks & Wildlife](https://tpwd.texas.gov/huntwild/wild/species/), its official
+magazine, or Cornell's bird guides. Both narrated facts appear on the card, along with diet,
+predators, and a photo-source link.
 
 ## How to play
 
@@ -57,22 +64,48 @@ node tools/voice-lines.mjs > /tmp/lines.json
 On a work Mac that inspects HTTPS, point Python at a certificate bundle built from the keychain, as the
 fish game's README shows (`SSL_CERT_FILE=...`). Bump the cache name in `sw.js` afterwards.
 
-## Photos
+## Photos and offline illustrations
 
-`python3 tools/fetch-photos.py` downloads each card photo from Wikimedia Commons and crops it to a
-960×720 WebP (needs `cwebp`). Credits are on each card and in [CREDITS.md](CREDITS.md).
+The original eight animals have local WebP photographs. All 43 new animals have verified Wikimedia
+Commons photo references, author/license credits, and original local SVG illustrations. Until
+photographs are downloaded, the new cards load real photos online and use a clearly labeled
+illustration when offline or when a photo fails. The illustration is never credited as a photograph.
+
+To store the expanded photographs locally (requires network access and `cwebp`):
+
+```sh
+python3 tools/fetch-habitat-photos.py
+```
+
+The downloader preserves each successful file, updates the image catalog, and regenerates the
+offline cache list. It scales the complete photograph rather than cropping away identification
+features. Photo metadata lives in `art/photo-sources.json`; attribution is in [CREDITS.md](CREDITS.md).
+The original downloader remains `tools/fetch-photos.py`.
+
+After changing an animal drawing or adding game modules:
+
+```sh
+node tools/export-illustrations.mjs
+node tools/cache-files.mjs
+```
 
 ## Checks
 
 ```sh
-npm test                              # rules, saving, photos, every line recorded, offline list
-node tools/browser-walk.mjs desktop   # a muted, headless Chrome walks the trail and finds all eight
-node tools/browser-walk.mjs phone     # the same on a sideways phone, with touch
-node tools/shot.mjs "http://127.0.0.1:8790/tools/zoo.html" screenshots/zoo.png 1600x1400
+npm test                                   # rules, UI flow, saving, image references, narration, offline list
+node tools/browser-habitats.mjs desktop     # real Chrome input through all six areas
+node tools/browser-habitats.mjs phone       # same on a sideways touch phone
+node tools/browser-walk.mjs phone swamp     # one place
+node tools/shot.mjs "http://127.0.0.1:8790/tools/zoo.html?only=bullfrog,nightHeron,woodDuck,slider" screenshots/swamp-animals.png 1600x1400
 ```
 
-The browser checks start their own muted Chrome and save screenshots in `screenshots/`. The zoo page
-draws every animal in its still, walking and alert poses, with the box a tap must land in.
+Browser checks require the local server running. They save screenshots in `screenshots/`, replay a
+known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
+alert, and small poses with the tap boxes.
+
+Current verification: **31 tests passed, 0 failed, 0 skipped**. Actual browser rendering and local
+expanded photo downloads could not be verified in the restricted implementation session; see
+[tasks/002-texas-habitats.md](tasks/002-texas-habitats.md). No deployment was performed.
 
 ## App icon
 

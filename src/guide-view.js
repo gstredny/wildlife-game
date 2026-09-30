@@ -13,7 +13,9 @@ export function fillGuide(grid, place, found, onPick) {
     const isFound = found.has(kind);
     if (isFound) {
       const photo = document.createElement("img");
-      photo.src = PHOTOS[kind].file;
+      const reference = PHOTOS[kind];
+      photo.onerror = () => { photo.onerror = null; photo.src = reference.fallback ?? reference.file; };
+      photo.src = reference.file.endsWith(".svg") && navigator.onLine ? reference.remote : reference.file;
       photo.alt = "";
       slot.append(photo, ANIMALS[kind].name);
     } else {

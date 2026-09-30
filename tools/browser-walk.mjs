@@ -6,11 +6,14 @@
 //   node tools/browser-walk.mjs desktop   # 1280×800, keyboard
 //   node tools/browser-walk.mjs phone     # 844×390 sideways phone, touch
 import { spawn } from "node:child_process";
+import { PLACES, placeKinds } from "../src/places.js";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const MODE = process.argv[2] || "desktop";
+const HABITAT = process.argv[3] || "bayou";
+const TOTAL = placeKinds(PLACES[HABITAT]).length;
 const OUT = process.env.OUT || "screenshots/walk";
 const GAME = process.env.GAME || "http://127.0.0.1:8790/";
 const CHROME = process.env.CHROME || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -33,6 +36,12 @@ for (let tries = 0; tries < 50 && !target; tries++) {
   await sleep(100);
   try { target = await (await fetch(`http://127.0.0.1:${port}/json/new?about:blank`, { method: "PUT" })).json(); } catch {}
 }
+if (!target) {
+  console.error("Browser verification blocked: Chrome could not start.");
+  chrome.kill();
+  rmSync(profile, { recursive: true, force: true, maxRetries: 5 });
+  process.exit(1);
+}
 const ws = new WebSocket(target.webSocketDebuggerUrl);
 await new Promise(resolve => { ws.onopen = resolve; });
 let nextId = 1;
@@ -45,11 +54,11 @@ ws.onmessage = ({ data }) => {
   if (message.method === "Runtime.consoleAPICalled" && message.params.type === "error") errors.push(message.params.args.map(arg => arg.value ?? arg.description).join(" "));
 };
 const send = (method, params = {}) => new Promise(resolve => { const id = nextId++; pending.set(id, resolve); ws.send(JSON.stringify({ id, method, params })); });
-const evaluate = async expression => (await send("Runtime.evaluate", { expression, returnByValue: true })).result?.result?.value;
+const evaluate = async expression => (await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true })).result?.result?.value;
 let shots = 0;
 async function shot(name) {
   const { result } = await send("Page.captureScreenshot", { format: "png" });
-  const file = `${OUT}/${MODE}-${String(++shots).padStart(2, "0")}-${name}.png`;
+  const file = `${OUT}/${MODE}-${HABITAT}-${String(++shots).padStart(2, "0")}-${name}.png`;
   writeFileSync(file, Buffer.from(result.data, "base64"));
   console.log("shot", file);
 }
@@ -58,6 +67,7 @@ const visible = id => evaluate(`!document.getElementById("${id}").closest("[hidd
 
 // A real tap (phone) or click (computer) in the middle of an element.
 async function press(id) {
+  await evaluate(`document.getElementById("${id}").scrollIntoView({ block: "center" })`);
   const { x, y } = await centerOf(id);
   if (phone) {
     await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
@@ -86,6 +96,8 @@ async function walkRight(ms) {
 
 await send("Page.enable");
 await send("Runtime.enable");
+await send("Network.enable");
+await send("Network.setBlockedURLs", { urls: ["*commons.wikimedia.org*", "*upload.wikimedia.org*"] });
 await send("Emulation.setDeviceMetricsOverride", size);
 if (phone) await send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
 await send("Page.navigate", { url: GAME });
@@ -100,13 +112,13 @@ await shot("field-guide-empty");
 const clue = await evaluate(`document.getElementById("guide-hint").textContent`);
 if (!/trees/.test(clue)) errors.push(`the cicada's clue did not show: ${clue}`);
 await press("guide-close");
-await press("place-bayou");
+await press(`place-${HABITAT}`);
 await sleep(600);
 await shot("trail-start");
 
 const cards = [];
 let walked = 0;
-for (let step = 0; step < 160; step++) {
+for (let step = 0; step < 200; step++) {
   if (await visible("ranger")) break;
   if (await visible("card")) {
     const name = await evaluate(`document.getElementById("card-name").textContent`);
@@ -138,7 +150,27 @@ if (ranger) {
 await press("guide-button");
 await sleep(500);
 await shot("field-guide");
+// Replay a discovered card, then return to the same habitat after an offline reload.
+await evaluate(`document.querySelector(".guide-slot:not(.missing)").id = "known-slot"`);
+await press("known-slot");
+await sleep(600);
+if (!await evaluate(`document.getElementById("card-image").naturalWidth > 0`)) errors.push("card image failed to render");
+await shot("guide-replay");
+await press("card-close");
+await press("guide-close");
+await press("home-button");
+await evaluate(`navigator.serviceWorker.ready.then(() => new Promise(resolve => {
+  if (navigator.serviceWorker.controller) resolve(true);
+  else navigator.serviceWorker.addEventListener("controllerchange", () => resolve(true), { once: true });
+}))`);
+await send("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+await send("Page.reload");
+await sleep(1500);
+const savedCount = await evaluate(`document.getElementById("place-${HABITAT}").querySelector(".place-count").textContent`);
+if (savedCount !== `${TOTAL} of ${TOTAL} found`) errors.push(`offline saved progress: ${savedCount}`);
+await press(`place-${HABITAT}`);
+await shot("offline-return");
 for (const error of errors) console.log("page error:", error);
-const ok = ranger && cards.length === 8 && errors.length === 0;
-console.log(ok ? "PASS: all eight found, Junior Ranger shown, no page errors" : "FAIL");
+const ok = ranger && cards.length === TOTAL && errors.length === 0;
+console.log(ok ? `PASS: ${HABITAT}, ${TOTAL} animals found, Junior Ranger shown, no page errors` : "FAIL");
 finish(ok ? 0 : 1);
