@@ -92,7 +92,6 @@ const FILES = [
   "./art/animals/watersnake.svg",
   "./art/animals/woodDuck.svg",
   "./art/animals/woodpecker.svg",
-  "./art/photo-sources.json",
   "./voice/manifest.json",
   "./manifest.json",
   "./icons/apple-touch-icon.png",

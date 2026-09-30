@@ -13,7 +13,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCES = ROOT / 'art' / 'photo-sources.json'
+CATALOG = ROOT / 'src' / 'photos-new.js'
+HEADER = '// Verified Commons photo references and the local illustration fallbacks.\nexport const NEW_PHOTOS = '
 HEADERS = {'User-Agent': 'WildlifeGamePhotoFetcher/0.2 (https://github.com/gstredny)'}
 
 
@@ -34,15 +35,17 @@ def download_photo(photo, target):
                         source.name, '-o', str(target)], check=True)
 
 
+def load_catalog():
+    text = CATALOG.read_text()
+    return json.loads(text[text.index('{'):text.rindex('}') + 1])
+
+
 def save_catalog(photos):
-    SOURCES.write_text(json.dumps(photos, indent=2) + '\n')
-    (ROOT / 'src' / 'photos-new.js').write_text(
-        '// Licensed Commons photos with local illustration fallbacks.\nexport const NEW_PHOTOS = '
-        + json.dumps(photos, indent=2) + ';\n')
+    CATALOG.write_text(HEADER + json.dumps(photos, indent=2) + ';\n')
 
 
 def main():
-    photos = json.loads(SOURCES.read_text())
+    photos = load_catalog()
     kinds = sys.argv[1:] or list(photos)
     for kind in kinds:
         photo = photos[kind]

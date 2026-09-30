@@ -79,7 +79,7 @@ python3 tools/fetch-habitat-photos.py
 
 The downloader preserves each successful file, updates the image catalog, and regenerates the
 offline cache list. It scales the complete photograph rather than cropping away identification
-features. Photo metadata lives in `art/photo-sources.json`; attribution is in [CREDITS.md](CREDITS.md).
+features. Photo metadata lives in `src/photos-new.js`; attribution is in [CREDITS.md](CREDITS.md).
 The original downloader remains `tools/fetch-photos.py`.
 
 After changing an animal drawing or adding game modules:
