@@ -72,8 +72,8 @@ export function snap(walk, animal) {
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when the explorer reaches a hiding animal
 // or a tapped animal comes into reach, { stars } for how many stars were caught, { bump: true } when a
-// hazard hits, { end: true } the first time the explorer reaches the goal flag at the end. A bump pauses a walk to a
-// tapped spot; it carries on after.
+// hazard hits, { end: true } the first time the explorer reaches the goal flag at the end. A bump
+// pauses a walk to a tapped spot; it carries on after.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
   walk.hurt = Math.max(0, walk.hurt - dt);
