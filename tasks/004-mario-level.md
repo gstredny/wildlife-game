@@ -93,3 +93,8 @@ Slices 2–4 (George: "finish it all"):
   ball could vanish mid-bounce beside the log. Fix (eb9ef10): a ball's bounces fit its lane, so it
   lands at the end; test checks the first and last height on every prairie and gulf lane. `npm test`
   69 passed, 0 failed, 0 skipped; local browser check 12 of 12 PASS. Cache wildlife-habitats-v6.
+- Deployed eb9ef10 (Pages "built 47298c8", live sw.js wildlife-habitats-v6). Live check
+  `node tools/browser-habitats.mjs desktop phone`: 10 PASS, then the batch stopped right after the
+  prairie phone run's first screenshot (start screen, before any play) with no result line; cause not
+  found (the filter hid the output). Re-run one by one on the live site: prairie phone PASS (15
+  animals), gulf phone PASS (9 animals), no page errors. So all 12 place-and-device runs passed live.
