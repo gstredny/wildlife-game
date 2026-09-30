@@ -14,8 +14,6 @@ Verified: `npm test` 43 passed, 0 failed, 0 skipped. `node tools/browser-habitat
 on the final tree (see the task file).
 
 Open:
-- George to listen to two clips the checker kept flagging: laughing gull (voice/361eda6c352f.mp3) and
-  caracara fact (voice/19a74902e70a.mp3).
 - Ideas not built: fire ants or other hazards, a star total at the trail end, the same guess card in
   the fish game.
 - Older: look-alike drawings (armadillo, nutria, opossum, otter), the kestrel drawing, and the

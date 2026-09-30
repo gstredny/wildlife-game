@@ -68,3 +68,4 @@ After:
   snow goose thumbnail, paint-bat.js, players.js and a new clip all return 200.
   `GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-walk.mjs phone prairie`: exit 0,
   PASS, 15 animals, Junior Ranger, offline return, players step, no page errors.
+- George listened to the two flagged clips (laughing gull, caracara fact) twice: "Both sound right".
