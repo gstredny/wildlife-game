@@ -78,3 +78,11 @@ Slices 2–4 (George: "finish it all"):
   wildlife-habitats-v4 and serves `src/paint-hiding.js` and the new clips. Live phone walk of the
   Backyard (`GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-walk.mjs phone
   backyard`): PASS, 11 animals, Junior Ranger shown, no page errors.
+- George: "the mosquitoes are disappearing before they get to me. Everything else looks to be working
+  well." Cause: every lane ended 120 short of the bush on its left (kept bushes safe), and a child
+  stands at that bush after each card, so every hazard vanished just in front of them; mosquitoes
+  showed it most, vanishing in mid-air. Fix (eb03c3e): lanes run past the bush to the log behind it;
+  a flier flies up and off the screen at its lane's end. New tests: a child waiting at each place's
+  bush gets reached; a mosquito's last height is off the top of the screen. `npm test` 68 passed,
+  0 failed, 0 skipped; `node tools/browser-habitats.mjs desktop phone` 12 of 12 PASS, no page errors.
+  Cache wildlife-habitats-v5.
