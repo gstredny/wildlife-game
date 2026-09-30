@@ -97,10 +97,12 @@ try {
     assert.equal($('card').hidden, false);
     assert.ok($('card').classList.contains('guessing'), 'the answer starts hidden');
     assert.ok(GUESSES.includes($('card-kicker').textContent));
+    flush();
+    assert.ok($('card').classList.contains('guessing'), 'the picture waits until the child is ready');
     click('card-tell');
     assert.ok(!$('card').classList.contains('guessing'));
     assert.equal($('card-kicker').textContent, 'You found a new animal!');
-    assert.equal(timers.size, 0, 'telling early stops the wait');
+    assert.equal(timers.size, 0, 'the card waits for the tap, with no timer');
     click('card-close'); click('home-button');
   });
 

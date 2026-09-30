@@ -24,7 +24,6 @@ const found = new Set(players.list[players.current].found); // the current playe
 let place = PLACES.bayou;
 const keys = new Set();
 const SNAP_POSE = 0.7;
-const GUESS_WAIT = 7000; // time to shout out a guess before the ranger tells
 
 let walk = null; // the walk under way, or null on the start screen
 let preview = createWalk(place, new Set());
@@ -36,14 +35,12 @@ let posing = 0;
 let tipped = false;
 let rangerNext = false;
 let cardFrom = null;
-let guessing = 0; // the timer that tells a new animal's name
 let view = viewFor(innerWidth, innerHeight, 0);
 
 // ---- Screens ----
 
 const PANELS = ["start", "card", "guide", "ranger", "players"];
 function show(panel) {
-  clearTimeout(guessing);
   $("card").classList.remove("guessing");
   $("overlay").hidden = !panel;
   for (const name of PANELS) $(name).hidden = name !== panel;
@@ -113,17 +110,15 @@ function openCard(kind, isNew, from) {
   $("card-hear").onclick = () => voice.say(cardSpeech(kind), { force: true });
   show("card");
   if (!isNew) return void voice.say(cardSpeech(kind));
-  // A new animal: the ranger asks first and waits, so a child can shout out a guess.
+  // A new animal: the ranger asks, then waits with the picture until the child taps "Tell me!".
   const question = GUESSES[Math.floor(Math.random() * GUESSES.length)];
   $("card").classList.add("guessing");
   $("card-kicker").textContent = question;
   $("card-tell").onclick = () => tell(kind);
   voice.say(question);
-  guessing = setTimeout(() => tell(kind), GUESS_WAIT);
 }
 
 function tell(kind) {
-  clearTimeout(guessing);
   $("card").classList.remove("guessing");
   $("card-kicker").textContent = "You found a new animal!";
   voice.say(cardSpeech(kind));
