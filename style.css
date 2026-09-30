@@ -155,7 +155,6 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
 .start-panel { width: min(100%, 1020px); text-align: center; }
 .collection-count { margin: 0 0 18px; color: var(--sun); font-weight: 700; }
 .places-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.place-icon { font-size: 40px; line-height: 1.2; }
 .place-preview { width: calc(100% + 36px); height: 100px; object-fit: cover; margin: -16px -18px 8px; border-radius: 20px 20px 0 0; }
 .guide-filter { display: flex; gap: 12px; align-items: center; margin: 10px 0 16px; }
 .guide-filter select { font: inherit; padding: 10px; border-radius: 12px; background: #fff7e6; color: #1f3b2c; max-width: 100%; }
@@ -165,8 +164,10 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .place-card {
   width: 100%;
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
   gap: 4px;
-  padding: 16px 18px 60px;
+  padding: 16px 18px;
   border: 0;
   border-radius: 20px;
   background: linear-gradient(135deg, #5d9fb0, #4f7d3a);
@@ -177,7 +178,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .place-name { font-size: clamp(19px, 3.5vmin, 26px); font-weight: 800; }
 .place-blurb { font-size: 15px; opacity: 0.95; }
 .place-count { font-size: 15px; color: var(--sun); font-weight: 700; }
-.place-card { position: relative; }
+.place-preview, .place-name, .place-blurb { grid-column: 1 / -1; }
 .habitat-swamp { background: linear-gradient(135deg, #4b827d, #365d4b); }
 .habitat-bayou { background: linear-gradient(135deg, #5d9fb0, #4f7d3a); }
 .habitat-woods { background: linear-gradient(135deg, #64894c, #3e5838); }
@@ -185,9 +186,6 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .habitat-prairie { background: linear-gradient(135deg, #a2843e, #687b38); }
 .habitat-gulf { background: linear-gradient(135deg, #328aa8, #4b6f8d); }
 .place-go {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
   padding: 8px 16px;
   border-radius: 20px;
   background: var(--sun);
@@ -322,9 +320,13 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   .guide-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
   .start-panel h1 { font-size: 32px; }
   .start-panel { padding: 16px; }
-  .place-icon { font-size: 26px; }
-  .place-preview { width: calc(100% + 24px); height: 74px; margin: -10px -12px 6px; }
-  .place-card { padding: 10px 12px 48px; }
+  /* All six places in one row, so the choices fit without scrolling. The whole card is the button. */
+  .places-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+  .start-panel .lead, .place-blurb, .place-go { display: none; }
+  .place-card { grid-template-columns: 1fr; padding: 8px 10px 10px; }
+  .place-preview { width: calc(100% + 20px); height: 64px; margin: -8px -10px 4px; }
+  .place-name { font-size: clamp(13px, 2.1vw, 17px); }
+  .place-count { font-size: clamp(11px, 1.7vw, 14px); white-space: nowrap; }
   .guide-slot { font-size: 12px; border-radius: 12px; padding-bottom: 6px; }
   .guide-slot.missing::after { font-size: 17px; top: 2px; right: 6px; }
   .guide-panel h2 { font-size: 26px; margin-bottom: 10px; }
@@ -332,9 +334,21 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 
 /* Tall, narrow screens: photo on top. */
 @media (max-aspect-ratio: 4/5) {
-  .places-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .place-card { grid-template-columns: 1fr; }
+  .place-go { justify-self: start; }
+  .place-blurb { display: none; }
   .card-panel { grid-template-columns: 1fr; }
   .guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Shorter screens, like a tablet held sideways: drop the intro line so all six places fit. */
+@media (max-height: 790px) {
+  .start-panel .lead { display: none; }
+}
+
+/* Phones held upright: two places per row. */
+@media (max-width: 600px) {
+  .places-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
