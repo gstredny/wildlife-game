@@ -76,7 +76,7 @@ try {
   test('a delayed camera card cannot interrupt a newly chosen habitat', () => {
     click('place-swamp');
     for (let i = 0; i < 80 && !$('snap-button').classList.contains('ready'); i++) {
-      key('keydown', 'ArrowRight'); frame();
+      key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
     assert.ok($('snap-button').classList.contains('ready'));
     click('snap-button');
@@ -90,7 +90,7 @@ try {
   test('a new animal card asks what it is before telling', () => {
     click('place-swamp'); frame();
     for (let i = 0; i < 300 && !$('snap-button').classList.contains('ready'); i++) {
-      key('keydown', 'ArrowRight'); frame();
+      key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
     click('snap-button');
     const [[id, openCard]] = timers; timers.delete(id); openCard();
@@ -115,7 +115,7 @@ try {
         if (!$('ranger').hidden) { click('ranger-home'); break; }
         if ($('snap-button').classList.contains('ready')) { click('snap-button'); flush(); continue; }
         if ($('hud-count').textContent === `${placeKinds(place).length} of ${placeKinds(place).length} found`) { click('home-button'); break; }
-        key('keydown', 'ArrowRight');
+        key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp');
       }
       assert.ok(budget < 1400, `${place.name} did not complete`);
       assert.equal($('hud-count').textContent, `${placeKinds(place).length} of ${placeKinds(place).length} found`);

@@ -1,3 +1,4 @@
+import { layCourse } from './course.js';
 // Six places to explore around Katy and on a trip to the Texas coast.
 // Entries are [species, drawing size, lane]. A shared species counts once in the Field Guide.
 const HABITATS = {
@@ -80,7 +81,7 @@ function makePlace(key, habitat) {
     welcome: `Welcome to ${habitat.name}! I'm Ranger Mike. ${animals.length} animals live here. Walk along and tap an animal to take its picture!`,
     end: `That's the end of ${habitat.name}! Walk back to look for the animals you missed.`,
     ranger: `You found every animal in ${habitat.name}! You're a Junior Ranger!`,
-    length, trees, water, animals
+    length, trees, water, animals, ...layCourse(animals)
   };
 }
 export const PLACES = Object.fromEntries(Object.entries(HABITATS).map(([key, habitat]) => [key, makePlace(key, habitat)]));

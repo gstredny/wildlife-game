@@ -11,7 +11,7 @@ import { addPlayer, loadPlayers, recordFind, savePlayers } from "./players.js";
 import { fillPlayers } from "./players-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
-import { createWalk, inReach, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
+import { createWalk, inReach, jump, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
 import { createVoice } from "./voice.js";
 
 const $ = id => document.getElementById(id);
@@ -31,6 +31,7 @@ let preview = createWalk(place, new Set());
 preview.x = 520;
 let camera = 0;
 let hold = 0;
+let jumpHeld = false;
 let posing = 0;
 let tipped = false;
 let rangerNext = false;
@@ -55,6 +56,7 @@ const openPanel = () => PANELS.find(name => !$(name).hidden) ?? null;
 
 function counts() {
   $("hud-count").textContent = progress(place, found);
+  $("hud-stars").textContent = `⭐ ${walk?.stars.size ?? 0} of ${place.stars.length}`;
   $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
   $("players-button").textContent = `👤 ${players.current}`;
   fillPlaces($("places"), found, startWalk);
@@ -181,6 +183,12 @@ function direction() {
   return hold || (right - left);
 }
 
+// Space, the up arrow, W, or the jump button. Holding it keeps hopping.
+function tryJump() {
+  if (jump(walk)) sound.play("hop");
+}
+const jumping = () => jumpHeld || keys.has(" ") || keys.has("ArrowUp") || keys.has("w");
+
 function trySnap() {
   const target = snapTarget(walk);
   if (target) takePicture(snap(walk, target));
@@ -189,8 +197,9 @@ function trySnap() {
 
 function release() {
   hold = 0;
+  jumpHeld = false;
   keys.clear();
-  for (const id of ["left-button", "right-button"]) $(id).classList.remove("held");
+  for (const id of ["left-button", "right-button", "jump-button"]) $(id).classList.remove("held");
 }
 
 function tick(dt) {
@@ -199,9 +208,14 @@ function tick(dt) {
     return;
   }
   posing = Math.max(0, posing - dt);
+  if (jumping() && posing === 0) tryJump();
   const result = stepWalk(walk, posing > 0 ? 0 : dt, posing > 0 ? 0 : direction());
   if (posing > 0) walk.time += dt;
   if (result.snap) takePicture(result.snap);
+  if (result.stars) {
+    sound.play("star");
+    counts();
+  }
   if (result.end && !placeKinds(place).every(kind => found.has(kind))) voice.say(place.end, { polite: true });
   const target = snapTarget(walk);
   const fresh = target && !found.has(target.kind);
@@ -264,6 +278,20 @@ for (const [id, step] of [["left-button", -1], ["right-button", 1]]) {
   }
 }
 
+const jumpButton = $("jump-button");
+jumpButton.addEventListener("pointerdown", event => {
+  jumpButton.setPointerCapture?.(event.pointerId);
+  jumpHeld = true;
+  jumpButton.classList.add("held");
+  if (walk && !openPanel()) tryJump();
+});
+for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
+  jumpButton.addEventListener(type, () => {
+    jumpHeld = false;
+    jumpButton.classList.remove("held");
+  });
+}
+
 addEventListener("keydown", event => {
   const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
   if (key === "Escape") {
@@ -272,10 +300,8 @@ addEventListener("keydown", event => {
     return;
   }
   if (!walk || openPanel()) return;
-  if (key === " " || key === "Enter") {
-    event.preventDefault();
-    trySnap();
-  }
+  if (key === "Enter") trySnap();
+  if (key === " " || key === "ArrowUp") event.preventDefault();
   keys.add(key);
 });
 addEventListener("keyup", event => keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key));

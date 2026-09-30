@@ -80,17 +80,19 @@ async function press(id) {
   await sleep(150);
 }
 
-// Walk right for a moment: hold the arrow key, or a thumb on the right walk button.
+// Walk right for a moment, hopping over the logs: hold the right arrow and space, or one thumb on
+// the right walk button and the other on the jump button.
 async function walkRight(ms) {
   if (phone) {
-    const { x, y } = await centerOf("right-button");
-    await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+    const touches = [await centerOf("right-button"), await centerOf("jump-button")];
+    await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: touches });
     await sleep(ms);
     await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   } else {
-    await send("Input.dispatchKeyEvent", { type: "keyDown", key: "ArrowRight", code: "ArrowRight", windowsVirtualKeyCode: 39 });
+    const keys = [["ArrowRight", "ArrowRight", 39], [" ", "Space", 32]];
+    for (const [key, code, windowsVirtualKeyCode] of keys) await send("Input.dispatchKeyEvent", { type: "keyDown", key, code, windowsVirtualKeyCode });
     await sleep(ms);
-    await send("Input.dispatchKeyEvent", { type: "keyUp", key: "ArrowRight", code: "ArrowRight", windowsVirtualKeyCode: 39 });
+    for (const [key, code, windowsVirtualKeyCode] of keys) await send("Input.dispatchKeyEvent", { type: "keyUp", key, code, windowsVirtualKeyCode });
   }
 }
 

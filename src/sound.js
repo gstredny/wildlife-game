@@ -50,6 +50,15 @@ export function createSound(AudioContextClass = globalThis.AudioContext || globa
       [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6].forEach((note, index) =>
         tone({ from: note, start: 0.12 + index * 0.08, length: 0.26, type: "triangle", gain: 0.35 }));
     },
+    // Boing: a jump.
+    hop() {
+      tone({ from: NOTES.C5, to: NOTES.C6, length: 0.14, type: "square", gain: 0.12 });
+    },
+    // Ding-ding: a star caught.
+    star() {
+      tone({ from: NOTES.E5 * 2, length: 0.08, type: "triangle", gain: 0.3 });
+      tone({ from: NOTES.C6 * 1.5, start: 0.07, length: 0.2, type: "triangle", gain: 0.3 });
+    },
     // A little fanfare: every animal on the trail is found.
     ranger() {
       [[NOTES.G4, 0], [NOTES.C5, 0.14], [NOTES.E5, 0.28], [NOTES.G5, 0.42], [NOTES.E5, 0.62], [NOTES.G5, 0.76]]

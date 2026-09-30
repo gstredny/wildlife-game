@@ -3,9 +3,23 @@
 export const WALK_SPEED = 260;
 export const REACH = 230; // how close the explorer must be to take an animal's picture
 export const EDGE = 90; // the explorer stops this far from either end of the trail
+const JUMP_SPEED = 820; // straight up, so a jump rises about 145 over the path
+const GRAVITY = 2300;
+const HALF = 26; // half the explorer's width, for bumping into logs
+const BODY = 150; // the explorer's height, for catching stars
+const STAR_REACH = 36;
 
+// `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk.
 export function createWalk(place, found = new Set()) {
-  return { place, x: EDGE + 40, facing: 1, moving: false, target: null, time: 0, found, reachedEnd: false };
+  return { place, x: EDGE + 40, y: 0, vy: 0, facing: 1, moving: false, target: null, time: 0, found,
+    stars: new Set(), reachedEnd: false };
+}
+
+// Jumps, if the explorer is standing on the path or a log. Returns whether it jumped.
+export function jump(walk) {
+  if (walk.vy !== 0 || walk.y !== floorAt(walk, walk.x)) return false;
+  walk.vy = JUMP_SPEED;
+  return true;
 }
 
 // An animal wanders: it rests at one end, walks across, rests, walks back. Returns where it is at
@@ -49,7 +63,7 @@ export function snap(walk, animal) {
 
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when a tapped animal comes into reach,
-// { end: true } the first time the explorer reaches the end of the trail.
+// { stars } for how many stars were caught, { end: true } the first time the explorer reaches the end.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
   if (move) walk.target = null;
@@ -64,12 +78,52 @@ export function stepWalk(walk, dt, move = 0) {
   }
   walk.moving = direction !== 0;
   if (direction) walk.facing = direction;
-  walk.x = clamp(walk.x + direction * WALK_SPEED * dt, walk.place.length);
+  const next = clamp(walk.x + direction * WALK_SPEED * dt, walk.place.length);
+  const wall = wallBetween(walk, walk.x, next);
+  walk.x = wall ? wall.x - direction * (wall.w / 2 + HALF) : next;
+  // A walk to a tapped spot hops over a log in the way.
+  if (wall && walk.target) jump(walk);
+  fall(walk, dt);
+  const result = {};
+  const stars = catchStars(walk);
+  if (stars) result.stars = stars;
   if (!walk.reachedEnd && walk.x >= walk.place.length - EDGE - 1) {
     walk.reachedEnd = true;
-    return { end: true };
+    result.end = true;
   }
-  return {};
+  return result;
+}
+
+// The top of what the explorer stands on at `x`: a log, or the path (0).
+function floorAt(walk, x) {
+  return Math.max(0, ...walk.place.logs.filter(log => Math.abs(log.x - x) < log.w / 2 + HALF).map(log => log.h));
+}
+
+// The nearest log taller than the explorer's feet between `from` and `to`, if any.
+function wallBetween(walk, from, to) {
+  const [low, high] = from < to ? [from, to] : [to, from];
+  return walk.place.logs.filter(log => walk.y < log.h && log.x + log.w / 2 + HALF > low && log.x - log.w / 2 - HALF < high)
+    .sort((first, second) => Math.abs(first.x - from) - Math.abs(second.x - from))[0] ?? null;
+}
+
+function fall(walk, dt) {
+  walk.vy -= GRAVITY * dt;
+  walk.y += walk.vy * dt;
+  const floor = floorAt(walk, walk.x);
+  if (walk.y <= floor) {
+    walk.y = floor;
+    walk.vy = 0;
+  }
+}
+
+function catchStars(walk) {
+  let caught = 0;
+  walk.place.stars.forEach((star, index) => {
+    if (walk.stars.has(index) || Math.abs(star.x - walk.x) > STAR_REACH || star.y < walk.y || star.y > walk.y + BODY) return;
+    walk.stars.add(index);
+    caught++;
+  });
+  return caught;
 }
 
 function clamp(x, length) {

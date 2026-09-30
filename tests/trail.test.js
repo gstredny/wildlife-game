@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PLACES, placeKinds } from "../src/places.js";
-import { animalAt, createWalk, EDGE, REACH, snap, snapTarget, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
+import { animalAt, createWalk, EDGE, jump, REACH, snap, snapTarget, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
 
 const bayou = PLACES.bayou;
 const heron = bayou.animals.find(animal => animal.kind === "heron");
@@ -64,7 +64,59 @@ test("pressing an arrow cancels a walk to a tapped spot", () => {
 test("reaching the end of the trail is reported once", () => {
   const walk = createWalk(bayou);
   const ends = [];
-  for (let second = 0; second < 40; second++) if (stepWalk(walk, 1, 1).end) ends.push(second);
+  for (let frame = 0; frame < 60 * 60; frame++) {
+    jump(walk);
+    if (stepWalk(walk, 1 / 60, 1).end) ends.push(frame);
+  }
   assert.equal(ends.length, 1);
   assert.equal(walk.x, bayou.length - EDGE);
+});
+
+// Walks right for `seconds` at 60 frames a second, jumping whenever `hop` says so.
+function run(walk, seconds, hop = () => false) {
+  let stars = 0;
+  for (let frame = 0; frame < seconds * 60; frame++) {
+    if (hop(walk)) jump(walk);
+    stars += stepWalk(walk, 1 / 60, 1).stars ?? 0;
+  }
+  return stars;
+}
+
+test("a log blocks the path until the explorer jumps over it", () => {
+  const [log] = bayou.logs;
+  const walk = createWalk(bayou);
+  run(walk, 6);
+  assert.ok(walk.x < log.x, "stopped in front of the log");
+  assert.equal(walk.y, 0);
+  run(walk, 1.5, each => each.x > log.x - 200);
+  assert.ok(walk.x > log.x, "jumped over it");
+});
+
+test("the explorer can stand on a log, and only jumps from solid ground", () => {
+  const [log] = bayou.logs;
+  const walk = createWalk(bayou);
+  walk.x = log.x - log.w / 2 - 40;
+  assert.equal(jump(walk), true);
+  assert.equal(jump(walk), false, "no jumping in mid-air");
+  for (let frame = 0; frame < 20; frame++) stepWalk(walk, 1 / 60, 1);
+  for (let frame = 0; frame < 60 && walk.vy !== 0; frame++) stepWalk(walk, 1 / 60, 0);
+  assert.equal(walk.y, log.h, "landed on top");
+});
+
+test("stars float along every trail, and a jump catches them", () => {
+  for (const place of Object.values(PLACES)) assert.ok(place.stars.length >= 6, `${place.name} has stars`);
+  const walk = createWalk(bayou);
+  const onFoot = run(walk, 4);
+  const jumper = createWalk(bayou);
+  const hopping = run(jumper, 4, () => true);
+  assert.ok(hopping > onFoot, `jumping catches more stars (${hopping} vs ${onFoot})`);
+  assert.equal(jumper.stars.size, hopping);
+});
+
+test("a walk to a tapped spot hops over logs on the way", () => {
+  const [log] = bayou.logs;
+  const walk = createWalk(bayou);
+  walkTo(walk, log.x + 300);
+  for (let frame = 0; frame < 600 && walk.target; frame++) stepWalk(walk, 1 / 60);
+  assert.ok(Math.abs(walk.x - (log.x + 300)) < 6);
 });

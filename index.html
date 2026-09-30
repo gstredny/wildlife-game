@@ -22,6 +22,7 @@
     <div class="hud-card">
       <strong id="hud-place">Bayou Trail</strong>
       <span id="hud-count">0 of 8 found</span>
+      <span id="hud-stars" class="hud-stars">⭐ 0 of 0</span>
     </div>
     <div class="hud-actions">
       <button id="voice-button" class="round-button voice-toggle" type="button" aria-label="Turn the voice off">🔊</button>
@@ -31,9 +32,14 @@
   </header>
 
   <div id="controls" class="controls" hidden>
-    <button id="left-button" class="walk-button" type="button" aria-label="Walk left">◀</button>
-    <button id="snap-button" class="snap-button" type="button" aria-label="Take a picture">📷</button>
-    <button id="right-button" class="walk-button" type="button" aria-label="Walk right">▶</button>
+    <div class="control-group">
+      <button id="left-button" class="walk-button" type="button" aria-label="Walk left">◀</button>
+      <button id="right-button" class="walk-button" type="button" aria-label="Walk right">▶</button>
+    </div>
+    <div class="control-group">
+      <button id="snap-button" class="snap-button" type="button" aria-label="Take a picture">📷</button>
+      <button id="jump-button" class="walk-button jump-button" type="button" aria-label="Jump">⬆</button>
+    </div>
   </div>
   <div id="flash" class="flash"></div>
 
