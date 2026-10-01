@@ -1,5 +1,7 @@
 // Plays the Bayou Trail in its own muted, headless Chrome with real input: walks and jumps right to
-// each hiding animal, reads every card, and ends as a Junior Ranger. Saves screenshots
+// each hiding animal, reads every card, and ends as a Junior Ranger. It plays like the careful child
+// in tests/careful.js, looking at the game about 30 times a second; after a game over it taps Try
+// again (found animals stay found). Saves screenshots
 // and fails on any page error. No packages (Node 22+).
 //
 //   python3 -m http.server 8790 --bind 127.0.0.1 &
@@ -80,20 +82,58 @@ async function press(id) {
   await sleep(150);
 }
 
-// Walk right for a moment, hopping over the logs: hold the right arrow and space, or one thumb on
-// the right walk button and the other on the jump button.
-async function walkRight(ms) {
+// What the careful child would press now, as "r" (right) and "j" (jump), with how many animals are
+// found and whether the explorer is tumbling or at the flag; null with a panel open.
+const LOOK = `Promise.all([import("./src/main.js"), import("./tests/careful.js")]).then(([game, { carefulMove }]) => {
+  const walk = game.currentWalk();
+  if (!walk || !document.getElementById("overlay").hidden) return null;
+  const move = carefulMove(walk);
+  return { move: (move.right ? "r" : "") + (move.jump ? "j" : ""), found: walk.found.size,
+    stop: walk.dying > 0 || walk.endedAt !== null };
+})`;
+const KEYS = { r: ["ArrowRight", "ArrowRight", 39], j: [" ", "Space", 32] };
+const BUTTONS = { r: "right-button", j: "jump-button" };
+
+// Press and hold what `move` names, letting go of the rest: keys on a computer, thumbs on the walk
+// and jump buttons on a phone.
+async function hold(move, held) {
   if (phone) {
-    const touches = [await centerOf("right-button"), await centerOf("jump-button")];
-    await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: touches });
-    await sleep(ms);
-    await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-  } else {
-    const keys = [["ArrowRight", "ArrowRight", 39], [" ", "Space", 32]];
-    for (const [key, code, windowsVirtualKeyCode] of keys) await send("Input.dispatchKeyEvent", { type: "keyDown", key, code, windowsVirtualKeyCode });
-    await sleep(ms);
-    for (const [key, code, windowsVirtualKeyCode] of keys) await send("Input.dispatchKeyEvent", { type: "keyUp", key, code, windowsVirtualKeyCode });
+    if (held) await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    const touches = [];
+    for (const part of move) touches.push(await centerOf(BUTTONS[part]));
+    if (touches.length) await send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: touches });
+    return;
   }
+  for (const part of "rj") {
+    const [key, code, windowsVirtualKeyCode] = KEYS[part];
+    if (held.includes(part) !== move.includes(part)) {
+      await send("Input.dispatchKeyEvent", { type: move.includes(part) ? "keyDown" : "keyUp", key, code, windowsVirtualKeyCode });
+    }
+  }
+}
+
+// Play for a moment with real input, looking at the game about 30 times a second. Fingers come off
+// the buttons as soon as an animal is found, a hazard hits, or the flag is reached, before a panel
+// covers them: a touch held down while its button disappears jams Chrome's touch input.
+let foundSoFar = 0;
+async function walkRight(ms) {
+  let held = "";
+  let settle = false;
+  for (const end = Date.now() + ms; Date.now() < end;) {
+    const look = await evaluate(LOOK);
+    settle = !look || look.stop || look.found !== foundSoFar;
+    if (settle) {
+      foundSoFar = look?.found ?? foundSoFar;
+      break;
+    }
+    if (look.move !== held) {
+      await hold(look.move, held);
+      held = look.move;
+    }
+    await sleep(25);
+  }
+  if (held) await hold("", held);
+  await sleep(settle ? 900 : 50); // after a find, a hit or the flag, wait for the panel about to open
 }
 
 await send("Page.enable");
@@ -120,8 +160,14 @@ await shot("trail-start");
 
 const cards = [];
 let walked = 0;
-for (let step = 0; step < 200; step++) {
+let gameOvers = 0;
+for (let step = 0; step < 300; step++) {
   if (await visible("ranger")) break;
+  if (await visible("gameover")) {
+    if (gameOvers++ === 0) await shot("game-over");
+    await press("gameover-retry");
+    continue;
+  }
   if (await visible("card")) {
     // A new animal's card asks "What animal is this?" first; "Tell me!" shows the answer.
     if (await evaluate(`document.getElementById("card").classList.contains("guessing")`)) {
@@ -141,7 +187,7 @@ for (let step = 0; step < 200; step++) {
   if (walked % 3500 === 0) await shot(`walking-${walked / 1000}s`);
 }
 const count = await evaluate(`document.getElementById("hud-count").textContent`);
-console.log("found:", count, "| cards:", cards.join(", "));
+console.log("found:", count, "| game overs:", gameOvers, "| cards:", cards.join(", "));
 const ranger = await visible("ranger");
 if (ranger) {
   await sleep(500);
