@@ -1,7 +1,7 @@
 # Getting hit means you die, like Super Mario Land
 
 Date: 2026-09-30
-Status: in progress
+Status: done and live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/)
 
 ## Intent contract (George's words)
 
@@ -29,7 +29,7 @@ After:
 - [x] The game-over line recorded (make-voice.py).
 - [x] `node tools/browser-habitats.mjs desktop phone`: all six places, no page errors (12 of 12).
 - [x] Screenshots looked at: the tumble, the hearts, the game-over panel.
-- [ ] Pushed and live; a live browser walk passes.
+- [x] Pushed and live; a live browser walk passes (12 of 12).
 
 ## Attempt log (append-only)
 
@@ -63,3 +63,7 @@ After:
 - Local browser check on 1726cc5: `node tools/browser-habitats.mjs desktop phone` 12 of 12 PASS, no page
   errors (the looking bot hit game over once in woods desktop, woods phone and prairie phone, then
   finished after Try again).
+- Deployed: `git push origin main` 01f861e..1e15135; GitHub Pages "built 1e15135"; live sw.js is
+  wildlife-habitats-v7. Live check `GAME=https://gstredny.github.io/wildlife-game/ node
+  tools/browser-habitats.mjs desktop phone`: 12 of 12 PASS, no page errors (game over once on bayou
+  phone and woods phone, then finished after Try again).
