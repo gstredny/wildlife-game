@@ -1,8 +1,9 @@
 // Wires the game together: the trail map, walking, taking pictures, the card, the Field Guide, the
 // hearts and game over, and the Junior Ranger cheer at the goal flag that opens the next level. The
 // rules live in trail.js and levels.js; drawing lives in render.js.
-import { againLines, cardSpeech, ANIMALS } from "./animals.js";
+import { cardSpeech, ANIMALS } from "./animals.js";
 import { fillCard } from "./card-view.js";
+import { fillChoices } from "./choices-view.js";
 import { throwConfetti } from "./confetti.js";
 import { fillGuide } from "./guide-view.js";
 import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
@@ -100,24 +101,22 @@ function startWalk(key) {
 
 // ---- Pictures and cards ----
 
+// Every picture opens the animal's card; a first find also goes into the Field Guide.
 function takePicture({ kind, first }) {
   posing = SNAP_POSE;
   sound.play("shutter");
   $("flash").classList.remove("go");
   void $("flash").offsetWidth;
   $("flash").classList.add("go");
-  if (!first) {
-    const lines = againLines(kind);
-    voice.say(lines[Math.floor(Math.random() * lines.length)], { polite: true });
-    return;
+  if (first) {
+    recordFind(players, kind, placeKey());
+    savePlayers(players);
+    counts();
+    sound.play("found");
   }
-  recordFind(players, kind, placeKey());
-  savePlayers(players);
-  counts();
-  sound.play("found");
   release();
   const picturedWalk = walk;
-  setTimeout(() => { if (walk === picturedWalk) openCard(kind, true, null); }, 450);
+  setTimeout(() => { if (walk === picturedWalk) openCard(kind, first, null); }, 450);
 }
 
 function openCard(kind, isNew, from) {
@@ -125,18 +124,18 @@ function openCard(kind, isNew, from) {
   fillCard(kind, isNew);
   $("card-hear").onclick = () => voice.say(cardSpeech(kind), { force: true });
   show("card");
-  if (!isNew) return void voice.say(cardSpeech(kind));
-  // A new animal: the ranger asks, then waits with the picture until the child taps "Tell me!".
+  if (from === "guide") return void voice.say(cardSpeech(kind));
+  // On the trail: the ranger asks, then waits with the picture until the child picks the right name.
   const question = GUESSES[Math.floor(Math.random() * GUESSES.length)];
   $("card").classList.add("guessing");
   $("card-kicker").textContent = question;
-  $("card-tell").onclick = () => tell(kind);
+  fillChoices($("card-choices"), kind, () => tell(kind, isNew));
   voice.say(question);
 }
 
-function tell(kind) {
+function tell(kind, isNew) {
   $("card").classList.remove("guessing");
-  $("card-kicker").textContent = "You found a new animal!";
+  $("card-kicker").textContent = isNew ? "That's right! A new animal!" : "That's right!";
   voice.say(cardSpeech(kind));
 }
 

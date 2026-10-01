@@ -101,7 +101,7 @@ try {
     click('home-button');
   });
 
-  test('a new animal card asks what it is before telling', () => {
+  test('an animal card asks what it is, with three names to pick from', () => {
     click(`place-${level1}`); frame();
     for (let i = 0; i < 300 && timers.size === 0; i++) {
       key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
@@ -110,12 +110,29 @@ try {
     assert.equal($('card').hidden, false);
     assert.ok($('card').classList.contains('guessing'), 'the answer starts hidden');
     assert.ok(GUESSES.includes($('card-kicker').textContent));
+    const answer = $('card-name').textContent;
+    const choices = $('card-choices').children;
+    assert.equal(choices.length, 3);
+    assert.equal(choices.filter(choice => choice.textContent === answer).length, 1, 'the right name is there once');
     flush();
-    assert.ok($('card').classList.contains('guessing'), 'the picture waits until the child is ready');
-    click('card-tell');
+    assert.ok($('card').classList.contains('guessing'), 'the picture waits until the child picks');
+    const wrong = choices.find(choice => choice.textContent !== answer);
+    wrong.trigger('click');
+    assert.ok(wrong.disabled && wrong.classList.contains('wrong'), 'a wrong name grays out');
+    assert.ok($('card').classList.contains('guessing'), 'a wrong name tells nothing');
+    choices.find(choice => choice.textContent === answer).trigger('click');
     assert.ok(!$('card').classList.contains('guessing'));
-    assert.equal($('card-kicker').textContent, 'You found a new animal!');
+    assert.equal($('card-kicker').textContent, "That's right! A new animal!");
     assert.equal(timers.size, 0, 'the card waits for the tap, with no timer');
+    click('card-close');
+    // Meeting the same animal again asks again, with the names picked fresh.
+    click('snap-button'); flush();
+    assert.equal($('card').hidden, false);
+    assert.ok($('card').classList.contains('guessing'));
+    assert.equal($('card-name').textContent, answer);
+    assert.equal($('card-choices').children.length, 3);
+    $('card-choices').children.find(choice => choice.textContent === answer).trigger('click');
+    assert.equal($('card-kicker').textContent, "That's right!");
     click('card-close'); click('home-button');
   });
 

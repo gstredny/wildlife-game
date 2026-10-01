@@ -322,10 +322,25 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .card-facts dd { margin: 0; line-height: 1.3; }
 .card-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .more-link { color: var(--cream); font-weight: 700; }
-/* A new animal's card first asks "What animal is this?" and keeps the answer hidden. */
-.card-panel:not(.guessing) .card-tell, .guessing .card-actions > :not(.card-tell) { display: none; }
-.guessing :is(#card-name, #card-fact, #card-say, .card-facts) { visibility: hidden; }
+/* On the trail the card first asks "What animal is this?" with three names, and hides the answer. */
+.card-panel:not(.guessing) .card-choices, .guessing .card-actions { display: none; }
+.guessing :is(#card-name, #card-fact, #card-say, .card-facts) { display: none; }
 .guessing #card-kicker { font-size: clamp(24px, 5vmin, 38px); letter-spacing: 0.02em; }
+.card-choices { display: grid; gap: 10px; }
+.choice-button {
+  min-height: 52px;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: clamp(18px, 3.2vmin, 22px);
+  font-weight: 800;
+  box-shadow: 0 5px 0 var(--sun-dark);
+}
+.choice-button:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--sun-dark); }
+.choice-button.wrong { opacity: 0.35; box-shadow: none; animation: wiggle 0.4s; }
+@keyframes wiggle { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
 
 /* Players: one row per player, with their level, count and latest finds, and Remove (tap twice). */
 .players-list { display: grid; gap: 10px; margin: 12px 0 16px; }
@@ -479,5 +494,5 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .badge, .flash.go, .map-stop.now .stop-dot, .confetti i { animation: none; }
+  .badge, .flash.go, .map-stop.now .stop-dot, .confetti i, .choice-button.wrong { animation: none; }
 }

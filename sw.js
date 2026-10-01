@@ -11,6 +11,8 @@ const FILES = [
   "./src/animals-woods.js",
   "./src/animals.js",
   "./src/card-view.js",
+  "./src/choices-view.js",
+  "./src/choices.js",
   "./src/confetti.js",
   "./src/course.js",
   "./src/field-guide.js",

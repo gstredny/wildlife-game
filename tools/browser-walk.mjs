@@ -70,6 +70,15 @@ const centerOf = async id => JSON.parse(await evaluate(`(() => { const r = docum
 const visible = id => evaluate(`!document.getElementById("${id}").closest("[hidden]")`);
 
 // A real tap (phone) or click (computer) in the middle of an element.
+// Gives the right name button on the card (or a wrong one not yet tapped) an id, so press() can tap it.
+const markChoice = right => evaluate(`(() => {
+  document.getElementById("pick")?.removeAttribute("id");
+  const name = document.getElementById("card-name").textContent;
+  const buttons = [...document.querySelectorAll("#card-choices button")];
+  buttons.find(button => (button.textContent === name) === ${right} && !button.disabled).id = "pick";
+  return "pick";
+})()`);
+
 async function press(id) {
   await evaluate(`document.getElementById("${id}").scrollIntoView({ block: "center" })`);
   const { x, y } = await centerOf(id);
@@ -174,10 +183,16 @@ for (let step = 0; step < 300; step++) {
     continue;
   }
   if (await visible("card")) {
-    // A new animal's card asks "What animal is this?" first; "Tell me!" shows the answer.
+    // The card asks "What animal is this?" with three names. On the first card, tap a wrong name
+    // first; then tap the right one, which shows the answer.
     if (await evaluate(`document.getElementById("card").classList.contains("guessing")`)) {
-      if (cards.length === 0) await shot("card-guess");
-      await press("card-tell");
+      if (cards.length === 0) {
+        await shot("card-guess");
+        await press(await markChoice(false));
+        await sleep(500);
+        await shot("card-wrong");
+      }
+      await press(await markChoice(true));
     }
     const name = await evaluate(`document.getElementById("card-name").textContent`);
     cards.push(name);
