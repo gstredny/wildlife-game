@@ -4,10 +4,11 @@ A game for young children about the real animals around Katy, Texas. Each place 
 like a Super Mario level: a young explorer runs and jumps along a trail, dodges what comes at them,
 catches stars, finds the animals hiding in bushes along the way, and ends at a goal flag. The six
 places are played in order, one at a time, like the levels of Donkey Kong Country: reaching the flag
-beats the level and opens the next one. Each
-new animal opens a card with a real photo and the question "What animal is this?"; when the child is
-ready, **Tell me!** shows the name and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
-goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
+beats the level and opens the next one. Every
+animal the explorer meets opens a card with a real photo, the question "What animal is this?", and
+three names to pick from: the right one and two other animals, picked fresh and mixed up every time.
+A wrong name grays out; the right one shows the name, and Ranger Mike (a warm, recorded male voice)
+reads a fact about it. Every animal found goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
 tapping one gives a clue.
 
 It is a sister to [Little Fish, Big Ocean](https://github.com/gstredny/fish-game), built the same
@@ -50,29 +51,34 @@ Walk with the arrow buttons in the bottom left (or the arrow keys, or A and D) a
 orange button in the bottom right (or Space, the up arrow, or W). Tap anywhere on the trail to walk
 there, hopping over logs on the way.
 
-- **Find the animals.** Every animal not found yet hides in a rustling bush with a bouncing **?** over
-  it. Walk into the bush: the animal comes out, the camera flashes, and its card opens.
+- **Find and name the animals.** Every animal hides in a rustling bush with a bouncing **?** over it,
+  on every walk, even ones already in your Field Guide. Walk into the bush: the animal comes out, the
+  camera flashes, and its card asks you to pick its name.
+- **Earn the paw prints.** The top bar has a paw print for each animal in the level. Name an animal
+  right on the first try and its paw turns gold. The Junior Ranger cheer says how many you named.
 - **Dodge what comes at you.** Each place sends something along the path: mosquitoes on the Swamp
   Boardwalk, acorns on the Bayou Trail, pinecones in the Woodland Walk, fire ants in the Backyard,
-  tumbleweeds on the Katy Prairie, and beach balls on the Gulf Shore. Jump over them. Something still
-  dropping in can't hurt you yet, so watch it land.
+  tumbleweeds on the Katy Prairie, and beach balls on the Gulf Shore. On the first three levels you
+  can jump on the fire ants, pinecones, and acorns to squish them and bounce up, like Mario; from level
+  4 on, jump clean over. Walking into one always hurts. Something still dropping in can't hurt you
+  yet, so watch it land.
 - **Three hearts.** A hit knocks the explorer out: they tumble off the screen and lose a heart, then
   start again at the last bush they reached, blinking for a moment. Lose all three and it's game over:
-  try the place again from the start. Animals you found stay in your Field Guide.
+  **Try again** starts at the last bush you reached with three new hearts, keeping what you met and
+  caught. Animals you found stay in your Field Guide.
 - **Jump.** Logs block the path until you jump over them or onto them; stars float along the way,
   some only reachable with a jump.
 - **Reach the goal flag.** The flag at the end goes up, confetti falls, and the Junior Ranger cheer
   shows how many stars you caught and names the trail that just opened. **Next trail** takes you
   straight there. Beat the sixth and you are a Master Ranger: every trail is open to play again.
 
-Animals you have found stay out in the open: tap one (or the camera, or Enter, near one) to take its
-picture again.
+Animals you have met on this walk stay out in the open: tap one (or the camera, or Enter, near one)
+to take its picture again, and its card asks again.
 
-**Players:** the 👤 button on the home screen shows who is exploring, up to three players. Each
-player has their own Field Guide and their own place on the trail map, saved when they reach a flag:
-George can be on level 3 while Dora is still on level 1. The players screen lists each player's
-level, how many animals they found, and their five latest finds, with the place and time. **Remove**
-takes a player off the device after a second tap. Players are saved on this device only; a player
+**Players:** up to three players. The home screen shows a big button with each player's name; one tap
+switches to them. Each player has their own Field Guide and their own place on the trail map, saved
+when they reach a flag: George can be on level 3 while Dora is still on level 1. **👤 Players**
+adds a player, and **Remove** takes one off the device after a second tap. Players are saved on this device only; a player
 saved before the trail map starts at the first level whose animals they haven't all found.
 
 ## Play on a Mac
