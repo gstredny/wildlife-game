@@ -1,7 +1,7 @@
 # One trail at a time, like Donkey Kong Country
 
 Date: 2026-10-01
-Status: in progress
+Status: done and live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/)
 
 ## Intent contract (George's words)
 
@@ -40,7 +40,7 @@ Assumptions (George vetoes in one line): the level number is saved, not the spot
 - [x] `node tools/browser-habitats.mjs desktop phone`: all six levels, no page errors (12 of 12).
 - [x] Screenshots looked at: the trail map (level 1, a beaten badge, misty stops), the cheer with
   the next trail named, the players screen with levels, the phone layout.
-- [ ] Pushed and live; a live browser walk passes.
+- [x] Pushed and live; a live browser walk passes (12 of 12).
 
 ## Attempt log (append-only)
 
@@ -77,3 +77,8 @@ Assumptions (George vetoes in one line): the level number is saved, not the spot
   cheer, the phone players screen with levels.
 - Open: `tools/browser-walk.mjs` waits forever for a Chrome reply; a per-command timeout would fail a
   hung run in seconds instead of eating the batch. Not changed here (not part of this ask).
+- Deployed: `git push origin main` b502010..29f5763; live sw.js is wildlife-habitats-v8 and serves
+  `src/levels.js` and the Master Ranger clip. Live check, each run under a 7-minute alarm:
+  `GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-walk.mjs <mode> <level>` for
+  desktop and phone, all six levels: 12 of 12 PASS, no page errors, no hangs; every cheer named the
+  next trail, and both gulf runs ended "You explored every trail around Katy, Texas!".
