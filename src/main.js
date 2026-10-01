@@ -15,7 +15,7 @@ import { addPlayer, loadPlayers, MAX_PLAYERS, recordFind, removePlayer, savePlay
 import { fillPlayers } from "./players-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
-import { createWalk, inReach, jump, LIVES, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
+import { createWalk, inReach, jump, LIVES, snap, snapTarget, stepWalk, tryAgain, walkTo } from "./trail.js";
 import { createVoice } from "./voice.js";
 
 const $ = id => document.getElementById(id);
@@ -387,7 +387,11 @@ $("guide-close").addEventListener("click", () => show(walk ? null : "start"));
 $("home-button").addEventListener("click", goHome);
 $("ranger-next").addEventListener("click", () => startWalk(nextLevel()));
 $("ranger-home").addEventListener("click", goHome);
-$("gameover-retry").addEventListener("click", () => startWalk(placeKey()));
+$("gameover-retry").addEventListener("click", () => {
+  tryAgain(walk);
+  counts();
+  show(null);
+});
 $("gameover-home").addEventListener("click", goHome);
 $("players-button").addEventListener("click", openPlayers);
 $("players-close").addEventListener("click", () => show("start"));

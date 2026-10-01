@@ -156,7 +156,7 @@ try {
     click('home-button');
   });
 
-  test('a hit costs a heart, losing all three is game over, and Try again starts the level over', () => {
+  test('a hit costs a heart, losing all three is game over, and Try again starts at the last bush', () => {
     click(`place-${level1}`);
     assert.equal($('hud-lives').textContent, '❤️❤️❤️');
     for (let i = 0; i < 4000 && $('gameover').hidden; i++) {
@@ -168,11 +168,15 @@ try {
     assert.equal($('gameover').hidden, false, 'game over');
     assert.equal($('hud-lives').textContent, '🤍🤍🤍');
     assert.equal($('gameover-place').textContent, PLACES[level1].name);
+    const { checkpoint, met } = game.currentWalk();
+    const metBefore = met.size;
+    assert.ok(checkpoint > createWalk(PLACES[level1]).x, 'a bush was reached');
     click('gameover-retry');
     assert.equal($('gameover').hidden, true);
     assert.equal($('hud-place').textContent, PLACES[level1].name);
     assert.equal($('hud-lives').textContent, '❤️❤️❤️');
-    assert.equal(game.currentWalk().x, createWalk(PLACES[level1]).x, 'back at the start');
+    assert.equal(game.currentWalk().x, checkpoint, 'back at the last bush reached, not the start');
+    assert.equal(game.currentWalk().met.size, metBefore, 'the animals met stay out');
     click('home-button');
   });
 
