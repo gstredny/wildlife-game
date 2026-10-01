@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { cycle, FALL, hazardAt, HAZARDS } from "../src/hazards.js";
 import { PLACES } from "../src/places.js";
-import { createWalk, jump, stepWalk } from "../src/trail.js";
+import { createWalk, jump, LIVES, SAFE, SPOT, stepWalk } from "../src/trail.js";
 
 // A walk where the place's first hazard has just landed and is on its way, `gap` ahead of the explorer.
 function facingHazard(place, gap) {
@@ -32,7 +32,7 @@ test("hazards come all the way to a child waiting at a bush, and stop at the log
     const walk = createWalk(place, new Set([bush.kind]));
     walk.x = bush.x;
     let bumped = false;
-    for (let frame = 0; frame < cycle(lane) * 60 && !bumped; frame++) bumped = Boolean(stepWalk(walk, 1 / 60).bump);
+    for (let frame = 0; frame < cycle(lane) * 60 && !bumped; frame++) bumped = Boolean(stepWalk(walk, 1 / 60).died);
     assert.ok(bumped, `${place.name}: the ${HAZARDS[lane.kind].name} reach a child standing at the bush`);
   }
 });
@@ -59,19 +59,22 @@ for (const place of Object.values(PLACES)) {
     assert.ok(hazardAt(lane, walk.time + 0.5).x < hazardAt(lane, walk.time).x, "heads toward the explorer");
   });
 
-  test(`running into ${name} bumps the explorer back, and they blink for a moment`, () => {
+  test(`running into ${name} costs a heart: the explorer tumbles off the screen, then starts again at the last bush`, () => {
     const walk = facingHazard(place, 100);
-    let bumps = 0;
-    let bumpedAt = null;
-    for (let frame = 0; frame < 72; frame++) {
-      if (stepWalk(walk, 1 / 60, 1).bump) {
-        bumps++;
-        bumpedAt = walk.x;
-        assert.ok(walk.hurt > 0, "blinking");
-      }
-      if (bumpedAt !== null && frame < 40) assert.ok(walk.x <= bumpedAt + 1e-9, "pushed back, not walking on");
+    const bush = place.animals.filter(animal => animal.x - SPOT < walk.x).at(-1);
+    let result = {};
+    for (let frame = 0; frame < 60 && !result.died; frame++) result = stepWalk(walk, 1 / 60, 1);
+    assert.ok(result.died, "the hit kills the explorer");
+    assert.equal(walk.lives, LIVES - 1);
+    let lowest = Infinity;
+    for (let frame = 0; frame < 300 && !result.respawn; frame++) {
+      result = stepWalk(walk, 1 / 60, 1);
+      lowest = Math.min(lowest, walk.y);
     }
-    assert.equal(bumps, 1, "no second bump while blinking");
+    assert.ok(lowest < -300, "tumbled off the bottom of the screen");
+    assert.ok(result.respawn, "starts again");
+    assert.deepEqual([walk.x, walk.y], [bush.x, 0], "at the last bush reached");
+    assert.ok(walk.safe > 0, "blinking");
   });
 
   test(`jumping over ${name} clears them`, () => {
@@ -79,7 +82,7 @@ for (const place of Object.values(PLACES)) {
     for (let frame = 0; frame < 90; frame++) {
       const thing = hazardAt(lane, walk.time);
       if (thing && thing.x - walk.x < 160) jump(walk);
-      assert.equal(stepWalk(walk, 1 / 60, 1).bump, undefined, `no bump at frame ${frame}`);
+      assert.equal(stepWalk(walk, 1 / 60, 1).died, undefined, `no hit at frame ${frame}`);
     }
     assert.ok(walk.x > (hazardAt(lane, walk.time)?.x ?? -Infinity), "the hazard is behind the explorer");
   });
@@ -94,6 +97,7 @@ test("a mosquito flies up and away at the end of its lane instead of vanishing i
     else if (last) break;
   }
   assert.ok(last.y > 560, `off the top of the screen when it goes (${Math.round(last.y)} up)`);
+  assert.ok(last.leaving, "a mosquito flying away can't hit anyone");
 });
 
 test("a bouncing ball lands at the end of its lane, instead of vanishing mid-bounce", () => {
@@ -111,15 +115,29 @@ test("a bouncing ball lands at the end of its lane, instead of vanishing mid-bou
   }
 });
 
-test("a pinecone dropping in bonks only when it comes down to the explorer's head", () => {
-  const place = PLACES.woods;
-  const [lane] = place.lanes;
-  const walk = createWalk(place);
-  walk.time = 10 * cycle(lane) - lane.offset;
-  walk.x = lane.from;
-  let bumpedAt = null;
-  for (let frame = 0; frame < 40 && bumpedAt === null; frame++) {
-    if (stepWalk(walk, 1 / 60).bump) bumpedAt = hazardAt(lane, walk.time).y;
+test("after starting again, nothing hits the blinking explorer for a moment; then hazards are back", () => {
+  const place = PLACES.bayou;
+  const walk = facingHazard(place, 100);
+  let result = {};
+  for (let frame = 0; frame < 400 && !result.respawn; frame++) result = stepWalk(walk, 1 / 60, 1);
+  assert.ok(result.respawn);
+  for (let frame = 0; frame < Math.floor(SAFE * 60) - 1; frame++) assert.equal(stepWalk(walk, 1 / 60).died, undefined, "safe while blinking");
+  let died = false;
+  for (let frame = 0; frame < 60 * 2 * cycle(place.lanes[0]) && !died; frame++) died = Boolean(stepWalk(walk, 1 / 60).died);
+  assert.ok(died, "a child who just stands there is hit again");
+  assert.equal(walk.lives, LIVES - 2);
+});
+
+test("something dropping in can't hit anyone until it lands, so a child sees it coming", () => {
+  for (const place of [PLACES.woods, PLACES.swamp]) {
+    const [lane] = place.lanes;
+    const walk = createWalk(place);
+    walk.time = 10 * cycle(lane) - lane.offset;
+    walk.x = lane.from;
+    let hitAt = null;
+    for (let frame = 0; frame < 60 && hitAt === null; frame++) {
+      if (stepWalk(walk, 1 / 60).died) hitAt = (walk.time + lane.offset) % cycle(lane);
+    }
+    assert.ok(hitAt !== null && hitAt >= FALL, `${place.name}: hit ${hitAt?.toFixed(2)} s after it appeared`);
   }
-  assert.ok(bumpedAt !== null && bumpedAt < 160, `bonked at height ${bumpedAt}`);
 });

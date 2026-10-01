@@ -1,6 +1,6 @@
 // Draws one moment of the walk: scenery, found animals and the bushes where the others hide, logs,
-// stars and pinecones, the explorer (blinking after a bump), and the name of the animal the explorer
-// can photograph again.
+// stars and hazards, the explorer (spinning as they tumble after a hit, blinking after starting
+// again), and the name of the animal the explorer can photograph again.
 import { ANIMALS } from "./animals.js";
 import { baseY } from "./layout.js";
 import { paintCourse } from "./paint-course.js";
@@ -40,9 +40,13 @@ export function paintFrame(context, walk, view, snapping) {
   paintPath(context, view, place, theme);
   paintCourse(context, walk, seen);
   paintHazards(context, walk, seen);
-  if (!(Math.floor(walk.hurt * 12) % 2)) {
+  if (!(Math.floor(walk.safe * 12) % 2)) {
     context.save();
-    context.translate(walk.x, GROUND.path - walk.y);
+    context.translate(walk.x, GROUND.path - walk.y - (walk.dying ? EXPLORER_SIZE / 2 : 0));
+    if (walk.dying) {
+      context.rotate(walk.time * 10);
+      context.translate(0, EXPLORER_SIZE / 2);
+    }
     context.scale(walk.facing, 1);
     paintExplorer(context, EXPLORER_SIZE, time, { walking: walk.moving && walk.vy === 0, snapping });
     context.restore();

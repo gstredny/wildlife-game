@@ -5,7 +5,8 @@ import { loadPlayers, recordFind, savePlayers } from '../src/players.js';
 import { baseY } from '../src/layout.js';
 import { BOXES, PAINTERS } from '../src/painters.js';
 import { PLACES, placeKinds } from '../src/places.js';
-import { animalAt, createWalk, snap, stepWalk, walkTo } from '../src/trail.js';
+import { carefulMove } from './careful.js';
+import { createWalk, jump, LIVES, snap, stepWalk } from '../src/trail.js';
 
 const storage = () => ({ data: new Map(), getItem(key) { return this.data.get(key); }, setItem(key, value) { this.data.set(key, value); } });
 
@@ -18,18 +19,15 @@ test('six habitats cover all 60 animals, including the requested swamp wildlife'
 });
 
 for (const [key, place] of Object.entries(PLACES)) {
-  test(`a child can walk to every animal's hiding spot in ${place.name}`, () => {
+  test(`a careful child can finish ${place.name} with all ${LIVES} hearts, finding every animal`, () => {
     const walk = createWalk(place);
-    for (const animal of place.animals) {
-      walkTo(walk, animal.x);
-      let result;
-      for (let frame = 0; frame < 1800; frame++) {
-        result = stepWalk(walk, 1 / 60);
-        if (result.snap) break;
-      }
-      assert.deepEqual(result.snap, { kind: animal.kind, first: true }, `${key}: ${animal.kind} is unreachable`);
-      assert.ok(animalAt(animal, walk.time).x > 90 && animalAt(animal, walk.time).x < place.length - 90);
+    for (let frame = 0; frame < 60 * 120 && walk.endedAt === null; frame++) {
+      const move = carefulMove(walk);
+      if (move.jump) jump(walk);
+      assert.equal(stepWalk(walk, 1 / 60, move.right ? 1 : 0).died, undefined, `${key}: hit at ${Math.round(walk.x)}`);
     }
+    assert.notEqual(walk.endedAt, null, `${key}: reached the goal flag`);
+    assert.equal(walk.lives, LIVES);
     assert.equal(walk.found.size, placeKinds(place).length);
   });
 }

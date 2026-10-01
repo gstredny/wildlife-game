@@ -7,7 +7,7 @@ const DROP = 260; // how high above the path one appears
 const REST = 0.6; // quiet seconds in a lane between one and the next
 const AWAY = 0.6; // seconds a flier takes to fly up and away at the end of its lane
 
-// `size` is how big it is drawn. `half` and `tall` are the part that bumps, a little smaller, so only
+// `size` is how big it is drawn. `half` and `tall` are the part that hits, a little smaller, so only
 // a real overlap counts. `lift` holds a flier above the path, `bob` bobs it, and `hop` bounces a ball.
 // A flier flies up and away at the end of its lane, instead of vanishing in the air, and a ball's
 // bounces, about 120 along each, fit the lane so it lands at the end.
@@ -25,12 +25,13 @@ export function cycle(lane) {
   return FALL + (lane.from - lane.to) / HAZARDS[lane.kind].speed + REST;
 }
 
-// The lane's hazard at `time`: { x, y, turn } with `y` its height above the path and `turn` how far
-// it has rolled around, or null between them.
+// The lane's hazard at `time`: { x, y, turn, falling, leaving } with `y` its height above the path,
+// `turn` how far it has rolled around, `falling` while it drops in and `leaving` while a flier flies
+// away; or null between them.
 export function hazardAt(lane, time) {
   const { speed, size, drop, lift = 0, bob = 0, hop = 0 } = HAZARDS[lane.kind];
   const age = (time + lane.offset) % cycle(lane);
-  if (age < FALL) return { x: lane.from, y: lift + drop * (1 - (age / FALL) ** 2), turn: 0 };
+  if (age < FALL) return { x: lane.from, y: lift + drop * (1 - (age / FALL) ** 2), turn: 0, falling: true };
   const rolled = speed * (age - FALL);
   const x = lane.from - rolled;
   if (x < lane.to) return null;
@@ -38,5 +39,5 @@ export function hazardAt(lane, time) {
   const length = lane.from - lane.to;
   const bounce = hop * Math.abs(Math.sin(Math.PI * Math.max(1, Math.round(length / 120)) * rolled / length));
   const y = lift + bob * Math.sin((age - FALL) * 7) + bounce + away;
-  return { x, y, turn: -rolled / size };
+  return { x, y, turn: -rolled / size, leaving: away > 0 };
 }

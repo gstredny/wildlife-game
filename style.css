@@ -85,6 +85,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .control-group { display: flex; gap: 14px; align-items: flex-end; }
 .walk-button.jump-button { width: 96px; height: 96px; font-size: 40px; background: rgba(214, 138, 40, 0.75); }
 .hud-stars { color: var(--sun); font-weight: 800; }
+.hud-lives { letter-spacing: 2px; }
 .walk-button {
   width: 84px;
   height: 84px;

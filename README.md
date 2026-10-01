@@ -49,8 +49,11 @@ there, hopping over logs on the way.
   it. Walk into the bush: the animal comes out, the camera flashes, and its card opens.
 - **Dodge what comes at you.** Each place sends something along the path: mosquitoes on the Swamp
   Boardwalk, acorns on the Bayou Trail, pinecones in the Woodland Walk, fire ants in the Backyard,
-  tumbleweeds on the Katy Prairie, and beach balls on the Gulf Shore. Jump over them. One that hits you
-  bumps you back, and you blink for a moment; nobody loses.
+  tumbleweeds on the Katy Prairie, and beach balls on the Gulf Shore. Jump over them. Something still
+  dropping in can't hurt you yet, so watch it land.
+- **Three hearts.** A hit knocks the explorer out: they tumble off the screen and lose a heart, then
+  start again at the last bush they reached, blinking for a moment. Lose all three and it's game over:
+  try the place again from the start. Animals you found stay in your Field Guide.
 - **Jump.** Logs block the path until you jump over them or onto them; stars float along the way,
   some only reachable with a jump.
 - **Reach the goal flag.** The flag at the end goes up, and the Junior Ranger cheer shows how many
@@ -131,9 +134,9 @@ Browser checks require the local server running. They save screenshots in `scree
 known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
 alert, and small poses with the tap boxes.
 
-Current verification (2026-09-30): `npm test` **69 passed, 0 failed, 0 skipped**;
+Current verification (2026-09-30): `npm test` **72 passed, 0 failed, 0 skipped**;
 `node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, no page errors).
-See [tasks/004-mario-level.md](tasks/004-mario-level.md).
+See [tasks/005-lives.md](tasks/005-lives.md).
 
 ## App icon
 

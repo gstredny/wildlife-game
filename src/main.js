@@ -1,17 +1,17 @@
-// Wires the game together: the start screen, walking, taking pictures, the card, the Field Guide and
-// the Junior Ranger cheer at the goal flag. The rules live in trail.js; drawing lives in render.js.
+// Wires the game together: the start screen, walking, taking pictures, the card, the Field Guide, the
+// hearts and game over, and the Junior Ranger cheer at the goal flag. The rules live in trail.js; drawing lives in render.js.
 import { againLines, cardSpeech, ANIMALS } from "./animals.js";
 import { fillCard } from "./card-view.js";
 import { fillGuide } from "./guide-view.js";
 import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
-import { GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
+import { GAME_OVER, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
 import { fillPlaces, progress } from "./place-view.js";
 import { addPlayer, loadPlayers, recordFind, savePlayers } from "./players.js";
 import { fillPlayers } from "./players-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
-import { createWalk, inReach, jump, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
+import { createWalk, inReach, jump, LIVES, snap, snapTarget, stepWalk, walkTo } from "./trail.js";
 import { createVoice } from "./voice.js";
 
 const $ = id => document.getElementById(id);
@@ -34,10 +34,12 @@ let jumpHeld = false;
 let posing = 0;
 let cardFrom = null;
 let view = viewFor(innerWidth, innerHeight, 0);
+// The walk under way, for the screen tests to see where the explorer is.
+export const currentWalk = () => walk;
 
 // ---- Screens ----
 
-const PANELS = ["start", "card", "guide", "ranger", "players"];
+const PANELS = ["start", "card", "guide", "ranger", "players", "gameover"];
 function show(panel) {
   $("card").classList.remove("guessing");
   $("overlay").hidden = !panel;
@@ -48,10 +50,16 @@ function show(panel) {
   if (!walking) release();
 }
 const openPanel = () => PANELS.find(name => !$(name).hidden) ?? null;
+const placeKey = () => Object.keys(PLACES).find(key => PLACES[key] === place);
+// The explorer can be steered: on a walk, with no panel open, not tumbling, and with hearts left.
+const playing = () => walk && !openPanel() && !walk.dying && walk.lives > 0;
 
 function counts() {
   $("hud-count").textContent = progress(place, found);
   $("hud-stars").textContent = `⭐ ${walk?.stars.size ?? 0} of ${place.stars.length}`;
+  const lives = walk?.lives ?? LIVES;
+  $("hud-lives").textContent = "❤️".repeat(lives) + "🤍".repeat(LIVES - lives);
+  $("hud-lives").setAttribute("aria-label", `${lives} of ${LIVES} hearts left`);
   $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
   $("players-button").textContent = `👤 ${players.current}`;
   fillPlaces($("places"), found, startWalk);
@@ -90,7 +98,7 @@ function takePicture({ kind, first }) {
     voice.say(lines[Math.floor(Math.random() * lines.length)], { polite: true });
     return;
   }
-  recordFind(players, kind, Object.keys(PLACES).find(key => PLACES[key] === place));
+  recordFind(players, kind, placeKey());
   savePlayers(players);
   counts();
   sound.play("found");
@@ -186,6 +194,7 @@ function tryJump() {
 const jumping = () => jumpHeld || keys.has(" ") || keys.has("ArrowUp") || keys.has("w");
 
 function trySnap() {
+  if (!playing()) return;
   const target = snapTarget(walk);
   if (target) takePicture(snap(walk, target));
   else voice.say(WALK_CLOSER, { polite: true });
@@ -208,7 +217,16 @@ function tick(dt) {
   const result = stepWalk(walk, posing > 0 ? 0 : dt, posing > 0 ? 0 : direction());
   if (posing > 0) walk.time += dt;
   if (result.snap) takePicture(result.snap);
-  if (result.bump) sound.play("bonk");
+  if (result.died) {
+    sound.play("lose");
+    release();
+    counts();
+  }
+  if (result.gameOver) {
+    $("gameover-place").textContent = place.name;
+    show("gameover");
+    voice.say(GAME_OVER);
+  }
   if (result.stars) {
     sound.play("star");
     counts();
@@ -247,7 +265,7 @@ addEventListener("pointerdown", wake, { capture: true });
 addEventListener("keydown", wake, { capture: true });
 
 canvas.addEventListener("pointerdown", event => {
-  if (!walk || openPanel()) return;
+  if (!playing()) return;
   const ratio = canvas.width / innerWidth;
   const point = screenToWorld(view, event.clientX * ratio, event.clientY * ratio);
   const animal = animalAtPoint(walk, point);
@@ -288,6 +306,7 @@ addEventListener("keydown", event => {
   const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
   if (key === "Escape") {
     if (openPanel() === "card") closeCard();
+    else if (openPanel() === "gameover") goHome();
     else if (["guide", "ranger", "players"].includes(openPanel())) show(walk ? null : "start");
     return;
   }
@@ -303,7 +322,7 @@ addEventListener("resize", resize);
 $("snap-button").addEventListener("click", () => walk && trySnap());
 $("card-close").addEventListener("click", closeCard);
 $("guide-button").addEventListener("click", () => {
-  $("guide-place").value = Object.keys(PLACES).find(key => PLACES[key] === place);
+  $("guide-place").value = placeKey();
   openGuide();
 });
 $("start-guide-button").addEventListener("click", () => { $("guide-place").value = "all"; openGuide(); });
@@ -312,6 +331,8 @@ $("guide-close").addEventListener("click", () => show(walk ? null : "start"));
 $("home-button").addEventListener("click", goHome);
 $("ranger-close").addEventListener("click", () => show(null));
 $("ranger-home").addEventListener("click", goHome);
+$("gameover-retry").addEventListener("click", () => startWalk(placeKey()));
+$("gameover-home").addEventListener("click", goHome);
 $("players-button").addEventListener("click", openPlayers);
 $("players-close").addEventListener("click", () => show("start"));
 $("player-form").addEventListener("submit", event => {

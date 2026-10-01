@@ -1,6 +1,7 @@
 // One walk along a trail: where the explorer is, where each animal is, and which animals are found.
-// An animal not found yet hides at its spot until the explorer gets there, like the goal of a little
-// Super Mario level. No drawing here, so the rules can be tested without a browser.
+// Like a little Super Mario level: an animal not found yet hides at its spot until the explorer gets
+// there, and a hit from a hazard costs a heart. No drawing here, so the rules can be tested without a
+// browser.
 import { hazardAt, HAZARDS } from "./hazards.js";
 
 export const WALK_SPEED = 260;
@@ -12,21 +13,23 @@ const GRAVITY = 2300;
 const HALF = 26; // half the explorer's width, for bumping into logs
 const BODY = 150; // the explorer's height, for catching stars
 const STAR_REACH = 36;
-const BUMP = 1.2; // seconds the explorer blinks after a bump; nothing bumps them meanwhile
-const PUSH = 0.3; // the first part of a bump, when the explorer slides back and can't steer
-const PUSH_SPEED = 330;
+export const LIVES = 3; // hearts at the start of each level
+export const SAFE = 1.5; // seconds the explorer blinks after starting again; nothing hits them meanwhile
+const TUMBLE = 1.6; // seconds of tumbling off the screen after a hit
+const TUMBLE_SPEED = 900; // the little pop up before the tumble
 
 // `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk;
-// `hurt` counts down the blinking after a bump, and `pushed` is which way the bump sends them;
-// `endedAt` is when the explorer reached the goal flag at the end, or null.
+// `endedAt` is when the explorer reached the goal flag at the end, or null. `lives` is the hearts
+// left, `dying` counts down the tumble after a hit, and `safe` the blinking after starting again at
+// `checkpoint`, the last bush reached.
 export function createWalk(place, found = new Set()) {
   return { place, x: EDGE + 40, y: 0, vy: 0, facing: 1, moving: false, target: null, time: 0, found,
-    stars: new Set(), endedAt: null, hurt: 0, pushed: 0 };
+    stars: new Set(), endedAt: null, lives: LIVES, dying: 0, safe: 0, checkpoint: EDGE + 40 };
 }
 
 // Jumps, if the explorer is standing on the path or a log. Returns whether it jumped.
 export function jump(walk) {
-  if (walk.vy !== 0 || walk.y !== floorAt(walk, walk.x)) return false;
+  if (walk.dying || !walk.lives || walk.vy !== 0 || walk.y !== floorAt(walk, walk.x)) return false;
   walk.vy = JUMP_SPEED;
   return true;
 }
@@ -71,16 +74,17 @@ export function snap(walk, animal) {
 
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when the explorer reaches a hiding animal
-// or a tapped animal comes into reach, { stars } for how many stars were caught, { bump: true } when a
-// hazard hits, { end: true } the first time the explorer reaches the goal flag at the end. A bump
-// pauses a walk to a tapped spot; it carries on after.
+// or a tapped animal comes into reach, { stars } for how many stars were caught, { end: true } the
+// first time the explorer reaches the goal flag at the end. { died: true } when a hazard hits, then,
+// after the tumble, { respawn: true } or, with no hearts left, { gameOver: true } once.
 export function stepWalk(walk, dt, move = 0) {
   walk.time += dt;
-  walk.hurt = Math.max(0, walk.hurt - dt);
-  const pushed = walk.hurt > BUMP - PUSH;
+  if (walk.dying) return tumble(walk, dt);
+  if (!walk.lives) return {};
+  walk.safe = Math.max(0, walk.safe - dt);
   if (move) walk.target = null;
-  let direction = pushed ? 0 : move;
-  if (walk.target && !pushed) {
+  let direction = move;
+  if (walk.target) {
     const { animal } = walk.target;
     if (animal && inReach(walk, animal)) return { snap: snap(walk, animal) };
     const goal = animal ? animalAt(animal, walk.time).x : walk.target.x;
@@ -90,19 +94,20 @@ export function stepWalk(walk, dt, move = 0) {
   }
   walk.moving = direction !== 0;
   if (direction) walk.facing = direction;
-  const step = pushed ? walk.pushed * PUSH_SPEED * dt : direction * WALK_SPEED * dt;
-  const next = clamp(walk.x + step, walk.place.length);
+  const next = clamp(walk.x + direction * WALK_SPEED * dt, walk.place.length);
   const wall = wallBetween(walk, walk.x, next);
-  walk.x = wall ? wall.x - Math.sign(step) * (wall.w / 2 + HALF) : next;
+  walk.x = wall ? wall.x - direction * (wall.w / 2 + HALF) : next;
   // A walk to a tapped spot hops over a log in the way.
   if (wall && walk.target) jump(walk);
   fall(walk, dt);
+  const reached = walk.place.animals.filter(animal => animal.x - SPOT < walk.x).at(-1);
+  if (reached && reached.x > walk.checkpoint) walk.checkpoint = reached.x;
+  if (!walk.safe && hit(walk)) return die(walk);
   const result = {};
   const hiding = walk.place.animals.find(animal => !walk.found.has(animal.kind) && Math.abs(animal.x - walk.x) < SPOT);
   if (hiding) result.snap = snap(walk, hiding);
   const stars = catchStars(walk);
   if (stars) result.stars = stars;
-  if (!walk.hurt && bumpedBy(walk)) result.bump = true;
   if (walk.endedAt === null && walk.x >= walk.place.length - EDGE - 1) {
     walk.endedAt = walk.time;
     result.end = true;
@@ -132,18 +137,37 @@ function fall(walk, dt) {
   }
 }
 
-// Checks for a hazard touching the explorer, from their feet to their head; on a hit, starts the
-// bump: a little hop and a slide away from it.
-function bumpedBy(walk) {
-  const touching = (thing, { half, tall }) => thing && Math.abs(thing.x - walk.x) < HALF + half &&
-    walk.y < thing.y + tall && thing.y < walk.y + BODY;
-  const thing = walk.place.lanes.map(lane => [hazardAt(lane, walk.time), HAZARDS[lane.kind]])
-    .find(([each, kind]) => touching(each, kind))?.[0];
-  if (!thing) return false;
-  walk.hurt = BUMP;
-  walk.pushed = Math.sign(walk.x - thing.x) || -1;
-  walk.vy = Math.max(walk.vy, 420);
-  return true;
+// Whether a hazard is touching the explorer, from their feet to their head. One still dropping in
+// can't hit yet, so a child has a moment to see it coming, and a flier flying away can't hit either.
+function hit(walk) {
+  return walk.place.lanes.some(lane => {
+    const thing = hazardAt(lane, walk.time);
+    const { half, tall } = HAZARDS[lane.kind];
+    return thing && !thing.falling && !thing.leaving && Math.abs(thing.x - walk.x) < HALF + half &&
+      walk.y < thing.y + tall && thing.y < walk.y + BODY;
+  });
+}
+
+// A hit: one heart less, and a little pop up before the explorer tumbles off the screen.
+function die(walk) {
+  walk.lives--;
+  walk.dying = TUMBLE;
+  walk.vy = TUMBLE_SPEED;
+  walk.target = null;
+  walk.moving = false;
+  return { died: true };
+}
+
+// The tumble, through the path and off the screen. Then the explorer starts again at the last bush
+// reached, blinking, or, with no hearts left, the level is over.
+function tumble(walk, dt) {
+  walk.dying = Math.max(0, walk.dying - dt);
+  walk.vy -= GRAVITY * dt;
+  walk.y += walk.vy * dt;
+  if (walk.dying) return {};
+  if (!walk.lives) return { gameOver: true };
+  Object.assign(walk, { x: walk.checkpoint, y: 0, vy: 0, facing: 1, safe: SAFE });
+  return { respawn: true };
 }
 
 function catchStars(walk) {

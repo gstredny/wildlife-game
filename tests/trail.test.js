@@ -2,7 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { PLACES, placeKinds } from "../src/places.js";
 import { animalAtPoint, baseY } from "../src/layout.js";
-import { animalAt, createWalk, EDGE, jump, REACH, snap, snapTarget, SPOT, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
+import { cycle, FALL, hazardAt, HAZARDS } from "../src/hazards.js";
+import { animalAt, createWalk, EDGE, jump, LIVES, REACH, snap, snapTarget, SPOT, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
 
 const bayou = PLACES.bayou;
 const heron = bayou.animals.find(animal => animal.kind === "heron");
@@ -82,18 +83,17 @@ test("pressing an arrow cancels a walk to a tapped spot", () => {
   assert.equal(walk.target, null);
 });
 
-test("reaching the goal flag at the end of the trail is reported once, with every animal found", () => {
+test("reaching the goal flag at the end of the trail is reported once", () => {
   const walk = createWalk(bayou);
   assert.equal(walk.endedAt, null);
+  walk.x = bayou.animals.at(-1).x;
   const ends = [];
-  for (let frame = 0; frame < 60 * 60; frame++) {
-    jump(walk);
+  for (let frame = 0; frame < 60 * 10; frame++) {
     if (stepWalk(walk, 1 / 60, 1).end) ends.push(walk.time);
   }
   assert.equal(ends.length, 1);
   assert.equal(walk.endedAt, ends[0], "the flag goes up from then");
   assert.equal(walk.x, bayou.length - EDGE);
-  assert.equal(walk.found.size, placeKinds(bayou).length, "no animal can be skipped on the way");
 });
 
 // Walks right for `seconds` at 60 frames a second, jumping whenever `hop` says so.
@@ -105,6 +105,25 @@ function run(walk, seconds, hop = () => false) {
   }
   return stars;
 }
+
+test("each level starts with three hearts, and losing the last one is game over", () => {
+  assert.equal(createWalk(bayou).lives, 3);
+  assert.equal(LIVES, 3);
+  const walk = createWalk(bayou, new Set(placeKinds(bayou)));
+  walk.lives = 1;
+  const [lane] = bayou.lanes;
+  walk.time = 10 * cycle(lane) - lane.offset + FALL + 40 / HAZARDS[lane.kind].speed;
+  walk.x = hazardAt(lane, walk.time).x - 100;
+  const results = Array.from({ length: 300 }, () => stepWalk(walk, 1 / 60, 1));
+  assert.equal(results.filter(result => result.died).length, 1);
+  assert.equal(results.filter(result => result.gameOver).length, 1, "game over is reported once");
+  assert.equal(results.filter(result => result.respawn).length, 0, "no starting again");
+  assert.equal(walk.lives, 0);
+  const x = walk.x;
+  stepWalk(walk, 1, 1);
+  assert.equal(walk.x, x, "no more walking");
+  assert.equal(jump(walk), false, "no more jumping");
+});
 
 test("a log blocks the path until the explorer jumps over it", () => {
   const [log] = bayou.logs;

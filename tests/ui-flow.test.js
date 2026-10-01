@@ -6,6 +6,8 @@ import { fillCard } from '../src/card-view.js';
 import { ANIMALS } from '../src/animals.js';
 import { GUESSES } from '../src/lines.js';
 import { PLACES, placeKinds } from '../src/places.js';
+import { createWalk } from '../src/trail.js';
+import { carefulMove } from './careful.js';
 
 class Element {
   constructor(tag = 'div') {
@@ -59,11 +61,17 @@ const globals = {
 };
 const originals = new Map(Object.keys(globals).map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
 for (const [key, value] of Object.entries(globals)) Object.defineProperty(globalThis, key, { value, configurable: true, writable: true });
-await import('../src/main.js');
+const game = await import('../src/main.js');
 const frame = () => { now += 50; frames.shift()(now); };
 const flush = () => { for (const [id, callback] of timers) { timers.delete(id); callback(); } };
 const key = (type, value) => { for (const callback of events[type] ?? []) callback({ key: value, preventDefault() {} }); };
 const click = id => $(id).trigger('click');
+// One frame of play with the arrow keys, careful or careless (see careful.js).
+function play(careful) {
+  const move = carefulMove(game.currentWalk(), careful);
+  key(move.jump ? 'keydown' : 'keyup', 'ArrowUp');
+  key(move.right ? 'keydown' : 'keyup', 'ArrowRight');
+}
 
 try {
   test('home exposes all six habitats and the full collection count', () => {
@@ -103,6 +111,26 @@ try {
     click('card-close'); click('home-button');
   });
 
+  test('a hit costs a heart, losing all three is game over, and Try again starts the place over', () => {
+    click('place-woods');
+    assert.equal($('hud-lives').textContent, '❤️❤️❤️');
+    for (let i = 0; i < 4000 && $('gameover').hidden; i++) {
+      frame();
+      if (!$('card').hidden) { click('card-close'); continue; }
+      if (timers.size) { flush(); continue; }
+      if ($('gameover').hidden) play(false);
+    }
+    assert.equal($('gameover').hidden, false, 'game over');
+    assert.equal($('hud-lives').textContent, '🤍🤍🤍');
+    assert.equal($('gameover-place').textContent, PLACES.woods.name);
+    click('gameover-retry');
+    assert.equal($('gameover').hidden, true);
+    assert.equal($('hud-place').textContent, PLACES.woods.name);
+    assert.equal($('hud-lives').textContent, '❤️❤️❤️');
+    assert.equal(game.currentWalk().x, createWalk(PLACES.woods).x, 'back at the start');
+    click('home-button');
+  });
+
   test('the live screen flow discovers all animals, replays the guide, and changes habitats', () => {
     for (const [habitat, place] of Object.entries(PLACES)) {
       click(`place-${habitat}`);
@@ -117,7 +145,8 @@ try {
           break;
         }
         if (timers.size) { flush(); continue; }
-        key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp');
+        assert.equal($('gameover').hidden, true, `${place.name}: the careful player lost every heart`);
+        play(true);
       }
       assert.ok(budget < 1400, `${place.name} did not complete`);
       assert.equal($('hud-count').textContent, `${placeKinds(place).length} of ${placeKinds(place).length} found`);

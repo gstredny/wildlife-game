@@ -23,6 +23,7 @@
       <strong id="hud-place">Bayou Trail</strong>
       <span id="hud-count">0 of 8 found</span>
       <span id="hud-stars" class="hud-stars">⭐ 0 of 0</span>
+      <span id="hud-lives" class="hud-lives" aria-label="3 of 3 hearts left">❤️❤️❤️</span>
     </div>
     <div class="hud-actions">
       <button id="voice-button" class="round-button voice-toggle" type="button" aria-label="Turn the voice off">🔊</button>
@@ -118,6 +119,17 @@
       <div class="start-actions">
         <button id="ranger-close" class="primary-button" type="button">Keep exploring</button>
         <button id="ranger-home" class="soft-button" type="button">Home</button>
+      </div>
+    </section>
+
+    <section id="gameover" class="panel ranger-panel" hidden>
+      <div class="badge" aria-hidden="true"><span>💔</span></div>
+      <p id="gameover-place" class="kicker">Bayou Trail</p>
+      <h2>Game over</h2>
+      <p>You ran out of hearts. Try again!</p>
+      <div class="start-actions">
+        <button id="gameover-retry" class="primary-button" type="button">Try again</button>
+        <button id="gameover-home" class="soft-button" type="button">Home</button>
       </div>
     </section>
   </main>
