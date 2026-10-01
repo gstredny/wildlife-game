@@ -282,6 +282,7 @@ function tick(dt) {
     show("gameover");
     voice.say(GAME_OVER);
   }
+  if (result.stomped) sound.play("hop");
   if (result.stars) {
     sound.play("star");
     counts();

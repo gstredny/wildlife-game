@@ -18,15 +18,17 @@ export const LIVES = 3; // hearts at the start of each level
 export const SAFE = 1.5; // seconds the explorer blinks after starting again; nothing hits them meanwhile
 const TUMBLE = 1.6; // seconds of tumbling off the screen after a hit
 const TUMBLE_SPEED = 900; // the little pop up before the tumble
+const BOUNCE = 550; // the hop up off a squished hazard
 
 // `y` is how high the explorer's feet are above the path; `found` is the player's Field Guide and
 // `met` the animals that came out on this walk; `stars` holds the stars caught on this walk;
 // `endedAt` is when the explorer reached the goal flag at the end, or null. `lives` is the hearts
 // left, `dying` counts down the tumble after a hit, and `safe` the blinking after starting again at
-// `checkpoint`, the last bush reached.
+// `checkpoint`, the last bush reached. `stomped` holds the hazards squished on this walk.
 export function createWalk(place, found = new Set()) {
   return { place, x: EDGE + 40, y: 0, vy: 0, facing: 1, moving: false, target: null, time: 0, found,
-    met: new Set(), stars: new Set(), endedAt: null, lives: LIVES, dying: 0, safe: 0, checkpoint: EDGE + 40 };
+    met: new Set(), stars: new Set(), endedAt: null, lives: LIVES, dying: 0, safe: 0, checkpoint: EDGE + 40,
+    stomped: new Set() };
 }
 
 // Jumps, if the explorer is standing on the path or a log. Returns whether it jumped.
@@ -77,7 +79,8 @@ export function snap(walk, animal) {
 
 // Moves time on by `dt` seconds. `move` is -1, 0 or 1 from the arrow keys or buttons, and cancels
 // any walk to a tapped spot. Returns what happened: { snap } when the explorer reaches a hiding animal
-// or a tapped animal comes into reach, { stars } for how many stars were caught, { end: true } the
+// or a tapped animal comes into reach, { stars } for how many stars were caught, { stomped: true } when
+// the explorer lands on a hazard and squishes it, { end: true } the
 // first time the explorer reaches the goal flag at the end. { died: true } when a hazard hits, then,
 // after the tumble, { respawn: true } or, with no hearts left, { gameOver: true } once.
 export function stepWalk(walk, dt, move = 0) {
@@ -102,11 +105,14 @@ export function stepWalk(walk, dt, move = 0) {
   walk.x = wall ? wall.x - direction * (wall.w / 2 + HALF) : next;
   // A walk to a tapped spot hops over a log in the way.
   if (wall && walk.target) jump(walk);
+  const feet = walk.y;
   fall(walk, dt);
   const reached = walk.place.animals.filter(animal => animal.x - SPOT < walk.x).at(-1);
   if (reached && reached.x > walk.checkpoint) walk.checkpoint = reached.x;
+  const stomped = stomp(walk, feet);
   if (!walk.safe && hit(walk)) return die(walk);
   const result = {};
+  if (stomped) result.stomped = true;
   const hiding = walk.place.animals.find(animal => !walk.met.has(animal.kind) && Math.abs(animal.x - walk.x) < SPOT);
   if (hiding) result.snap = snap(walk, hiding);
   const stars = catchStars(walk);
@@ -146,9 +152,28 @@ function hit(walk) {
   return walk.place.lanes.some(lane => {
     const thing = hazardAt(lane, walk.time);
     const { half, tall } = HAZARDS[lane.kind];
-    return thing && !thing.harmless && Math.abs(thing.x - walk.x) < HIT_HALF + half &&
+    return thing && !thing.harmless && !squished(walk, lane, thing) && Math.abs(thing.x - walk.x) < HIT_HALF + half &&
       walk.y < thing.y + tall && thing.y < walk.y + BODY;
   });
+}
+
+// Whether this hazard was squished on this walk, so it is gone.
+export const squished = (walk, lane, thing) => walk.stomped.has(`${lane.from}:${thing.round}`);
+
+// Coming down onto a hazard that can be stomped, from `feet` (where the feet were before this step)
+// in its top half or above, squishes it and bounces the explorer up. Returns whether one was squished.
+function stomp(walk, feet) {
+  if (walk.y >= feet) return false;
+  const lane = walk.place.lanes.find(each => {
+    const thing = hazardAt(each, walk.time);
+    const { half, tall, stomp: soft } = HAZARDS[each.kind];
+    return soft && thing && !thing.harmless && !squished(walk, each, thing) && Math.abs(thing.x - walk.x) < HIT_HALF + half &&
+      feet >= thing.y + tall / 2 && walk.y < thing.y + tall;
+  });
+  if (!lane) return false;
+  walk.stomped.add(`${lane.from}:${hazardAt(lane, walk.time).round}`);
+  walk.vy = BOUNCE;
+  return true;
 }
 
 // A hit: one heart less, and a little pop up before the explorer tumbles off the screen.

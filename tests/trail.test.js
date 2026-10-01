@@ -176,3 +176,32 @@ test("a walk to a tapped spot hops over logs on the way", () => {
   for (let frame = 0; frame < 600 && walk.target; frame++) stepWalk(walk, 1 / 60);
   assert.ok(Math.abs(walk.x - (log.x + 300)) < 6);
 });
+
+// Drops the explorer onto the first hazard in the place's first lane, from just above it.
+function dropOnHazard(place) {
+  const [lane] = place.lanes;
+  const walk = createWalk(place);
+  for (const kind of placeKinds(place)) walk.met.add(kind);
+  walk.time = 10 * cycle(lane) - lane.offset + FALL + 0.5;
+  const thing = hazardAt(lane, walk.time);
+  Object.assign(walk, { x: thing.x - 12, y: thing.y + HAZARDS[lane.kind].tall + 20, vy: -200 });
+  return Array.from({ length: 30 }, () => ({ ...stepWalk(walk, 1 / 60), y: walk.y }));
+}
+
+test("on the first three levels, landing on a hazard squishes it and bounces the explorer up", () => {
+  for (const key of ["backyard", "woods", "bayou"]) {
+    const results = dropOnHazard(PLACES[key]);
+    assert.equal(results.filter(result => result.died).length, 0, `${key}: no heart lost`);
+    assert.equal(results.filter(result => result.stomped).length, 1, `${key}: squished once`);
+    const after = results.slice(results.findIndex(result => result.stomped));
+    assert.ok(after.some((result, index) => index && result.y > after[index - 1].y), `${key}: bounced up`);
+  }
+});
+
+test("on the later levels, landing on a hazard still costs a heart", () => {
+  for (const key of ["swamp", "prairie", "gulf"]) {
+    const results = dropOnHazard(PLACES[key]);
+    assert.equal(results.filter(result => result.died).length, 1, `${key}: a heart lost`);
+    assert.equal(results.filter(result => result.stomped).length, 0, `${key}: nothing squished`);
+  }
+});

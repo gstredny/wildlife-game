@@ -2,13 +2,14 @@
 // tumbleweeds and beach balls, each with a shadow that shrinks while it is up in the air.
 import { hazardAt, HAZARDS } from "./hazards.js";
 import { GROUND } from "./scenery.js";
+import { squished } from "./trail.js";
 
 export function paintHazards(context, walk, seen) {
   for (const lane of walk.place.lanes) {
     const { size } = HAZARDS[lane.kind];
     if (lane.kind === "fireAnts" && seen(lane.from, 60)) paintAntMound(context, lane.from);
     const thing = hazardAt(lane, walk.time);
-    if (!thing || !seen(thing.x, size * 2)) continue;
+    if (!thing || squished(walk, lane, thing) || !seen(thing.x, size * 2)) continue;
     const shadow = Math.max(0.3, 1 - thing.y / 260);
     context.fillStyle = "rgba(40,50,30,.3)";
     context.beginPath();
