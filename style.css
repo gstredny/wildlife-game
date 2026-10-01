@@ -338,7 +338,6 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 }
 .card-facts dd { margin: 0; line-height: 1.3; }
 .card-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.more-link { color: var(--cream); font-weight: 700; }
 /* On the trail the card first asks "What animal is this?" with three names, and hides the answer. */
 .card-panel:not(.guessing) .card-choices, .guessing .card-actions { display: none; }
 .guessing :is(#card-name, #card-fact, #card-say, .card-facts) { display: none; }

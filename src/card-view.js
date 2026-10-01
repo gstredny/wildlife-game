@@ -27,9 +27,4 @@ export function fillCard(kind, isNew) {
   $("card-say").textContent = animal.say;
   $("card-eats").textContent = animal.eats;
   $("card-eaten").textContent = animal.eatenBy;
-  // A grown-up can look up more, with SafeSearch on, when the device is online.
-  const more = $("card-more");
-  more.href = animal.source;
-  more.textContent = animal.source.includes("allaboutbirds.org") ? "Learn more with Cornell Birds" : "Learn more with Texas Parks & Wildlife";
-  more.hidden = !navigator.onLine;
 }

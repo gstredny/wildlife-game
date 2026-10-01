@@ -243,6 +243,7 @@ try {
     assert.equal($('card-name').textContent, ANIMALS.bullfrog.name);
     assert.equal($('card-say').textContent, ANIMALS.bullfrog.say);
     assert.equal($('card-image').src, 'art/animals/bullfrog.webp', 'the saved photo shows offline');
+    assert.equal($('card-more'), undefined, 'no Learn more link for a child to get lost in');
     assert.match($('card-credit').textContent, /^Photo:/);
     click('card-close');
     assert.equal($('guide').hidden, false);

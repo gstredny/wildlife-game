@@ -41,7 +41,7 @@ The Gulf Shore is a Galveston day trip. Cards explain seasonal visitors and rare
 than suggesting every animal will be visible on every real outing. This is a local learning
 collection, not a complete inventory of Texas wildlife.
 
-Facts link to [Texas Parks & Wildlife](https://tpwd.texas.gov/huntwild/wild/species/), its official
+Facts come from [Texas Parks & Wildlife](https://tpwd.texas.gov/huntwild/wild/species/), its official
 magazine, or Cornell's bird guides. Both narrated facts appear on the card, along with diet,
 predators, and a photo-source link.
 
