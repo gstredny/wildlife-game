@@ -72,6 +72,9 @@ const click = id => $(id).trigger('click');
 // Taps the right name on the animal card.
 const pickRight = () => $('card-choices').children.find(choice => choice.textContent === $('card-name').textContent).trigger('click');
 const paws = () => $('hud-paws').attributes['aria-label'];
+// The big name buttons on the home screen, and the one picked.
+const names = () => $('player-names').children.map(button => button.textContent);
+const currentName = () => $('player-names').children.find(button => button.classList.contains('current'))?.textContent;
 // One frame of play with the arrow keys, running right, careful or careless (see careful.js).
 function play(careful) {
   key(carefulJump(game.currentWalk(), careful) ? 'keydown' : 'keyup', 'ArrowUp');
@@ -249,24 +252,24 @@ try {
   });
 
 
-  test('each player has their own Field Guide, level, and list of what they found', () => {
+  test('each player has their own Field Guide and level, and a big name button on the home screen', () => {
+    assert.deepEqual(names(), ['Explorer']);
     click('players-button');
     assert.equal($('players').hidden, false);
     const [explorer] = $('players-list').children;
     const [pick, remove] = explorer.children;
-    assert.equal(pick.children[1].textContent, 'Master Ranger · every trail explored');
-    assert.match(pick.children[2].textContent, /^60 of 60 animals/);
-    assert.match(pick.children[3].textContent, / · Gulf Shore · today /, 'the latest find comes first');
+    assert.equal(pick.textContent, '✓ Explorer', 'just the name');
     assert.equal(remove.hidden, true, 'the only player cannot be removed');
     $('player-name').value = ' Emma ';
     $('player-form').trigger('submit', { preventDefault() {} });
-    assert.equal($('players-button').textContent, '👤 Emma');
+    assert.deepEqual(names(), ['Explorer', 'Emma']);
+    assert.equal(currentName(), 'Emma');
     assert.equal($('collection-count').textContent, '0 of 60 animals in your Field Guide');
     assert.equal($('places').children[0].id, `place-${level1}`, 'Emma starts at level 1');
     assert.equal($(`place-${LEVELS[1]}`), undefined);
-    click('players-button');
-    assert.equal($('players-list').children[1].children[0].children[1].textContent, 'Level 1 · Backyard Safari');
-    $('players-list').children[0].children[0].trigger('click');
+    // One tap on a name on the home screen switches player.
+    $('player-names').children[0].trigger('click');
+    assert.equal(currentName(), 'Explorer');
     assert.equal($('collection-count').textContent, '60 of 60 animals in your Field Guide');
     assert.equal(JSON.parse(saved.get('wildlife-players-v1')).current, 'Explorer');
     assert.equal($('places').children[0].className, 'place-card level-done', 'the map follows the player');
@@ -277,7 +280,7 @@ try {
     assert.equal($('player-form').hidden, false);
     $('player-name').value = 'Max';
     $('player-form').trigger('submit', { preventDefault() {} });
-    assert.equal($('players-button').textContent, '👤 Max');
+    assert.equal(currentName(), 'Max');
     click('players-button');
     assert.equal($('players-list').children.length, 3);
     assert.equal($('player-form').hidden, true, 'no fourth player');
@@ -290,7 +293,8 @@ try {
     removeMax().trigger('click');
     assert.deepEqual(Object.keys(JSON.parse(saved.get('wildlife-players-v1')).list), ['Explorer', 'Emma']);
     assert.equal(JSON.parse(saved.get('wildlife-players-v1')).current, 'Explorer', 'the first player left takes over');
-    assert.equal($('players-button').textContent, '👤 Explorer');
+    assert.deepEqual(names(), ['Explorer', 'Emma']);
+    assert.equal(currentName(), 'Explorer');
     assert.equal($('player-form').hidden, false);
     click('players-close');
   });

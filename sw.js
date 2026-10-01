@@ -23,6 +23,7 @@ const FILES = [
   "./src/levels.js",
   "./src/lines.js",
   "./src/main.js",
+  "./src/names-view.js",
   "./src/paint-alligator.js",
   "./src/paint-arthropods.js",
   "./src/paint-bat.js",

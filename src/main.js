@@ -10,6 +10,7 @@ import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
 import { allBeaten, beatLevel, currentLevel, LEVELS, levelNumber } from "./levels.js";
 import { FINALE, GAME_OVER, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
+import { fillNames } from "./names-view.js";
 import { fillMap, progress } from "./place-view.js";
 import { addPlayer, loadPlayers, MAX_PLAYERS, recordFind, removePlayer, savePlayers } from "./players.js";
 import { fillPlayers } from "./players-view.js";
@@ -74,7 +75,7 @@ function counts() {
   $("hud-paws").replaceChildren(paws(gold, "paws-named"), paws(kinds.length - gold, "paws-left"));
   $("hud-paws").setAttribute("aria-label", `${gold} of ${kinds.length} animals named`);
   $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
-  $("players-button").textContent = `👤 ${players.current}`;
+  fillNames($("player-names"), players, pickPlayer);
   fillMap($("places"), player(), found, startWalk);
 }
 

@@ -234,6 +234,18 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
 .panel { touch-action: pan-y; }
 button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid var(--sun); outline-offset: 4px; }
 .lead { font-size: clamp(16px, 3vmin, 20px); margin: 0 0 16px; }
+/* Who's exploring: a big button for each player's name; one tap switches. */
+.player-names { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 12px; }
+.name-button {
+  min-height: 52px;
+  padding: 0 24px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 22px;
+  font-weight: 800;
+}
+.name-button.current { border-color: var(--sun); background: var(--sun); color: var(--ink); }
 .place-card {
   width: 100%;
   display: grid;
@@ -359,11 +371,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   background: rgba(255, 255, 255, 0.1);
 }
 .player-row.current { border-color: var(--sun); }
-.player-pick { flex: 1; display: grid; gap: 2px; padding: 0; border: 0; background: none; text-align: left; }
-.player-pick strong { font-size: 22px; }
-.player-level { font-weight: 800; }
-.player-count { color: var(--sun); font-weight: 700; }
-.player-find { font-size: 15px; opacity: 0.85; }
+.player-pick { flex: 1; min-height: 48px; padding: 0; border: 0; background: none; text-align: left; font-size: 24px; font-weight: 800; }
 .player-remove {
   min-height: 40px;
   padding: 0 14px;
@@ -470,8 +478,6 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   .map-stops::before { top: 20px; }
   .stop-dot { width: 36px; height: 36px; font-size: 17px; }
   .stop-name { font-size: 11px; }
-  .player-pick strong { font-size: 18px; }
-  .player-find { font-size: 13px; }
   .guide-slot { font-size: 12px; border-radius: 12px; padding-bottom: 6px; }
   .guide-slot.missing::after { font-size: 17px; top: 2px; right: 6px; }
   .guide-panel h2 { font-size: 26px; margin-bottom: 10px; }
