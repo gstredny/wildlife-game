@@ -2,7 +2,9 @@
 
 A game for young children about the real animals around Katy, Texas. Each place is a little level,
 like a Super Mario level: a young explorer runs and jumps along a trail, dodges what comes at them,
-catches stars, finds the animals hiding in bushes along the way, and ends at a goal flag. Each
+catches stars, finds the animals hiding in bushes along the way, and ends at a goal flag. The six
+places are played in order, one at a time, like the levels of Donkey Kong Country: reaching the flag
+beats the level and opens the next one. Each
 new animal opens a card with a real photo and the question "What animal is this?"; when the child is
 ready, **Tell me!** shows the name and Ranger Mike (a warm, recorded male voice) reads a fact about it. Every animal found
 goes into the **Field Guide**; the ones still out there show as dark shapes with a question mark, and
@@ -11,18 +13,21 @@ tapping one gives a clue.
 It is a sister to [Little Fish, Big Ocean](https://github.com/gstredny/fish-game), built the same
 way: plain JavaScript modules, no build step, works offline.
 
-## Choose a habitat
+## The trail map
 
-The home screen has six illustrated places. Each has its own scenery and animals:
+The home screen is a trail map. The level you are on is the big card with its scenery and an
+**Explore** button; the levels you have beaten are gold badges you can play again; the levels ahead
+are misty "?" stops with no name, so each new trail is a surprise. Each place has its own scenery
+and animals:
 
-| Place | Animals to find | What you will meet |
-| --- | ---: | --- |
-| Swamp Boardwalk | 14 | Bullfrogs, night herons, whistling-ducks, crawfish, sliders, water snakes, and alligators |
-| Bayou Trail | 14 | Wading birds, kingfishers, river otters, free-tailed bats, coyotes, hogs, and deer |
-| Woodland Walk | 11 | Raccoons, opossums, armadillos, bobcats, a Houston toad, woodpeckers, and an owl |
-| Backyard Safari | 11 | Cardinals, blue jays, mockingbirds, hummingbirds, butterflies, anoles, and toads |
-| Katy Prairie | 15 | Attwater's prairie chickens, snow geese, sandhill cranes, caracaras, and white-tailed hawks |
-| Gulf Shore | 9 | Pelicans, gulls, terns, avocets, plovers, ghost crabs, and a rare sea turtle |
+| Level | Place | Animals to find | What you will meet |
+| ---: | --- | ---: | --- |
+| 1 | Backyard Safari | 11 | Cardinals, blue jays, mockingbirds, hummingbirds, butterflies, anoles, and toads |
+| 2 | Woodland Walk | 11 | Raccoons, opossums, armadillos, bobcats, a Houston toad, woodpeckers, and an owl |
+| 3 | Bayou Trail | 14 | Wading birds, kingfishers, river otters, free-tailed bats, coyotes, hogs, and deer |
+| 4 | Swamp Boardwalk | 14 | Bullfrogs, night herons, whistling-ducks, crawfish, sliders, water snakes, and alligators |
+| 5 | Katy Prairie | 15 | Attwater's prairie chickens, snow geese, sandhill cranes, caracaras, and white-tailed hawks |
+| 6 | Gulf Shore | 9 | Pelicans, gulls, terns, avocets, plovers, ghost crabs, and a rare sea turtle |
 
 There are **60 different animals**. Nine are Katy specials: animals that live only in Texas (the
 Houston toad, Attwater's prairie chicken), that in the U.S. live mostly in Texas (the white-tailed
@@ -56,15 +61,19 @@ there, hopping over logs on the way.
   try the place again from the start. Animals you found stay in your Field Guide.
 - **Jump.** Logs block the path until you jump over them or onto them; stars float along the way,
   some only reachable with a jump.
-- **Reach the goal flag.** The flag at the end goes up, and the Junior Ranger cheer shows how many
-  stars you caught.
+- **Reach the goal flag.** The flag at the end goes up, confetti falls, and the Junior Ranger cheer
+  shows how many stars you caught and names the trail that just opened. **Next trail** takes you
+  straight there. Beat the sixth and you are a Master Ranger: every trail is open to play again.
 
 Animals you have found stay out in the open: tap one (or the camera, or Enter, near one) to take its
 picture again.
 
-**Players:** the 👤 button on the home screen shows who is exploring. Each player has their own Field
-Guide, and the players screen lists how many animals each found and their five latest finds, with the
-place and time. Players are saved on this device only.
+**Players:** the 👤 button on the home screen shows who is exploring, up to three players. Each
+player has their own Field Guide and their own place on the trail map, saved when they reach a flag:
+George can be on level 3 while Dora is still on level 1. The players screen lists each player's
+level, how many animals they found, and their five latest finds, with the place and time. **Remove**
+takes a player off the device after a second tap. Players are saved on this device only; a player
+saved before the trail map starts at the first level whose animals they haven't all found.
 
 ## Play on a Mac
 
@@ -130,13 +139,15 @@ node tools/browser-walk.mjs phone swamp     # one place
 node tools/shot.mjs "http://127.0.0.1:8790/tools/zoo.html?only=bullfrog,nightHeron,woodDuck,slider" screenshots/swamp-animals.png 1600x1400
 ```
 
-Browser checks require the local server running. They save screenshots in `screenshots/`, replay a
-known card, reload offline, and check saved habitat progress. The zoo page draws still, walking,
-alert, and small poses with the tap boxes.
+Browser checks require the local server running. Each plays one level as a saved player who has
+reached it, saves screenshots in `screenshots/`, checks the cheer names the next trail, replays a
+known card, reloads offline, and checks the level shows as beaten on the map. The zoo page draws
+still, walking, alert, and small poses with the tap boxes.
 
-Current verification (2026-09-30): `npm test` **72 passed, 0 failed, 0 skipped**;
-`node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, no page errors).
-See [tasks/005-lives.md](tasks/005-lives.md).
+Current verification (2026-10-01): `npm test` **80 passed, 0 failed, 0 skipped**;
+`node tools/browser-habitats.mjs desktop phone` passed 12 of 12 runs (all 60 animals, every level beaten
+with the next trail named, no page errors; the phone Katy Prairie run hung once in the batch and passed
+when run again). See [tasks/006-trail-map.md](tasks/006-trail-map.md).
 
 ## App icon
 

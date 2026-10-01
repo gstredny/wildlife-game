@@ -33,13 +33,47 @@ Assumptions (George vetoes in one line): the level number is saved, not the spot
 
 ## Done criteria
 
-- [ ] `npm test`: all pass, including the level order, beating a level opens the next, a locked
+- [x] `npm test`: all pass, including the level order, beating a level opens the next, a locked
   level can't be started, the three-player cap and removal, the migration of old finds, and the
   screen flow playing all six levels in order to the Master Ranger panel.
-- [ ] The finale line recorded (make-voice.py).
-- [ ] `node tools/browser-habitats.mjs desktop phone`: all six levels, no page errors (12 of 12).
-- [ ] Screenshots looked at: the trail map (level 1, a beaten badge, misty stops), the cheer with
+- [x] The finale line recorded (make-voice.py).
+- [x] `node tools/browser-habitats.mjs desktop phone`: all six levels, no page errors (12 of 12).
+- [x] Screenshots looked at: the trail map (level 1, a beaten badge, misty stops), the cheer with
   the next trail named, the players screen with levels, the phone layout.
 - [ ] Pushed and live; a live browser walk passes.
 
 ## Attempt log (append-only)
+
+- Rules (`src/levels.js`): `LEVELS` is the order (backyard, woods, bayou, swamp, prairie, gulf);
+  `player.level` is the level they are on, from 1, or 7 once all are beaten; `beatLevel` opens the
+  next only for the level they are on; `startingLevel(found)` migrates old players. `players.js`:
+  `level` on each record, `MAX_PLAYERS` 3, `removePlayer` (never the last; the current hands over to
+  the first left). 12 tests, green.
+- Screen: `place-view.js` is now the trail map (`fillMap`: hero card for the level you are on, or
+  the Master Ranger card; one stop per level: gold ★ badge button for beaten, pulsing numbered dot
+  for now, dotted "?" for locked). `players-view.js` shows "Level 3 · Bayou Trail" and a Remove
+  button that asks for a second tap. `main.js`: `reachGoal` beats the level and saves at the flag,
+  then confetti (`confetti.js`) and the cheer naming the trail opened; `ranger-next` starts it;
+  `ranger-close` ("Keep exploring") is gone, `ranger-home` is "Trail map". HUD shows "Level N".
+  `npm test` 80 passed, 0 failed, 0 skipped (after the recording and cache list).
+- Voice: the finale line recorded with the cached models offline (`HF_HUB_OFFLINE=1`): 1 try, 4%
+  off, `voice/69fdeb95904a.mp3`. Cache wildlife-habitats-v8 (+ `src/levels.js`, `src/confetti.js`).
+- Browser check (`tools/browser-walk.mjs`) now seeds a saved Explorer on the level under test,
+  checks the cheer names the next trail, presses Trail map, opens the guide from the home screen, and
+  after the offline reload checks the level is a beaten badge. Desktop backyard: PASS, 11 animals,
+  "A new trail opened: Woodland Walk!", map after reload shows Level 2.
+- Screenshots looked at: trail map (level 1, five misty stops), the cheer with confetti and the next
+  trail named, the map after with the gold badge and Level 2 revealed, the players screen with
+  levels and Remove, the map on a sideways phone (fits, no scroll) and an upright phone (stops wrap
+  three and three).
+- Full browser check `OUT=screenshots/walk node tools/browser-habitats.mjs desktop phone`: 10 PASS
+  (every desktop level, phone backyard, woods, bayou, swamp), then the phone prairie run hung after
+  the snow goose card (no reply from Chrome to a touch command; the batch sat until its time limit,
+  a headless Chrome left behind, killed by hand). Same flake as task 004. Run again one at a time:
+  phone prairie PASS (15 animals, 1 game over then Try again, "A new trail opened: Gulf Shore!"),
+  phone gulf PASS (9 animals, "You explored every trail around Katy, Texas!", map after reload shows
+  the Master Ranger card). So 12 of 12 level-and-device runs passed, no page errors. Screenshots looked
+  at: the Master Ranger cheer with the medal (desktop gulf), the map with six gold badges, the phone
+  cheer, the phone players screen with levels.
+- Open: `tools/browser-walk.mjs` waits forever for a Chrome reply; a per-command timeout would fail a
+  hung run in seconds instead of eating the batch. Not changed here (not part of this ask).
