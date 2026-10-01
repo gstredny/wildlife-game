@@ -40,6 +40,7 @@ let hold = 0;
 let jumpHeld = false;
 let posing = 0;
 let cardFrom = null;
+const named = new Set(); // the animals named right on the first try on this walk, each a gold paw
 let view = viewFor(innerWidth, innerHeight, 0);
 // The walk under way, for the screen tests to see where the explorer is.
 export const currentWalk = () => walk;
@@ -67,6 +68,11 @@ function counts() {
   const lives = walk?.lives ?? LIVES;
   $("hud-lives").textContent = "❤️".repeat(lives) + "🤍".repeat(LIVES - lives);
   $("hud-lives").setAttribute("aria-label", `${lives} of ${LIVES} hearts left`);
+  const kinds = placeKinds(place);
+  const gold = kinds.filter(kind => named.has(kind)).length;
+  const paws = (count, className) => Object.assign(document.createElement("span"), { className, textContent: "🐾".repeat(count) });
+  $("hud-paws").replaceChildren(paws(gold, "paws-named"), paws(kinds.length - gold, "paws-left"));
+  $("hud-paws").setAttribute("aria-label", `${gold} of ${kinds.length} animals named`);
   $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
   $("players-button").textContent = `👤 ${players.current}`;
   fillMap($("places"), player(), found, startWalk);
@@ -92,6 +98,7 @@ function startWalk(key) {
   camera = 0;
   posing = 0;
   walk = createWalk(place, found);
+  named.clear();
   $("hud-level").textContent = `Level ${levelNumber(key)}`;
   $("hud-place").textContent = place.name;
   counts();
@@ -129,13 +136,19 @@ function openCard(kind, isNew, from) {
   const question = GUESSES[Math.floor(Math.random() * GUESSES.length)];
   $("card").classList.add("guessing");
   $("card-kicker").textContent = question;
-  fillChoices($("card-choices"), kind, () => tell(kind, isNew));
+  fillChoices($("card-choices"), kind, firstTry => tell(kind, isNew, firstTry));
   voice.say(question);
 }
 
-function tell(kind, isNew) {
+// The right name: the answer shows, and the first time on this walk it was named right away, a gold paw.
+function tell(kind, isNew, firstTry) {
   $("card").classList.remove("guessing");
   $("card-kicker").textContent = isNew ? "That's right! A new animal!" : "That's right!";
+  if (firstTry && !named.has(kind)) {
+    named.add(kind);
+    sound.play("star");
+    counts();
+  }
   voice.say(cardSpeech(kind));
 }
 
@@ -163,7 +176,8 @@ function reachGoal() {
     $("ranger-place").textContent = `Level ${levelNumber(key)} · ${place.name}`;
     $("ranger-title").textContent = finale ? "Master Ranger!" : "Junior Ranger!";
     $("ranger-badge").textContent = finale ? "🏅" : "★";
-    const cheer = `You found all ${placeKinds(place).length} animals and caught ${walk.stars.size} of ${place.stars.length} stars!`;
+    const total = placeKinds(place).length;
+    const cheer = `You found all ${total} animals and caught ${walk.stars.size} of ${place.stars.length} stars! You named ${named.size} of ${total} on the first try!`;
     $("ranger-message").textContent = finale ? `${cheer} You explored every trail around Katy, Texas!`
       : opened ? `${cheer} A new trail opened: ${PLACES[opened].name}!` : cheer;
     $("ranger-next").hidden = !nextLevel();

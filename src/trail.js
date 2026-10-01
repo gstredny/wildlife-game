@@ -1,11 +1,11 @@
 // One walk along a trail: where the explorer is, where each animal is, and which animals are found.
-// Like a little Super Mario level: an animal not found yet hides at its spot until the explorer gets
-// there, and a hit from a hazard costs a heart. No drawing here, so the rules can be tested without a
+// Like a little Super Mario level: every animal hides at its spot until the explorer gets there on
+// this walk, and a hit from a hazard costs a heart. No drawing here, so the rules can be tested without a
 // browser.
 import { hazardAt, HAZARDS } from "./hazards.js";
 
 export const WALK_SPEED = 260;
-export const REACH = 230; // how close the explorer must be to take a found animal's picture again
+export const REACH = 230; // how close the explorer must be to take a met animal's picture again
 export const SPOT = 50; // how close the explorer must come to a hiding animal's spot to find it
 export const EDGE = 90; // the explorer stops this far from either end of the trail
 const JUMP_SPEED = 900; // straight up, so a jump rises about 175 over the path, like Mario's floaty jump
@@ -19,13 +19,14 @@ export const SAFE = 1.5; // seconds the explorer blinks after starting again; no
 const TUMBLE = 1.6; // seconds of tumbling off the screen after a hit
 const TUMBLE_SPEED = 900; // the little pop up before the tumble
 
-// `y` is how high the explorer's feet are above the path; `stars` holds the stars caught on this walk;
+// `y` is how high the explorer's feet are above the path; `found` is the player's Field Guide and
+// `met` the animals that came out on this walk; `stars` holds the stars caught on this walk;
 // `endedAt` is when the explorer reached the goal flag at the end, or null. `lives` is the hearts
 // left, `dying` counts down the tumble after a hit, and `safe` the blinking after starting again at
 // `checkpoint`, the last bush reached.
 export function createWalk(place, found = new Set()) {
   return { place, x: EDGE + 40, y: 0, vy: 0, facing: 1, moving: false, target: null, time: 0, found,
-    stars: new Set(), endedAt: null, lives: LIVES, dying: 0, safe: 0, checkpoint: EDGE + 40 };
+    met: new Set(), stars: new Set(), endedAt: null, lives: LIVES, dying: 0, safe: 0, checkpoint: EDGE + 40 };
 }
 
 // Jumps, if the explorer is standing on the path or a log. Returns whether it jumped.
@@ -53,14 +54,14 @@ export function inReach(walk, animal) {
   return Math.abs(animalAt(animal, walk.time).x - walk.x) <= REACH;
 }
 
-// The found animal the explorer can photograph again right now: the closest one in reach.
+// The met animal the explorer can photograph again right now: the closest one in reach.
 export function snapTarget(walk) {
-  const inRange = walk.place.animals.filter(animal => walk.found.has(animal.kind) && inReach(walk, animal));
+  const inRange = walk.place.animals.filter(animal => walk.met.has(animal.kind) && inReach(walk, animal));
   const distance = animal => Math.abs(animalAt(animal, walk.time).x - walk.x);
   return inRange.sort((first, second) => distance(first) - distance(second))[0] ?? null;
 }
 
-// Walk toward a spot on the trail (a tap on the ground), or toward a found animal to photograph it.
+// Walk toward a spot on the trail (a tap on the ground), or toward a met animal to photograph it.
 export function walkTo(walk, x, animal = null) {
   walk.target = { x: clamp(x, walk.place.length), animal };
 }
@@ -69,6 +70,7 @@ export function walkTo(walk, x, animal = null) {
 export function snap(walk, animal) {
   const first = !walk.found.has(animal.kind);
   walk.found.add(animal.kind);
+  walk.met.add(animal.kind);
   walk.target = null;
   return { kind: animal.kind, first };
 }
@@ -105,7 +107,7 @@ export function stepWalk(walk, dt, move = 0) {
   if (reached && reached.x > walk.checkpoint) walk.checkpoint = reached.x;
   if (!walk.safe && hit(walk)) return die(walk);
   const result = {};
-  const hiding = walk.place.animals.find(animal => !walk.found.has(animal.kind) && Math.abs(animal.x - walk.x) < SPOT);
+  const hiding = walk.place.animals.find(animal => !walk.met.has(animal.kind) && Math.abs(animal.x - walk.x) < SPOT);
   if (hiding) result.snap = snap(walk, hiding);
   const stars = catchStars(walk);
   if (stars) result.stars = stars;

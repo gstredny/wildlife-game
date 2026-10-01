@@ -1,4 +1,4 @@
-// Draws one moment of the walk: scenery, found animals and the bushes where the others hide, logs,
+// Draws one moment of the walk: scenery, the animals met on this walk and the bushes where the others hide, logs,
 // stars and hazards, the explorer (spinning as they tumble after a hit, blinking after starting
 // again), and the name of the animal the explorer can photograph again.
 import { ANIMALS } from "./animals.js";
@@ -30,7 +30,7 @@ export function paintFrame(context, walk, view, snapping) {
   if (seen(170, 80)) paintSign(context, 170, place.name);
   const target = snapTarget(walk);
   for (const animal of place.animals) {
-    if (!walk.found.has(animal.kind)) {
+    if (!walk.met.has(animal.kind)) {
       if (seen(animal.x, 120)) paintHidingSpot(context, animal.x, time + animal.x * 0.013);
       continue;
     }
@@ -84,7 +84,7 @@ function paintWaterAtFeet(context, x, y, size, time) {
   context.stroke();
 }
 
-// The name over the found animal the camera can photograph again.
+// The name over the met animal the camera can photograph again.
 function paintMarker(context, walk, animal) {
   const at = animalAt(animal, walk.time);
   paintNameTag(context, at.x, baseY(animal) + BOXES[animal.kind].top * animal.size - 16, ANIMALS[animal.kind].name);

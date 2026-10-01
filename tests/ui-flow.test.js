@@ -69,6 +69,9 @@ const frame = () => { now += 50; frames.shift()(now); };
 const flush = () => { for (const [id, callback] of timers) { timers.delete(id); callback(); } };
 const key = (type, value) => { for (const callback of events[type] ?? []) callback({ key: value, preventDefault() {} }); };
 const click = id => $(id).trigger('click');
+// Taps the right name on the animal card.
+const pickRight = () => $('card-choices').children.find(choice => choice.textContent === $('card-name').textContent).trigger('click');
+const paws = () => $('hud-paws').attributes['aria-label'];
 // One frame of play with the arrow keys, running right, careful or careless (see careful.js).
 function play(careful) {
   key(carefulJump(game.currentWalk(), careful) ? 'keydown' : 'keyup', 'ArrowUp');
@@ -103,6 +106,8 @@ try {
 
   test('an animal card asks what it is, with three names to pick from', () => {
     click(`place-${level1}`); frame();
+    const total = placeKinds(PLACES[level1]).length;
+    assert.equal(paws(), `0 of ${total} animals named`);
     for (let i = 0; i < 300 && timers.size === 0; i++) {
       key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
@@ -122,7 +127,8 @@ try {
     assert.ok($('card').classList.contains('guessing'), 'a wrong name tells nothing');
     choices.find(choice => choice.textContent === answer).trigger('click');
     assert.ok(!$('card').classList.contains('guessing'));
-    assert.equal($('card-kicker').textContent, "That's right! A new animal!");
+    assert.equal($('card-kicker').textContent, "That's right!", 'found in the test before, so not new');
+    assert.equal(paws(), `0 of ${total} animals named`, 'a gold paw takes the right name on the first try');
     assert.equal(timers.size, 0, 'the card waits for the tap, with no timer');
     click('card-close');
     // Meeting the same animal again asks again, with the names picked fresh.
@@ -131,9 +137,23 @@ try {
     assert.ok($('card').classList.contains('guessing'));
     assert.equal($('card-name').textContent, answer);
     assert.equal($('card-choices').children.length, 3);
-    $('card-choices').children.find(choice => choice.textContent === answer).trigger('click');
+    pickRight();
     assert.equal($('card-kicker').textContent, "That's right!");
+    assert.equal(paws(), `1 of ${total} animals named`);
+    assert.equal($('hud-paws').children[0].textContent, '🐾', 'one gold paw');
+    assert.equal($('hud-paws').children[1].textContent, '🐾'.repeat(total - 1), 'the rest still to earn');
+    click('card-close');
+    // The next bush holds an animal not in the Field Guide yet.
+    for (let i = 0; i < 300 && timers.size === 0; i++) {
+      key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
+    }
+    flush(); pickRight();
+    assert.equal($('card-kicker').textContent, "That's right! A new animal!");
+    assert.equal(paws(), `2 of ${total} animals named`);
     click('card-close'); click('home-button');
+    click(`place-${level1}`);
+    assert.equal(paws(), `0 of ${total} animals named`, 'each walk earns its paws again');
+    click('home-button');
   });
 
   test('a hit costs a heart, losing all three is game over, and Try again starts the level over', () => {
@@ -166,16 +186,22 @@ try {
       let budget = 0;
       while (budget++ < 1400) {
         frame();
-        if (!$('card').hidden) { click('card-close'); continue; }
+        if (!$('card').hidden) { pickRight(); click('card-close'); continue; }
         if (!$('ranger').hidden) {
-          const cheer = `You found all ${placeKinds(place).length} animals and caught \\d+ of ${place.stars.length} stars!`;
+          const total = placeKinds(place).length;
+          const cheer = `You found all ${total} animals and caught \\d+ of ${place.stars.length} stars! You named ${total} of ${total} on the first try!`;
           assert.equal(JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.level, index + 2, 'the next level is saved at the flag');
           assert.equal($('ranger-place').textContent, `Level ${index + 1} · ${place.name}`);
           if (next) {
             assert.match($('ranger-message').textContent, new RegExp(`^${cheer} A new trail opened: ${PLACES[next].name}!$`));
             assert.equal($('ranger-title').textContent, 'Junior Ranger!');
             assert.equal($('ranger-next').hidden, false);
-            click('ranger-next');
+            // From the bigger prairie, go by the trail map to the smaller Gulf Shore.
+            if (habitat === 'prairie') {
+              click('ranger-home');
+              assert.equal($('start').hidden, false, 'the trail map opens');
+              click(`place-${next}`);
+            } else click('ranger-next');
           } else {
             assert.match($('ranger-message').textContent, new RegExp(`^${cheer} You explored every trail around Katy, Texas!$`));
             assert.equal($('ranger-title').textContent, 'Master Ranger!');

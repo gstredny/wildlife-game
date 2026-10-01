@@ -87,6 +87,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .walk-button.jump-button { width: 96px; height: 96px; font-size: 40px; background: rgba(214, 138, 40, 0.75); }
 .hud-stars { color: var(--sun); font-weight: 800; }
 .hud-lives { letter-spacing: 2px; }
+/* A paw for each animal in the level: gold once named right on the first try, faint until then. */
+.hud-paws { max-width: 11em; font-size: 15px; line-height: 1.6; }
+.paws-named { padding: 1px 3px; border-radius: 9px; background: var(--sun); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.paws-left { opacity: 0.55; filter: grayscale(1) brightness(2.5); }
 .walk-button {
   width: 84px;
   height: 84px;

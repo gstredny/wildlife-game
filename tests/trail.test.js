@@ -43,8 +43,19 @@ test("an animal hides at its spot until the explorer gets there, then comes out 
   assert.ok(walk.found.has("heron"));
 });
 
-test("an animal already found is out in the open, and the camera can take its picture again", () => {
+test("each walk hides every animal again, even one already in the Field Guide", () => {
   const walk = createWalk(bayou, new Set(["heron"]));
+  walk.x = heron.x - 150;
+  assert.equal(snapTarget(walk), null, "no picture before it comes out");
+  assert.equal(animalAtPoint(walk, { x: heron.x, y: baseY(heron) - 10 }), null, "no tapping it before it comes out");
+  let result = {};
+  for (let frame = 0; frame < 120 && !result.snap; frame++) result = stepWalk(walk, 1 / 60, 1);
+  assert.deepEqual(result.snap, { kind: "heron", first: false }, "met again, but not new");
+});
+
+test("an animal met on this walk is out in the open, and the camera can take its picture again", () => {
+  const walk = createWalk(bayou, new Set(["heron"]));
+  walk.met.add("heron");
   walk.x = heron.x;
   assert.equal(snapTarget(walk).kind, "heron");
   assert.equal(stepWalk(walk, 1 / 60).snap, undefined, "walking past it opens no card");
@@ -54,6 +65,7 @@ test("an animal already found is out in the open, and the camera can take its pi
 
 test("tapping a found animal far away walks the explorer over for another picture", () => {
   const walk = createWalk(bayou, new Set(placeKinds(bayou)));
+  for (const kind of placeKinds(bayou)) walk.met.add(kind);
   walkTo(walk, heron.x, heron);
   let result = {};
   for (let frame = 0; frame < 600 && !result.snap; frame++) result = stepWalk(walk, 1 / 60);
@@ -159,6 +171,7 @@ test("stars float along every trail, and a jump at the right moment catches them
 test("a walk to a tapped spot hops over logs on the way", () => {
   const [log] = bayou.logs;
   const walk = createWalk(bayou, new Set(placeKinds(bayou)));
+  for (const kind of placeKinds(bayou)) walk.met.add(kind);
   walkTo(walk, log.x + 300);
   for (let frame = 0; frame < 600 && walk.target; frame++) stepWalk(walk, 1 / 60);
   assert.ok(Math.abs(walk.x - (log.x + 300)) < 6);

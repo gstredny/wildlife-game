@@ -93,12 +93,12 @@ async function press(id) {
   await sleep(150);
 }
 
-// What the careful child would press now, as "r" (right) and "j" (jump), with how many animals are
-// found and whether the explorer is tumbling or at the flag; null with a panel open.
+// What the careful child would press now, as "r" (right) and "j" (jump), with how many animals came
+// out on this walk and whether the explorer is tumbling or at the flag; null with a panel open.
 const LOOK = `Promise.all([import("./src/main.js"), import("./tests/careful.js")]).then(([game, { carefulJump }]) => {
   const walk = game.currentWalk();
   if (!walk || !document.getElementById("overlay").hidden) return null;
-  return { move: carefulJump(walk) ? "rj" : "r", found: walk.found.size, stop: walk.dying > 0 || walk.endedAt !== null };
+  return { move: carefulJump(walk) ? "rj" : "r", met: walk.met.size, stop: walk.dying > 0 || walk.endedAt !== null };
 })`;
 const KEYS = { r: ["ArrowRight", "ArrowRight", 39], j: [" ", "Space", 32] };
 const BUTTONS = { r: "right-button", j: "jump-button" };
@@ -122,17 +122,17 @@ async function hold(move, held) {
 }
 
 // Play for a moment with real input, looking at the game about 30 times a second. Fingers come off
-// the buttons as soon as an animal is found, a hazard hits, or the flag is reached, before a panel
+// the buttons as soon as an animal comes out, a hazard hits, or the flag is reached, before a panel
 // covers them: a touch held down while its button disappears jams Chrome's touch input.
-let foundSoFar = 0;
+let metSoFar = 0;
 async function walkRight(ms) {
   let held = "";
   let settle = false;
   for (const end = Date.now() + ms; Date.now() < end;) {
     const look = await evaluate(LOOK);
-    settle = !look || look.stop || look.found !== foundSoFar;
+    settle = !look || look.stop || look.met !== metSoFar;
     if (settle) {
-      foundSoFar = look?.found ?? foundSoFar;
+      metSoFar = look?.met ?? metSoFar;
       break;
     }
     if (look.move !== held) {
@@ -255,6 +255,6 @@ if (!newCount.startsWith("0 of")) errors.push(`new player's count: ${newCount}`)
 await press("players-button");
 await shot("players-two");
 for (const error of errors) console.log("page error:", error);
-const ok = ranger && cards.length === TOTAL && errors.length === 0;
+const ok = ranger && new Set(cards).size === TOTAL && errors.length === 0;
 console.log(ok ? `PASS: level ${levelNumber(HABITAT)} ${HABITAT}, ${TOTAL} animals found, Junior Ranger shown, no page errors` : "FAIL");
 finish(ok ? 0 : 1);
