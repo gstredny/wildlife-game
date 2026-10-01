@@ -146,12 +146,12 @@ test("the explorer can stand on a log, and only jumps from solid ground", () => 
   assert.equal(walk.y, log.h, "landed on top");
 });
 
-test("stars float along every trail, and a jump catches them", () => {
+test("stars float along every trail, and a jump at the right moment catches them", () => {
   for (const place of Object.values(PLACES)) assert.ok(place.stars.length >= 6, `${place.name} has stars`);
   const walk = createWalk(bayou);
   const onFoot = run(walk, 4);
   const jumper = createWalk(bayou);
-  const hopping = run(jumper, 4, () => true);
+  const hopping = run(jumper, 4, each => bayou.stars.some(star => star.x - each.x > 0 && star.x - each.x < 45));
   assert.ok(hopping > onFoot, `jumping catches more stars (${hopping} vs ${onFoot})`);
   assert.equal(jumper.stars.size, hopping);
 });

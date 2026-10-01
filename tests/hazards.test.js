@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { cycle, FALL, hazardAt, HAZARDS } from "../src/hazards.js";
+import { cycle, FALL, hazardAt, HAZARDS, SETTLE } from "../src/hazards.js";
 import { PLACES } from "../src/places.js";
 import { createWalk, jump, LIVES, SAFE, SPOT, stepWalk } from "../src/trail.js";
 
@@ -97,7 +97,7 @@ test("a mosquito flies up and away at the end of its lane instead of vanishing i
     else if (last) break;
   }
   assert.ok(last.y > 560, `off the top of the screen when it goes (${Math.round(last.y)} up)`);
-  assert.ok(last.leaving, "a mosquito flying away can't hit anyone");
+  assert.ok(last.harmless, "a mosquito flying away can't hit anyone");
 });
 
 test("a bouncing ball lands at the end of its lane, instead of vanishing mid-bounce", () => {
@@ -128,16 +128,14 @@ test("after starting again, nothing hits the blinking explorer for a moment; the
   assert.equal(walk.lives, LIVES - 2);
 });
 
-test("something dropping in can't hit anyone until it lands, so a child sees it coming", () => {
-  for (const place of [PLACES.woods, PLACES.swamp]) {
+test("something dropping in can't hit anyone until it has landed and settled, so it never lands on a child", () => {
+  for (const place of Object.values(PLACES)) {
     const [lane] = place.lanes;
     const walk = createWalk(place);
     walk.time = 10 * cycle(lane) - lane.offset;
     walk.x = lane.from;
-    let hitAt = null;
-    for (let frame = 0; frame < 60 && hitAt === null; frame++) {
-      if (stepWalk(walk, 1 / 60).died) hitAt = (walk.time + lane.offset) % cycle(lane);
+    for (let frame = 0; frame < (FALL + SETTLE) * 60 - 1; frame++) {
+      assert.equal(stepWalk(walk, 1 / 60).died, undefined, `${place.name}: hit while it came in`);
     }
-    assert.ok(hitAt !== null && hitAt >= FALL, `${place.name}: hit ${hitAt?.toFixed(2)} s after it appeared`);
   }
 });

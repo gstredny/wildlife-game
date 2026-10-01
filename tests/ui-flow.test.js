@@ -7,7 +7,7 @@ import { ANIMALS } from '../src/animals.js';
 import { GUESSES } from '../src/lines.js';
 import { PLACES, placeKinds } from '../src/places.js';
 import { createWalk } from '../src/trail.js';
-import { carefulMove } from './careful.js';
+import { carefulJump } from './careful.js';
 
 class Element {
   constructor(tag = 'div') {
@@ -66,11 +66,10 @@ const frame = () => { now += 50; frames.shift()(now); };
 const flush = () => { for (const [id, callback] of timers) { timers.delete(id); callback(); } };
 const key = (type, value) => { for (const callback of events[type] ?? []) callback({ key: value, preventDefault() {} }); };
 const click = id => $(id).trigger('click');
-// One frame of play with the arrow keys, careful or careless (see careful.js).
+// One frame of play with the arrow keys, running right, careful or careless (see careful.js).
 function play(careful) {
-  const move = carefulMove(game.currentWalk(), careful);
-  key(move.jump ? 'keydown' : 'keyup', 'ArrowUp');
-  key(move.right ? 'keydown' : 'keyup', 'ArrowRight');
+  key(carefulJump(game.currentWalk(), careful) ? 'keydown' : 'keyup', 'ArrowUp');
+  key('keydown', 'ArrowRight');
 }
 
 try {

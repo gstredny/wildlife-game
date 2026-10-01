@@ -8,9 +8,10 @@ export const WALK_SPEED = 260;
 export const REACH = 230; // how close the explorer must be to take a found animal's picture again
 export const SPOT = 50; // how close the explorer must come to a hiding animal's spot to find it
 export const EDGE = 90; // the explorer stops this far from either end of the trail
-const JUMP_SPEED = 820; // straight up, so a jump rises about 145 over the path
+const JUMP_SPEED = 900; // straight up, so a jump rises about 175 over the path, like Mario's floaty jump
 const GRAVITY = 2300;
 const HALF = 26; // half the explorer's width, for bumping into logs
+const HIT_HALF = 18; // the part of the explorer a hazard must touch: narrower than their body, to be kind
 const BODY = 150; // the explorer's height, for catching stars
 const STAR_REACH = 36;
 export const LIVES = 3; // hearts at the start of each level
@@ -137,13 +138,13 @@ function fall(walk, dt) {
   }
 }
 
-// Whether a hazard is touching the explorer, from their feet to their head. One still dropping in
-// can't hit yet, so a child has a moment to see it coming, and a flier flying away can't hit either.
+// Whether a hazard is touching the explorer, from their feet to their head. One dropping in can't hit
+// until it has landed and settled, so a child sees it coming, and a flier flying away can't hit.
 function hit(walk) {
   return walk.place.lanes.some(lane => {
     const thing = hazardAt(lane, walk.time);
     const { half, tall } = HAZARDS[lane.kind];
-    return thing && !thing.falling && !thing.leaving && Math.abs(thing.x - walk.x) < HALF + half &&
+    return thing && !thing.harmless && Math.abs(thing.x - walk.x) < HIT_HALF + half &&
       walk.y < thing.y + tall && thing.y < walk.y + BODY;
   });
 }

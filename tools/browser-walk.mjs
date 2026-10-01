@@ -84,12 +84,10 @@ async function press(id) {
 
 // What the careful child would press now, as "r" (right) and "j" (jump), with how many animals are
 // found and whether the explorer is tumbling or at the flag; null with a panel open.
-const LOOK = `Promise.all([import("./src/main.js"), import("./tests/careful.js")]).then(([game, { carefulMove }]) => {
+const LOOK = `Promise.all([import("./src/main.js"), import("./tests/careful.js")]).then(([game, { carefulJump }]) => {
   const walk = game.currentWalk();
   if (!walk || !document.getElementById("overlay").hidden) return null;
-  const move = carefulMove(walk);
-  return { move: (move.right ? "r" : "") + (move.jump ? "j" : ""), found: walk.found.size,
-    stop: walk.dying > 0 || walk.endedAt !== null };
+  return { move: carefulJump(walk) ? "rj" : "r", found: walk.found.size, stop: walk.dying > 0 || walk.endedAt !== null };
 })`;
 const KEYS = { r: ["ArrowRight", "ArrowRight", 39], j: [" ", "Space", 32] };
 const BUTTONS = { r: "right-button", j: "jump-button" };

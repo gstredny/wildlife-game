@@ -5,7 +5,7 @@ import { loadPlayers, recordFind, savePlayers } from '../src/players.js';
 import { baseY } from '../src/layout.js';
 import { BOXES, PAINTERS } from '../src/painters.js';
 import { PLACES, placeKinds } from '../src/places.js';
-import { carefulMove } from './careful.js';
+import { carefulJump } from './careful.js';
 import { createWalk, jump, LIVES, snap, stepWalk } from '../src/trail.js';
 
 const storage = () => ({ data: new Map(), getItem(key) { return this.data.get(key); }, setItem(key, value) { this.data.set(key, value); } });
@@ -22,9 +22,8 @@ for (const [key, place] of Object.entries(PLACES)) {
   test(`a careful child can finish ${place.name} with all ${LIVES} hearts, finding every animal`, () => {
     const walk = createWalk(place);
     for (let frame = 0; frame < 60 * 120 && walk.endedAt === null; frame++) {
-      const move = carefulMove(walk);
-      if (move.jump) jump(walk);
-      assert.equal(stepWalk(walk, 1 / 60, move.right ? 1 : 0).died, undefined, `${key}: hit at ${Math.round(walk.x)}`);
+      if (carefulJump(walk)) jump(walk);
+      assert.equal(stepWalk(walk, 1 / 60, 1).died, undefined, `${key}: hit at ${Math.round(walk.x)}`);
     }
     assert.notEqual(walk.endedAt, null, `${key}: reached the goal flag`);
     assert.equal(walk.lives, LIVES);

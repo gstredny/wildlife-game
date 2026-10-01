@@ -1,13 +1,10 @@
-// What a careful child presses at each moment of a walk: run right, but wait while something drops in
-// just ahead, and jump at logs and at whatever is coming. A careless child only jumps at logs. Shared
-// by the tests and the browser check, which loads it into the page.
+// Whether a careful child running right jumps at this moment of a walk: at logs, and at whatever is
+// coming close. A careless child only jumps at logs. Shared by the tests and the browser check, which
+// loads it into the page.
 import { hazardAt } from "../src/hazards.js";
 
-export function carefulMove(walk, careful = true) {
-  const ahead = (thing, near) => thing && thing.x - walk.x > 0 && thing.x - walk.x < near;
-  const things = walk.place.lanes.map(lane => hazardAt(lane, walk.time));
-  const dropping = careful && things.some(thing => thing?.falling && ahead(thing, 130));
-  const coming = careful && things.some(thing => !thing?.falling && ahead(thing, 150));
-  const log = walk.place.logs.some(each => ahead({ x: each.x - each.w / 2 + 60 }, 150));
-  return { right: !(dropping && walk.vy === 0), jump: coming || log };
+export function carefulJump(walk, careful = true) {
+  const ahead = x => x - walk.x > 0 && x - walk.x < 150;
+  const coming = careful && walk.place.lanes.some(lane => ahead(hazardAt(lane, walk.time)?.x ?? -Infinity));
+  return coming || walk.place.logs.some(log => ahead(log.x - log.w / 2 + 60));
 }
