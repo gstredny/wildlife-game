@@ -1,13 +1,16 @@
-// Wires the game together: the start screen, walking, taking pictures, the card, the Field Guide, the
-// hearts and game over, and the Junior Ranger cheer at the goal flag. The rules live in trail.js; drawing lives in render.js.
+// Wires the game together: the trail map, walking, taking pictures, the card, the Field Guide, the
+// hearts and game over, and the Junior Ranger cheer at the goal flag that opens the next level. The
+// rules live in trail.js and levels.js; drawing lives in render.js.
 import { againLines, cardSpeech, ANIMALS } from "./animals.js";
 import { fillCard } from "./card-view.js";
+import { throwConfetti } from "./confetti.js";
 import { fillGuide } from "./guide-view.js";
 import { animalAtPoint, cameraFor, screenToWorld, viewFor } from "./layout.js";
-import { GAME_OVER, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
+import { allBeaten, beatLevel, currentLevel, LEVELS, levelNumber } from "./levels.js";
+import { FINALE, GAME_OVER, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
-import { fillPlaces, progress } from "./place-view.js";
-import { addPlayer, loadPlayers, recordFind, savePlayers } from "./players.js";
+import { fillMap, progress } from "./place-view.js";
+import { addPlayer, loadPlayers, MAX_PLAYERS, recordFind, removePlayer, savePlayers } from "./players.js";
 import { fillPlayers } from "./players-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
@@ -20,12 +23,15 @@ const context = canvas.getContext("2d");
 const voice = createVoice();
 const sound = createSound();
 const players = loadPlayers();
-const found = new Set(players.list[players.current].found); // the current player's animals
-let place = PLACES.bayou;
+const player = () => players.list[players.current];
+const found = new Set(player().found); // the current player's animals
+// The place behind the trail map: the level the player is on, or the last once every level is beaten.
+const homeKey = () => currentLevel(player()) ?? LEVELS.at(-1);
+let place = PLACES[homeKey()];
 const keys = new Set();
 const SNAP_POSE = 0.7;
 
-let walk = null; // the walk under way, or null on the start screen
+let walk = null; // the walk under way, or null on the trail map
 let preview = createWalk(place, new Set());
 preview.x = 520;
 let camera = 0;
@@ -62,23 +68,30 @@ function counts() {
   $("hud-lives").setAttribute("aria-label", `${lives} of ${LIVES} hearts left`);
   $("collection-count").textContent = `${found.size} of ${Object.keys(ANIMALS).length} animals in your Field Guide`;
   $("players-button").textContent = `👤 ${players.current}`;
-  fillPlaces($("places"), found, startWalk);
+  fillMap($("places"), player(), found, startWalk);
+}
+
+// The place shown: on a walk, or as the scenery behind the trail map.
+function setPlace(key) {
+  place = PLACES[key];
+  preview = createWalk(place);
+  preview.x = 520;
 }
 
 function goHome() {
   voice.stop();
   walk = null;
+  setPlace(homeKey());
   counts();
   show("start");
 }
 
 function startWalk(key) {
-  place = PLACES[key];
-  preview = createWalk(place);
-  preview.x = 520;
+  setPlace(key);
   camera = 0;
   posing = 0;
   walk = createWalk(place, found);
+  $("hud-level").textContent = `Level ${levelNumber(key)}`;
   $("hud-place").textContent = place.name;
   counts();
   show(null);
@@ -133,20 +146,34 @@ function closeCard() {
   show(walk ? null : "start");
 }
 
-// The goal flag: a fanfare while the flag goes up, then the Junior Ranger cheer with the stars caught.
-// Every hiding spot is on the way, so every animal here is found by now.
+// The goal flag beats the level and opens the next one, saved at once. A fanfare while the flag goes
+// up, then confetti and the Junior Ranger cheer naming the trail that opened; after the last level,
+// the Master Ranger cheer. Every hiding spot is on the way, so every animal here is found by now.
 function reachGoal() {
   sound.play("ranger");
   release();
   const finished = walk;
+  const key = placeKey();
+  const opened = beatLevel(player(), key);
+  savePlayers(players);
+  const finale = key === LEVELS.at(-1) && allBeaten(player());
   setTimeout(() => {
     if (walk !== finished) return;
     show("ranger");
-    $("ranger-place").textContent = place.name;
-    $("ranger-message").textContent = `You found all ${placeKinds(place).length} animals and caught ${walk.stars.size} of ${place.stars.length} stars!`;
-    voice.say(place.ranger);
+    throwConfetti($("confetti"));
+    $("ranger-place").textContent = `Level ${levelNumber(key)} · ${place.name}`;
+    $("ranger-title").textContent = finale ? "Master Ranger!" : "Junior Ranger!";
+    $("ranger-badge").textContent = finale ? "🏅" : "★";
+    const cheer = `You found all ${placeKinds(place).length} animals and caught ${walk.stars.size} of ${place.stars.length} stars!`;
+    $("ranger-message").textContent = finale ? `${cheer} You explored every trail around Katy, Texas!`
+      : opened ? `${cheer} A new trail opened: ${PLACES[opened].name}!` : cheer;
+    $("ranger-next").hidden = !nextLevel();
+    voice.say(finale ? FINALE : place.ranger);
   }, 900);
 }
+
+// The level after the one just played, if there is one; it is open, since this one is beaten.
+const nextLevel = () => LEVELS[levelNumber(placeKey())] ?? null;
 
 function openGuide() {
   const scope = $("guide-place").value;
@@ -166,17 +193,32 @@ function openGuide() {
 // ---- Players ----
 
 function openPlayers() {
-  fillPlayers($("players-list"), players, pickPlayer);
+  fillPlayers($("players-list"), players, pickPlayer, dropPlayer);
+  const full = Object.keys(players.list).length >= MAX_PLAYERS;
+  $("player-form").hidden = full;
+  $("players-full").hidden = !full;
   show("players");
+}
+
+// The current player's animals, after switching or removing a player.
+function useCurrent() {
+  found.clear();
+  for (const kind of player().found) found.add(kind);
 }
 
 function pickPlayer(name) {
   players.current = name;
   savePlayers(players);
-  found.clear();
-  for (const kind of players.list[name].found) found.add(kind);
+  useCurrent();
+  goHome();
+}
+
+function dropPlayer(name) {
+  if (!removePlayer(players, name)) return;
+  savePlayers(players);
+  useCurrent();
   counts();
-  show("start");
+  openPlayers();
 }
 
 // ---- Walking ----
@@ -329,7 +371,7 @@ $("start-guide-button").addEventListener("click", () => { $("guide-place").value
 $("guide-place").addEventListener("change", openGuide);
 $("guide-close").addEventListener("click", () => show(walk ? null : "start"));
 $("home-button").addEventListener("click", goHome);
-$("ranger-close").addEventListener("click", () => show(null));
+$("ranger-next").addEventListener("click", () => startWalk(nextLevel()));
 $("ranger-home").addEventListener("click", goHome);
 $("gameover-retry").addEventListener("click", () => startWalk(placeKey()));
 $("gameover-home").addEventListener("click", goHome);

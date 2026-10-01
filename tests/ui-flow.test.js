@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { fillCard } from '../src/card-view.js';
 import { ANIMALS } from '../src/animals.js';
+import { LEVELS } from '../src/levels.js';
 import { GUESSES } from '../src/lines.js';
 import { PLACES, placeKinds } from '../src/places.js';
 import { createWalk } from '../src/trail.js';
@@ -12,7 +13,7 @@ import { carefulJump } from './careful.js';
 class Element {
   constructor(tag = 'div') {
     this.tag = tag; this.children = []; this.hidden = false; this.textContent = ''; this.value = '';
-    this.events = {}; this.attributes = {}; this.classes = new Set(); this.width = 1280; this.height = 800;
+    this.events = {}; this.attributes = {}; this.classes = new Set(); this.width = 1280; this.height = 800; this.style = {};
     this.classList = {
       add: value => this.classes.add(value), remove: value => this.classes.delete(value),
       toggle: (value, enabled) => enabled ? this.classes.add(value) : this.classes.delete(value),
@@ -41,7 +42,9 @@ for (const match of html.matchAll(/<([a-z][a-z0-9]*)\b[^>]*\bid="([^"]+)"[^>]*>/
   elements.set(element.id, element);
 }
 elements.get('guide-place').value = 'all';
-const $ = id => elements.get(id) ?? [...elements.values()].flatMap(element => element.children).find(child => child.id === id);
+const descendants = node => (node.children ?? []).flatMap(child => [child, ...descendants(child)]);
+const $ = id => elements.get(id) ?? [...elements.values()].flatMap(descendants).find(child => child.id === id);
+const level1 = LEVELS[0];
 const events = {};
 const frames = [];
 const timers = new Map();
@@ -73,27 +76,33 @@ function play(careful) {
 }
 
 try {
-  test('home exposes all six habitats and the full collection count', () => {
-    assert.equal($('places').children.length, 6);
+  test('the trail map shows level 1 to play, and misty stops for the levels ahead', () => {
     assert.equal($('collection-count').textContent, '0 of 60 animals in your Field Guide');
     assert.equal($('guide-place').children.length, 6);
+    const [hero, stops] = $('places').children;
+    assert.equal(hero.id, `place-${level1}`);
+    assert.equal(hero.children.find(span => span.className === 'place-level').textContent, 'Level 1');
+    assert.deepEqual(stops.children.map(stop => stop.className), ['map-stop now', ...Array(5).fill('map-stop locked')]);
+    assert.deepEqual(stops.children.slice(1).map(stop => stop.children[1].textContent), ['Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6'], 'no names ahead');
+    assert.equal($(`place-${LEVELS[1]}`), undefined, 'level 2 cannot be started');
     frame();
   });
 
-  test('a delayed camera card cannot interrupt a newly chosen habitat', () => {
-    click('place-swamp');
+  test('a delayed camera card cannot interrupt a newly started level', () => {
+    click(`place-${level1}`);
     for (let i = 0; i < 80 && timers.size === 0; i++) {
       key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
     assert.ok(timers.size > 0, 'reaching the first hiding spot queued its card');
-    click('home-button'); click('place-gulf'); flush();
-    assert.equal($('hud-place').textContent, 'Gulf Shore');
+    click('home-button'); click(`place-${level1}`); flush();
+    assert.equal($('hud-place').textContent, PLACES[level1].name);
+    assert.equal($('hud-level').textContent, 'Level 1');
     assert.equal($('card').hidden, true);
     click('home-button');
   });
 
   test('a new animal card asks what it is before telling', () => {
-    click('place-swamp'); frame();
+    click(`place-${level1}`); frame();
     for (let i = 0; i < 300 && timers.size === 0; i++) {
       key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
     }
@@ -110,8 +119,8 @@ try {
     click('card-close'); click('home-button');
   });
 
-  test('a hit costs a heart, losing all three is game over, and Try again starts the place over', () => {
-    click('place-woods');
+  test('a hit costs a heart, losing all three is game over, and Try again starts the level over', () => {
+    click(`place-${level1}`);
     assert.equal($('hud-lives').textContent, '❤️❤️❤️');
     for (let i = 0; i < 4000 && $('gameover').hidden; i++) {
       frame();
@@ -121,26 +130,41 @@ try {
     }
     assert.equal($('gameover').hidden, false, 'game over');
     assert.equal($('hud-lives').textContent, '🤍🤍🤍');
-    assert.equal($('gameover-place').textContent, PLACES.woods.name);
+    assert.equal($('gameover-place').textContent, PLACES[level1].name);
     click('gameover-retry');
     assert.equal($('gameover').hidden, true);
-    assert.equal($('hud-place').textContent, PLACES.woods.name);
+    assert.equal($('hud-place').textContent, PLACES[level1].name);
     assert.equal($('hud-lives').textContent, '❤️❤️❤️');
-    assert.equal(game.currentWalk().x, createWalk(PLACES.woods).x, 'back at the start');
+    assert.equal(game.currentWalk().x, createWalk(PLACES[level1]).x, 'back at the start');
     click('home-button');
   });
 
-  test('the live screen flow discovers all animals, replays the guide, and changes habitats', () => {
-    for (const [habitat, place] of Object.entries(PLACES)) {
-      click(`place-${habitat}`);
+  test('beating each level opens the next, through to Master Ranger, with every find kept', () => {
+    click(`place-${level1}`);
+    LEVELS.forEach((habitat, index) => {
+      const place = PLACES[habitat];
+      const next = LEVELS[index + 1];
       assert.equal($('hud-place').textContent, place.name);
+      assert.equal($('hud-level').textContent, `Level ${index + 1}`);
       let budget = 0;
       while (budget++ < 1400) {
         frame();
         if (!$('card').hidden) { click('card-close'); continue; }
         if (!$('ranger').hidden) {
-          assert.match($('ranger-message').textContent, new RegExp(`^You found all ${placeKinds(place).length} animals and caught \\d+ of ${place.stars.length} stars!$`));
-          click('ranger-home');
+          const cheer = `You found all ${placeKinds(place).length} animals and caught \\d+ of ${place.stars.length} stars!`;
+          assert.equal(JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.level, index + 2, 'the next level is saved at the flag');
+          assert.equal($('ranger-place').textContent, `Level ${index + 1} · ${place.name}`);
+          if (next) {
+            assert.match($('ranger-message').textContent, new RegExp(`^${cheer} A new trail opened: ${PLACES[next].name}!$`));
+            assert.equal($('ranger-title').textContent, 'Junior Ranger!');
+            assert.equal($('ranger-next').hidden, false);
+            click('ranger-next');
+          } else {
+            assert.match($('ranger-message').textContent, new RegExp(`^${cheer} You explored every trail around Katy, Texas!$`));
+            assert.equal($('ranger-title').textContent, 'Master Ranger!');
+            assert.equal($('ranger-next').hidden, true);
+            click('ranger-home');
+          }
           break;
         }
         if (timers.size) { flush(); continue; }
@@ -148,10 +172,16 @@ try {
         play(true);
       }
       assert.ok(budget < 1400, `${place.name} did not complete`);
-      assert.equal($('hud-count').textContent, `${placeKinds(place).length} of ${placeKinds(place).length} found`);
-    }
+    });
     assert.equal($('collection-count').textContent, '60 of 60 animals in your Field Guide');
     assert.equal(JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.found.length, 60);
+    const [done, stops] = $('places').children;
+    assert.equal(done.className, 'place-card level-done');
+    assert.deepEqual(stops.children.map(stop => stop.className), Array(6).fill('map-stop beaten'));
+    for (const habitat of LEVELS) assert.equal($(`place-${habitat}`).tag, 'button', `${habitat} can be played again`);
+    click('place-bayou');
+    assert.equal($('hud-level').textContent, 'Level 3');
+    click('home-button');
     click('start-guide-button');
     assert.equal($('guide-grid').children.length, 60);
     const bullfrogSlot = $('guide-grid').children.find(slot => slot.attributes['aria-label'] === 'American bullfrog');
@@ -172,20 +202,50 @@ try {
   });
 
 
-  test('each player has their own Field Guide and a list of what they found', () => {
+  test('each player has their own Field Guide, level, and list of what they found', () => {
     click('players-button');
     assert.equal($('players').hidden, false);
     const [explorer] = $('players-list').children;
-    assert.match(explorer.children[1].textContent, /^60 of 60 animals/);
-    assert.match(explorer.children[2].textContent, / · Gulf Shore · today /, 'the latest find comes first');
+    const [pick, remove] = explorer.children;
+    assert.equal(pick.children[1].textContent, 'Master Ranger · every trail explored');
+    assert.match(pick.children[2].textContent, /^60 of 60 animals/);
+    assert.match(pick.children[3].textContent, / · Gulf Shore · today /, 'the latest find comes first');
+    assert.equal(remove.hidden, true, 'the only player cannot be removed');
     $('player-name').value = ' Emma ';
     $('player-form').trigger('submit', { preventDefault() {} });
     assert.equal($('players-button').textContent, '👤 Emma');
     assert.equal($('collection-count').textContent, '0 of 60 animals in your Field Guide');
+    assert.equal($('places').children[0].id, `place-${level1}`, 'Emma starts at level 1');
+    assert.equal($(`place-${LEVELS[1]}`), undefined);
     click('players-button');
-    $('players-list').children[0].trigger('click');
+    assert.equal($('players-list').children[1].children[0].children[1].textContent, 'Level 1 · Backyard Safari');
+    $('players-list').children[0].children[0].trigger('click');
     assert.equal($('collection-count').textContent, '60 of 60 animals in your Field Guide');
     assert.equal(JSON.parse(saved.get('wildlife-players-v1')).current, 'Explorer');
+    assert.equal($('places').children[0].className, 'place-card level-done', 'the map follows the player');
+  });
+
+  test('three players at most; Remove asks for a second tap', () => {
+    click('players-button');
+    assert.equal($('player-form').hidden, false);
+    $('player-name').value = 'Max';
+    $('player-form').trigger('submit', { preventDefault() {} });
+    assert.equal($('players-button').textContent, '👤 Max');
+    click('players-button');
+    assert.equal($('players-list').children.length, 3);
+    assert.equal($('player-form').hidden, true, 'no fourth player');
+    assert.equal($('players-full').hidden, false);
+    const removeMax = () => $('players-list').children[2].children[1];
+    assert.equal(removeMax().textContent, 'Remove');
+    removeMax().trigger('click');
+    assert.equal(removeMax().textContent, 'Tap again to remove');
+    assert.equal($('players-list').children.length, 3, 'one tap removes nobody');
+    removeMax().trigger('click');
+    assert.deepEqual(Object.keys(JSON.parse(saved.get('wildlife-players-v1')).list), ['Explorer', 'Emma']);
+    assert.equal(JSON.parse(saved.get('wildlife-players-v1')).current, 'Explorer', 'the first player left takes over');
+    assert.equal($('players-button').textContent, '👤 Explorer');
+    assert.equal($('player-form').hidden, false);
+    click('players-close');
   });
 
   test('new animal photos load from the device and show labeled art if loading fails', () => {

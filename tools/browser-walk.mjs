@@ -1,14 +1,16 @@
-// Plays the Bayou Trail in its own muted, headless Chrome with real input: walks and jumps right to
-// each hiding animal, reads every card, and ends as a Junior Ranger. It plays like the careful child
-// in tests/careful.js, looking at the game about 30 times a second; after a game over it taps Try
-// again (found animals stay found). Saves screenshots
-// and fails on any page error. No packages (Node 22+).
+// Plays one level in its own muted, headless Chrome with real input, as a saved player who has
+// reached it: walks and jumps right to each hiding animal, reads every card, and ends as a Junior
+// Ranger with the next trail opened on the map. It plays like the careful child in tests/careful.js,
+// looking at the game about 30 times a second; after a game over it taps Try again (found animals
+// stay found). Saves screenshots and fails on any page error. No packages (Node 22+).
 //
 //   python3 -m http.server 8790 --bind 127.0.0.1 &
 //   node tools/browser-walk.mjs desktop   # 1280×800, keyboard
 //   node tools/browser-walk.mjs phone     # 844×390 sideways phone, touch
 import { spawn } from "node:child_process";
+import { levelNumber } from "../src/levels.js";
 import { PLACES, placeKinds } from "../src/places.js";
+import { PLAYERS_KEY } from "../src/players.js";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -142,7 +144,12 @@ await send("Emulation.setDeviceMetricsOverride", size);
 if (phone) await send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
 await send("Page.navigate", { url: GAME });
 await sleep(1500);
-await shot("start");
+// A saved player who has reached this level, as a child who beat the ones before it would be.
+const saved = { current: "Explorer", list: { Explorer: { found: [], log: [], level: levelNumber(HABITAT) } } };
+await evaluate(`localStorage.setItem(${JSON.stringify(PLAYERS_KEY)}, ${JSON.stringify(JSON.stringify(saved))})`);
+await send("Page.reload");
+await sleep(1500);
+await shot("trail-map");
 // The Field Guide before any walk: every animal is a dark shape, and tapping one gives a clue.
 await press("start-guide-button");
 await evaluate(`document.querySelector(".guide-slot").id = "first-slot"`);
@@ -190,12 +197,17 @@ const ranger = await visible("ranger");
 if (ranger) {
   await sleep(500);
   await shot("junior-ranger");
-  await press("ranger-close");
+  const cheer = await evaluate(`document.getElementById("ranger-message").textContent`);
+  if (!/A new trail opened: |every trail/.test(cheer)) errors.push(`the cheer opened no trail: ${cheer}`);
+  console.log("cheer:", cheer);
+  await press("ranger-home");
+  await sleep(400);
+  await shot("trail-map-after");
 }
-await press("guide-button");
+await press("start-guide-button");
 await sleep(500);
 await shot("field-guide");
-// Replay a discovered card, then return to the same habitat after an offline reload.
+// Replay a discovered card, then find this level beaten on the map after an offline reload.
 await evaluate(`document.querySelector(".guide-slot:not(.missing)").id = "known-slot"`);
 await press("known-slot");
 await sleep(600);
@@ -203,7 +215,6 @@ if (!await evaluate(`document.getElementById("card-image").naturalWidth > 0`)) e
 await shot("guide-replay");
 await press("card-close");
 await press("guide-close");
-await press("home-button");
 await evaluate(`navigator.serviceWorker.ready.then(() => new Promise(resolve => {
   if (navigator.serviceWorker.controller) resolve(true);
   else navigator.serviceWorker.addEventListener("controllerchange", () => resolve(true), { once: true });
@@ -211,9 +222,11 @@ await evaluate(`navigator.serviceWorker.ready.then(() => new Promise(resolve => 
 await send("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
 await send("Page.reload");
 await sleep(1500);
-const savedCount = await evaluate(`document.getElementById("place-${HABITAT}").querySelector(".place-count").textContent`);
-if (savedCount !== `${TOTAL} of ${TOTAL} found`) errors.push(`offline saved progress: ${savedCount}`);
+const beaten = await evaluate(`document.getElementById("place-${HABITAT}")?.className ?? "missing"`);
+if (beaten !== "map-stop beaten") errors.push(`offline saved progress: ${HABITAT} on the map is "${beaten}", not a beaten badge`);
+console.log("after the offline reload, the map shows:", await evaluate(`document.querySelector(".level-now, .level-done").textContent`));
 await press(`place-${HABITAT}`);
+await sleep(400);
 await shot("offline-return");
 // Players: these finds belong to the first explorer; a new player starts with an empty Field Guide.
 await press("home-button");
@@ -228,5 +241,5 @@ await press("players-button");
 await shot("players-two");
 for (const error of errors) console.log("page error:", error);
 const ok = ranger && cards.length === TOTAL && errors.length === 0;
-console.log(ok ? `PASS: ${HABITAT}, ${TOTAL} animals found, Junior Ranger shown, no page errors` : "FAIL");
+console.log(ok ? `PASS: level ${levelNumber(HABITAT)} ${HABITAT}, ${TOTAL} animals found, Junior Ranger shown, no page errors` : "FAIL");
 finish(ok ? 0 : 1);

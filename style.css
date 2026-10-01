@@ -57,6 +57,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-size: 15px;
 }
 .hud-card strong { font-size: 17px; }
+.hud-level { color: var(--sun); font-weight: 800; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 .hud-actions { display: flex; gap: 8px; }
 
 .round-button {
@@ -118,6 +119,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .flash.go { animation: flash 0.45s ease-out; }
 @keyframes flash { from { opacity: 0.9; } to { opacity: 0; } }
 
+/* Confetti over everything when a level is beaten (src/confetti.js makes the pieces). */
+.confetti { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 5; }
+.confetti i {
+  position: absolute;
+  top: -16px;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  animation: confetti-fall 3s linear forwards;
+}
+@keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); } }
+
 /* Panels over the trail. */
 .overlay {
   position: fixed;
@@ -153,8 +166,64 @@ h2 { font-size: clamp(26px, 5.5vmin, 40px); }
 
 .start-panel { width: min(100%, 1020px); text-align: center; }
 .collection-count { margin: 0 0 18px; color: var(--sun); font-weight: 700; }
-.places-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+/* The trail map: the level you are on as a big card, then one stop per level along a dashed path. */
+.trail-map { display: grid; gap: 16px; justify-items: center; }
 .place-preview { width: calc(100% + 36px); height: 100px; object-fit: cover; margin: -16px -18px 8px; border-radius: 20px 20px 0 0; }
+.level-now { width: min(100%, 560px); }
+.place-level { color: var(--sun); font-weight: 800; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; }
+.level-done {
+  width: min(100%, 560px);
+  text-align: center;
+  background: radial-gradient(circle at 50% 0%, #e0a83a, #8a5a2b);
+  box-shadow: 0 6px 0 #5a3a1b;
+}
+.level-done .place-level { font-size: 16px; }
+.map-stops {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: clamp(4px, 1.5vw, 14px);
+  width: 100%;
+  padding-top: 4px;
+}
+/* The dashed path behind the stops. */
+.map-stops::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 27px;
+  border-top: 4px dashed rgba(255, 247, 230, 0.35);
+}
+.map-stop {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  width: clamp(72px, 15vw, 130px);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cream);
+}
+.stop-dot {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 900;
+  border: 3px solid rgba(255, 247, 230, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+}
+.stop-name { font-size: 13px; font-weight: 700; line-height: 1.15; text-align: center; }
+.map-stop.beaten .stop-dot { background: radial-gradient(circle at 35% 30%, #ffe39a, #e0a83a); border-color: #8a5a2b; color: #8a5a2b; }
+.map-stop.beaten:active { transform: translateY(2px); }
+.map-stop.now .stop-dot { background: var(--leaf); border-color: #fff; color: #fff; animation: here 1.4s ease-in-out infinite; }
+@keyframes here { 50% { transform: scale(1.12); box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.15); } }
+.map-stop.locked { opacity: 0.55; }
+.map-stop.locked .stop-dot { background: rgba(255, 255, 255, 0.08); border-style: dotted; color: rgba(255, 247, 230, 0.7); }
 .guide-filter { display: flex; gap: 12px; align-items: center; margin: 10px 0 16px; }
 .guide-filter select { font: inherit; padding: 10px; border-radius: 12px; background: #fff7e6; color: #1f3b2c; max-width: 100%; }
 .panel { touch-action: pan-y; }
@@ -177,7 +246,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .place-name { font-size: clamp(19px, 3.5vmin, 26px); font-weight: 800; }
 .place-blurb { font-size: 15px; opacity: 0.95; }
 .place-count { font-size: 15px; color: var(--sun); font-weight: 700; }
-.place-preview, .place-name, .place-blurb { grid-column: 1 / -1; }
+.place-preview, .place-level, .place-name, .place-blurb { grid-column: 1 / -1; }
 .habitat-swamp { background: linear-gradient(135deg, #4b827d, #365d4b); }
 .habitat-bayou { background: linear-gradient(135deg, #5d9fb0, #4f7d3a); }
 .habitat-woods { background: linear-gradient(135deg, #64894c, #3e5838); }
@@ -258,21 +327,35 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .guessing :is(#card-name, #card-fact, #card-say, .card-facts) { visibility: hidden; }
 .guessing #card-kicker { font-size: clamp(24px, 5vmin, 38px); letter-spacing: 0.02em; }
 
-/* Players: one row per player, with their count and latest finds. */
+/* Players: one row per player, with their level, count and latest finds, and Remove (tap twice). */
 .players-list { display: grid; gap: 10px; margin: 12px 0 16px; }
 .player-row {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   padding: 12px 16px;
   border: 2px solid transparent;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.1);
-  text-align: left;
 }
 .player-row.current { border-color: var(--sun); }
-.player-row strong { font-size: 22px; }
+.player-pick { flex: 1; display: grid; gap: 2px; padding: 0; border: 0; background: none; text-align: left; }
+.player-pick strong { font-size: 22px; }
+.player-level { font-weight: 800; }
 .player-count { color: var(--sun); font-weight: 700; }
 .player-find { font-size: 15px; opacity: 0.85; }
+.player-remove {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.player-remove.armed { background: #c84b4b; color: #fff; }
+.players-full { margin: 0 0 12px; color: var(--sun); font-weight: 700; }
 .player-form { display: flex; gap: 10px; flex-wrap: wrap; }
 .player-form input {
   flex: 1 1 200px;
@@ -353,13 +436,22 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   .guide-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
   .start-panel h1 { font-size: 32px; }
   .start-panel { padding: 16px; }
-  /* All six places in one row, so the choices fit without scrolling. The whole card is the button. */
-  .places-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
-  .start-panel .lead, .place-blurb, .place-go { display: none; }
-  .place-card { grid-template-columns: 1fr; padding: 8px 10px 10px; }
-  .place-preview { width: calc(100% + 20px); height: 64px; margin: -8px -10px 4px; }
-  .place-name { font-size: clamp(13px, 2.1vw, 17px); }
-  .place-count { font-size: clamp(11px, 1.7vw, 14px); white-space: nowrap; }
+  /* The level card beside the stops, so the map fits without scrolling. */
+  .start-panel .lead, .place-blurb, .collection-count { display: none; }
+  .trail-map { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); align-items: center; gap: 12px; }
+  .level-now, .level-done { padding: 8px 12px 10px; gap: 2px; }
+  .place-preview { width: calc(100% + 24px); height: 56px; margin: -8px -12px 4px; }
+  .place-level { font-size: 11px; }
+  .place-name { font-size: 17px; }
+  .place-count { font-size: 13px; white-space: nowrap; }
+  .place-go { padding: 6px 12px; font-size: 15px; }
+  .map-stops { gap: 2px; }
+  .map-stop { width: clamp(60px, 9vw, 86px); }
+  .map-stops::before { top: 20px; }
+  .stop-dot { width: 36px; height: 36px; font-size: 17px; }
+  .stop-name { font-size: 11px; }
+  .player-pick strong { font-size: 18px; }
+  .player-find { font-size: 13px; }
   .guide-slot { font-size: 12px; border-radius: 12px; padding-bottom: 6px; }
   .guide-slot.missing::after { font-size: 17px; top: 2px; right: 6px; }
   .guide-panel h2 { font-size: 26px; margin-bottom: 10px; }
@@ -379,11 +471,13 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   .start-panel .lead { display: none; }
 }
 
-/* Phones held upright: two places per row. */
+/* Phones held upright: the stops wrap into two rows of three. */
 @media (max-width: 600px) {
-  .places-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .map-stops { flex-wrap: wrap; gap: 10px 4px; }
+  .map-stop { width: 30%; }
+  .map-stops::before { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .badge, .flash.go { animation: none; }
+  .badge, .flash.go, .map-stop.now .stop-dot, .confetti i { animation: none; }
 }

@@ -20,6 +20,7 @@
 
   <header id="hud" class="hud" hidden>
     <div class="hud-card">
+      <span id="hud-level" class="hud-level">Level 1</span>
       <strong id="hud-place">Bayou Trail</strong>
       <span id="hud-count">0 of 8 found</span>
       <span id="hud-stars" class="hud-stars">⭐ 0 of 0</span>
@@ -43,14 +44,15 @@
     </div>
   </div>
   <div id="flash" class="flash"></div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
 
   <main id="overlay" class="overlay">
     <section id="start" class="panel start-panel">
       <p class="kicker">Katy, Texas</p>
       <h1>Wildlife Game</h1>
-      <p class="lead">Where will you explore today?</p>
+      <p class="lead">Your trail map</p>
       <p id="collection-count" class="collection-count"></p>
-      <div id="places" class="places-grid"></div>
+      <div id="places" class="trail-map"></div>
       <div class="start-actions">
         <button id="start-guide-button" class="soft-button" type="button">📖 Field Guide</button>
         <button id="players-button" class="soft-button" type="button">👤 Explorer</button>
@@ -105,6 +107,7 @@
         <button id="players-close" class="round-button" type="button" aria-label="Close players">✕</button>
       </div>
       <div id="players-list" class="players-list"></div>
+      <p id="players-full" class="players-full" hidden>Three explorers is the most this device holds. Remove one to add another.</p>
       <form id="player-form" class="player-form">
         <input id="player-name" maxlength="20" autocomplete="off" placeholder="New player's name" aria-label="New player's name">
         <button id="player-add" class="primary-button" type="submit">Add player</button>
@@ -112,13 +115,13 @@
     </section>
 
     <section id="ranger" class="panel ranger-panel" hidden>
-      <div class="badge" aria-hidden="true"><span>★</span></div>
-      <p id="ranger-place" class="kicker">Bayou Trail</p>
-      <h2>Junior Ranger!</h2>
+      <div class="badge" aria-hidden="true"><span id="ranger-badge">★</span></div>
+      <p id="ranger-place" class="kicker">Level 3 · Bayou Trail</p>
+      <h2 id="ranger-title">Junior Ranger!</h2>
       <p id="ranger-message"></p>
       <div class="start-actions">
-        <button id="ranger-close" class="primary-button" type="button">Keep exploring</button>
-        <button id="ranger-home" class="soft-button" type="button">Home</button>
+        <button id="ranger-next" class="primary-button" type="button">Next trail ▶</button>
+        <button id="ranger-home" class="soft-button" type="button">Trail map</button>
       </div>
     </section>
 
@@ -129,7 +132,7 @@
       <p>You ran out of hearts. Try again!</p>
       <div class="start-actions">
         <button id="gameover-retry" class="primary-button" type="button">Try again</button>
-        <button id="gameover-home" class="soft-button" type="button">Home</button>
+        <button id="gameover-home" class="soft-button" type="button">Trail map</button>
       </div>
     </section>
   </main>
