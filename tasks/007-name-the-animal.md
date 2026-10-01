@@ -1,7 +1,7 @@
 # Name the animal from three choices
 
 Date: 2026-10-01
-Status: in progress
+Status: done and live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/)
 
 ## Intent contract (George's words)
 
@@ -52,13 +52,13 @@ Slices, smallest first: (1) the three choices on every picture; (2) the paw ladd
 
 ## Done criteria
 
-- [ ] `npm test`: all pass, including squishing on levels 1 to 3 but not 4 to 6, Try again at the
+- [x] `npm test`: all pass, including squishing on levels 1 to 3 but not 4 to 6, Try again at the
   last bush, and the name buttons switching players; and the choices (right name always there, three different names,
   order and wrong names change), a wrong tap grays out, the right tap tells, a second picture of the
   same animal asks again, the paws fill, the cheer counts them, and a new walk hides every animal.
-- [ ] `node tools/browser-habitats.mjs desktop phone`: all six levels, no page errors, choices
+- [x] `node tools/browser-habitats.mjs desktop phone`: all six levels, no page errors, choices
   answered in a real browser; screenshots of the asking card and the paw row on a phone.
-- [ ] Pushed and live on GitHub Pages; the live check passes.
+- [x] Pushed and live on GitHub Pages; the live check passes.
 
 ## Attempt log
 
@@ -88,4 +88,6 @@ Slices, smallest first: (1) the three choices on every picture; (2) the paw ladd
   nor the manifest orientation (MDN compat data). Told him about Guided Access with Motion off.
   George: "let's just forget it." Nothing built.
 - 2026-10-01, browser batch, local, one level at a time under a 420 s alarm: desktop 6 of 6 PASS;
-  phone backyard, woods, bayou, swamp PASS (prairie and gulf still running).
+  phone 6 of 6 PASS. `npm test` 85 passed, 0 failed, 0 skipped.
+- 2026-10-01, live batch against https://gstredny.github.io/wildlife-game/ (cache v12): desktop 6 of 6
+  and phone 6 of 6 PASS, no page errors. Task closed.
