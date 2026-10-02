@@ -2,7 +2,7 @@
 // hearts and game over, and the Junior Ranger cheer at the goal flag that opens the next level. The
 // rules live in trail.js and levels.js; drawing lives in render.js.
 import { cardSpeech, ANIMALS } from "./animals.js";
-import { fillCard } from "./card-view.js";
+import { fillCard, fillSeen } from "./card-view.js";
 import { fillChoices } from "./choices-view.js";
 import { throwConfetti } from "./confetti.js";
 import { fillGuide } from "./guide-view.js";
@@ -12,7 +12,8 @@ import { FINALE, GAME_OVER, GUESSES, VOICE_ON, WALK_CLOSER } from "./lines.js";
 import { PLACES, placeKinds } from "./places.js";
 import { fillNames } from "./names-view.js";
 import { fillMap, progress } from "./place-view.js";
-import { addPlayer, loadPlayers, MAX_PLAYERS, recordFind, removePlayer, savePlayers } from "./players.js";
+import { addPlayer, loadPlayers, MAX_PLAYERS, recordFind, recordSighting, removePlayer, savePlayers } from "./players.js";
+import { openRealPhotos, shrinkPhoto } from "./real-photos.js";
 import { fillPlayers } from "./players-view.js";
 import { paintFrame } from "./render.js";
 import { createSound } from "./sound.js";
@@ -24,6 +25,7 @@ const canvas = $("trail");
 const context = canvas.getContext("2d");
 const voice = createVoice();
 const sound = createSound();
+const realPhotos = openRealPhotos();
 const players = loadPlayers();
 const player = () => players.list[players.current];
 const found = new Set(player().found); // the current player's animals
@@ -41,6 +43,7 @@ let hold = 0;
 let jumpHeld = false;
 let posing = 0;
 let cardFrom = null;
+let cardKind = null;
 const named = new Set(); // the animals named right on the first try on this walk, each a gold paw
 let view = viewFor(innerWidth, innerHeight, 0);
 // The walk under way, for the screen tests to see where the explorer is.
@@ -129,8 +132,11 @@ function takePicture({ kind, first }) {
 
 function openCard(kind, isNew, from) {
   cardFrom = from;
+  cardKind = kind;
   fillCard(kind, isNew);
   $("card-hear").onclick = () => voice.say(cardSpeech(kind), { force: true });
+  $("card-seen-button").hidden = from !== "guide";
+  showSeen(from === "guide" ? kind : null);
   show("card");
   if (from === "guide") return void voice.say(cardSpeech(kind));
   // On the trail: the ranger asks, then waits with the picture until the child picks the right name.
@@ -151,6 +157,31 @@ function tell(kind, isNew, firstTry) {
     counts();
   }
   voice.say(cardSpeech(kind));
+}
+
+// On a Field Guide card: the player's own photo of the animal, once they have seen it for real.
+function showSeen(kind) {
+  const at = kind && player().seen?.[kind];
+  fillSeen(at);
+  if (!at) return;
+  const owner = players.current;
+  realPhotos.load(owner, kind).then(photo => {
+    if (photo && cardKind === kind && players.current === owner && openPanel() === "card") fillSeen(at, photo);
+  }).catch(() => {});
+}
+
+// A photo of the animal seen for real: it shows at once, with the chime, and is kept on the device.
+function keepSighting() {
+  const [photo] = $("seen-camera").files ?? [];
+  $("seen-camera").value = ""; // so the same photo can be picked again
+  if (!photo) return;
+  const kind = cardKind;
+  const owner = players.current;
+  recordSighting(players, kind);
+  savePlayers(players);
+  fillSeen(player().seen[kind], photo);
+  sound.play("found");
+  shrinkPhoto(photo).then(small => realPhotos.save(owner, kind, small)).catch(() => {});
 }
 
 function closeCard() {
@@ -200,7 +231,7 @@ function openGuide() {
     const homes = Object.values(PLACES).filter(each => placeKinds(each).includes(kind)).map(each => each.name);
     $("guide-hint").textContent = `${ANIMALS[kind].hint} Explore: ${homes.join(", ")}.`;
     voice.say(ANIMALS[kind].hint, { force: true });
-  });
+  }, player().seen);
   show("guide");
 }
 
@@ -230,6 +261,7 @@ function pickPlayer(name) {
 function dropPlayer(name) {
   if (!removePlayer(players, name)) return;
   savePlayers(players);
+  realPhotos.forget(name).catch(() => {});
   useCurrent();
   counts();
   openPlayers();
@@ -378,6 +410,8 @@ addEventListener("resize", resize);
 
 $("snap-button").addEventListener("click", () => walk && trySnap());
 $("card-close").addEventListener("click", closeCard);
+$("card-seen-button").addEventListener("click", () => $("seen-camera").click());
+$("seen-camera").addEventListener("change", keepSighting);
 $("guide-button").addEventListener("click", () => {
   $("guide-place").value = placeKey();
   openGuide();

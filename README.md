@@ -75,6 +75,13 @@ there, hopping over logs on the way.
 Animals you have met on this walk stay out in the open: tap one (or the camera, or Enter, near one)
 to take its picture again, and its card asks again.
 
+**Seen for real:** when a child sees one of the game's animals in real life, open the Field Guide, tap
+the animal, and tap **📷 I saw one for real!** to take a photo (or pick one from the photo library,
+since animals move fast). The photo shows on that card as a polaroid with the day, and the animal's
+square in the Field Guide gets a gold 📷 sticker. Photos are shrunk to 1024 pixels and kept on this
+device only (IndexedDB), one per player and animal; a new photo replaces the old one, and removing a
+player removes their photos. Only animals already found in the game can be marked.
+
 **Players:** up to three players. The home screen shows a big button with each player's name; one tap
 switches to them. Each player has their own Field Guide and their own place on the trail map, saved
 when they reach a flag: George can be on level 3 while Dora is still on level 1. **👤 Players**
@@ -142,6 +149,7 @@ npm test                                   # rules, UI flow, saving, image refer
 node tools/browser-habitats.mjs desktop     # real Chrome input through all six areas
 node tools/browser-habitats.mjs phone       # same on a sideways touch phone
 node tools/browser-walk.mjs phone swamp     # one place
+node tools/browser-seen.mjs desktop phone   # a real photo picked, shown, kept, and removed with its player
 node tools/shot.mjs "http://127.0.0.1:8790/tools/zoo.html?only=bullfrog,nightHeron,woodDuck,slider" screenshots/swamp-animals.png 1600x1400
 ```
 

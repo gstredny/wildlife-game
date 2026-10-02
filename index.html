@@ -64,7 +64,13 @@
 
     <section id="card" class="panel card-panel" hidden aria-live="polite">
       <figure class="card-photo">
-        <img id="card-image" alt="">
+        <div class="card-frame">
+          <img id="card-image" alt="">
+          <figure id="card-seen" class="card-seen" hidden>
+            <img id="card-seen-image" alt="Your photo">
+            <figcaption id="card-seen-date"></figcaption>
+          </figure>
+        </div>
         <figcaption id="card-credit"></figcaption>
         <a id="card-photo-source" class="photo-source" target="_blank" rel="noopener">Photo source and license</a>
       </figure>
@@ -81,6 +87,8 @@
         <div class="card-actions">
           <button id="card-hear" class="round-button" type="button" aria-label="Hear it again">🔊</button>
           <button id="card-close" class="primary-button" type="button">Keep exploring</button>
+          <button id="card-seen-button" class="soft-button" type="button">📷 I saw one for real!</button>
+          <input id="seen-camera" class="camera-input" type="file" accept="image/*" tabindex="-1" aria-hidden="true">
         </div>
       </div>
     </section>

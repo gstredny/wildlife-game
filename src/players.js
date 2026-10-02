@@ -4,8 +4,9 @@ import { startingLevel } from "./levels.js";
 import { PLACES } from "./places.js";
 
 // Who is exploring on this device: up to three players. Each has their own Field Guide, a list of
-// what they found, newest first, and the level they are on (see levels.js):
-// { current: "Emma", list: { Emma: { found: ["heron"], log: [{ kind, place, at }], level: 2 } } }.
+// what they found, newest first, the level they are on (see levels.js), and the day they last saw
+// each animal for real (their photo of it is in real-photos.js):
+// { current: "Emma", list: { Emma: { found: ["heron"], log: [{ kind, place, at }], level: 2, seen: { heron: at } } } }.
 export const PLAYERS_KEY = "wildlife-players-v1";
 export const MAX_PLAYERS = 3;
 const FIRST = "Explorer";
@@ -18,6 +19,7 @@ export function loadPlayers(storage = globalThis.localStorage) {
       for (const player of Object.values(saved.list)) {
         player.found = player.found.filter(kind => kind in ANIMALS);
         player.log = player.log.filter(entry => entry.kind in ANIMALS && entry.place in PLACES);
+        if (player.seen) player.seen = Object.fromEntries(Object.entries(player.seen).filter(([kind]) => kind in ANIMALS));
         // Saved before the trail map: start past the levels already cleared.
         player.level ??= startingLevel(player.found);
       }
@@ -62,4 +64,10 @@ export function recordFind(players, kind, place, at = Date.now()) {
   const player = players.list[players.current];
   if (!player.found.includes(kind)) player.found.push(kind);
   player.log = [{ kind, place, at }, ...player.log].slice(0, LOG_SIZE);
+}
+
+// The child saw this animal for real and took a picture of it.
+export function recordSighting(players, kind, at = Date.now()) {
+  const player = players.list[players.current];
+  player.seen = { ...player.seen, [kind]: at };
 }

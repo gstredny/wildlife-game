@@ -1,11 +1,11 @@
-// Builds the Field Guide: a photo and name for each animal found, and a dark shape with a
-// question mark for each one still out there.
+// Builds the Field Guide: a photo and name for each animal found, a gold camera sticker on the ones
+// seen for real, and a dark shape with a question mark for each one still out there.
 import { ANIMALS } from "./animals.js";
 import { BOXES, PAINTERS } from "./painters.js";
 import { PHOTOS } from "./photos.js";
 import { placeKinds } from "./places.js";
 
-export function fillGuide(grid, place, found, onPick) {
+export function fillGuide(grid, place, found, onPick, seen = {}) {
   grid.replaceChildren(...placeKinds(place).map(kind => {
     const slot = document.createElement("button");
     slot.type = "button";
@@ -19,11 +19,13 @@ export function fillGuide(grid, place, found, onPick) {
       photo.src = reference.file.replace("art/animals/", "art/animals/thumbs/");
       photo.alt = "";
       slot.append(photo, ANIMALS[kind].name);
+      slot.classList.toggle("seen", Boolean(seen[kind]));
     } else {
       slot.classList.add("missing");
       slot.append(silhouette(kind), "Not found yet");
     }
-    slot.setAttribute("aria-label", isFound ? ANIMALS[kind].name : "An animal not found yet");
+    const name = seen[kind] ? `${ANIMALS[kind].name}, seen for real` : ANIMALS[kind].name;
+    slot.setAttribute("aria-label", isFound ? name : "An animal not found yet");
     slot.addEventListener("click", () => onPick(kind, isFound));
     return slot;
   }));

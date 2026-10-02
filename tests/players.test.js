@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { FOUND_KEY } from "../src/field-guide.js";
-import { addPlayer, loadPlayers, MAX_PLAYERS, PLAYERS_KEY, recordFind, removePlayer, savePlayers } from "../src/players.js";
+import { addPlayer, loadPlayers, MAX_PLAYERS, PLAYERS_KEY, recordFind, recordSighting, removePlayer, savePlayers } from "../src/players.js";
 import { PLACES, placeKinds } from "../src/places.js";
 
 const memory = () => {
@@ -75,4 +75,24 @@ test("three players at most, and one can be removed", () => {
   assert.equal(removePlayer(players, "George"), true);
   assert.equal(removePlayer(players, "Explorer"), false, "the last player stays");
   assert.deepEqual(Object.keys(players.list), ["Explorer"]);
+});
+
+test("each player keeps the day they saw an animal for real; a new photo replaces the old day", () => {
+  const storage = memory();
+  const players = loadPlayers(storage);
+  recordSighting(players, "cardinal", 1000);
+  addPlayer(players, "Dora");
+  recordSighting(players, "heron", 2000);
+  recordSighting(players, "heron", 3000);
+  savePlayers(players, storage);
+  const saved = loadPlayers(storage);
+  assert.deepEqual(saved.list.Explorer.seen, { cardinal: 1000 });
+  assert.deepEqual(saved.list.Dora.seen, { heron: 3000 });
+});
+
+test("a saved sighting of an animal no longer in the game is dropped", () => {
+  const storage = memory();
+  storage.setItem(PLAYERS_KEY, JSON.stringify({ current: "Dora", list: {
+    Dora: { found: ["cardinal"], log: [], level: 1, seen: { cardinal: 1000, dragon: 2000 } } } }));
+  assert.deepEqual(loadPlayers(storage).list.Dora.seen, { cardinal: 1000 });
 });

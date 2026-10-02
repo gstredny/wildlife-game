@@ -320,6 +320,34 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
 .card-photo figcaption { margin-top: 6px; font-size: 12px; opacity: 0.75; }
 .photo-source { color: var(--cream); font-size: 12px; }
 .card-photo img { object-fit: contain; }
+/* The child's own photo of an animal they saw for real: a polaroid on the reference photo, with a
+   gold sticker for the day. */
+.card-frame { position: relative; }
+.card-seen {
+  position: absolute;
+  right: -4px;
+  bottom: -12px;
+  width: 38%;
+  margin: 0;
+  padding: 5px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  transform: rotate(5deg);
+}
+.card-photo .card-seen img { aspect-ratio: 1; object-fit: cover; border-radius: 3px; background: #ddd; }
+.card-photo .card-seen figcaption {
+  margin-top: 5px;
+  padding: 3px 6px;
+  border-radius: 10px;
+  background: var(--sun);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  opacity: 1;
+}
+.camera-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .card-words p { margin: 0 0 10px; font-size: clamp(15px, 2.6vmin, 19px); line-height: 1.35; }
 .card-facts {
   display: grid;
@@ -433,6 +461,21 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   font-size: 22px;
   font-weight: 900;
 }
+/* A gold camera sticker on each animal seen for real. */
+.guide-slot.seen::after {
+  content: "📷";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sun);
+  box-shadow: 0 2px 0 var(--sun-dark);
+  font-size: 16px;
+}
 .guide-hint { margin: 12px 0 0; font-size: 16px; min-height: 1.3em; }
 
 .ranger-panel { width: min(100%, 460px); text-align: center; }
@@ -479,6 +522,8 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   .stop-name { font-size: 11px; }
   .guide-slot { font-size: 12px; border-radius: 12px; padding-bottom: 6px; }
   .guide-slot.missing::after { font-size: 17px; top: 2px; right: 6px; }
+  .guide-slot.seen::after { width: 22px; height: 22px; font-size: 12px; top: 3px; right: 3px; }
+  .card-photo .card-seen figcaption { font-size: 10px; padding: 2px 4px; }
   .guide-panel h2 { font-size: 26px; margin-bottom: 10px; }
 }
 

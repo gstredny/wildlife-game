@@ -28,3 +28,16 @@ export function fillCard(kind, isNew) {
   $("card-eats").textContent = animal.eats;
   $("card-eaten").textContent = animal.eatenBy;
 }
+
+let seenUrl = null;
+
+// The player's own photo of the animal, a polaroid on the card with the day they saw it for real.
+// No day hides it. The photo can follow a moment later, once it loads from the device.
+export function fillSeen(at, photo = null) {
+  $("card-seen").hidden = !at;
+  if (seenUrl) URL.revokeObjectURL(seenUrl);
+  seenUrl = photo && URL.createObjectURL(photo);
+  $("card-seen-image").hidden = !seenUrl;
+  if (seenUrl) $("card-seen-image").src = seenUrl;
+  if (at) $("card-seen-date").textContent = `Seen for real! ${new Date(at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
+}

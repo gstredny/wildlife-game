@@ -21,6 +21,7 @@ class Element {
     };
   }
   addEventListener(type, callback) { (this.events[type] ??= []).push(callback); }
+  click() { this.trigger('click'); }
   trigger(type, event = {}) { for (const callback of this.events[type] ?? []) callback(event); this[`on${type}`]?.(event); }
   append(...children) { this.children.push(...children); }
   replaceChildren(...children) { this.children = children; }
@@ -298,6 +299,40 @@ try {
     assert.equal(currentName(), 'Explorer');
     assert.equal($('player-form').hidden, false);
     click('players-close');
+  });
+
+  test('a Field Guide card keeps a photo of the animal seen for real, with the day and a sticker', () => {
+    click('start-guide-button');
+    const cardinal = () => $('guide-grid').children.find(slot => slot.attributes['aria-label'].startsWith(ANIMALS.cardinal.name));
+    assert.equal(cardinal().classList.contains('seen'), false);
+    cardinal().trigger('click');
+    assert.equal($('card-seen-button').hidden, false, 'the Field Guide card has the button');
+    assert.equal($('card-seen').hidden, true, 'no polaroid before a photo');
+    let opened = 0;
+    $('seen-camera').addEventListener('click', () => opened++);
+    click('card-seen-button');
+    assert.equal(opened, 1, 'the button opens the camera or photo library');
+    $('seen-camera').files = [new Blob(['photo'], { type: 'image/jpeg' })];
+    $('seen-camera').trigger('change');
+    assert.equal($('card-seen').hidden, false);
+    assert.match($('card-seen-date').textContent, /^Seen for real! \S/);
+    assert.match($('card-seen-image').src, /^blob:/, 'the photo shows at once');
+    assert.equal(typeof JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.seen.cardinal, 'number');
+    click('card-close');
+    assert.equal(cardinal().classList.contains('seen'), true, 'a gold sticker in the Field Guide');
+    assert.equal(cardinal().attributes['aria-label'], `${ANIMALS.cardinal.name}, seen for real`);
+    click('guide-close');
+    // On the trail, the card has no camera button and no polaroid.
+    click(`place-${level1}`); frame();
+    for (let i = 0; i < 300 && timers.size === 0; i++) {
+      key('keydown', 'ArrowRight'); key('keydown', 'ArrowUp'); frame();
+    }
+    flush();
+    pickRight();
+    assert.equal($('card-seen-button').hidden, true, 'no camera button on the trail');
+    assert.equal($('card-seen').hidden, true);
+    click('card-close');
+    click('home-button');
   });
 
   test('new animal photos load from the device and show labeled art if loading fails', () => {
