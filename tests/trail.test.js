@@ -225,3 +225,16 @@ test("retrying after a finished walk can raise the goal flag again, keeping find
   for (let frame = 0; frame < 180; frame++) if (stepWalk(walk, 1 / 60, 1).end) finishes++;
   assert.equal(finishes, 1, "the retried walk raises the flag once");
 });
+
+test("tapping the goal flag reaches it exactly and completes the level", () => {
+  const walk = createWalk(PLACES.woods);
+  for (const animal of walk.place.animals) snap(walk, animal);
+  walk.x = walk.place.animals.at(-1).x;
+  const goal = walk.place.length - EDGE;
+  walkTo(walk, goal);
+  let finishes = 0;
+  for (let frame = 0; frame < 180; frame++) if (stepWalk(walk, 1 / 60).end) finishes++;
+  assert.equal(walk.lives, LIVES, "no hazard interfered with the final stretch");
+  assert.equal(walk.x, goal);
+  assert.equal(finishes, 1);
+});

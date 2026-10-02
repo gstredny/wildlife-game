@@ -90,17 +90,19 @@ export function stepWalk(walk, dt, move = 0) {
   walk.safe = Math.max(0, walk.safe - dt);
   if (move) walk.target = null;
   let direction = move;
+  let goal = null;
   if (walk.target) {
     const { animal } = walk.target;
     if (animal && inReach(walk, animal)) return { snap: snap(walk, animal) };
-    const goal = animal ? animalAt(animal, walk.time).x : walk.target.x;
+    goal = animal ? animalAt(animal, walk.time).x : walk.target.x;
     const gap = goal - walk.x;
-    if (Math.abs(gap) < 6) walk.target = null;
+    if (gap === 0) walk.target = null;
     else direction = Math.sign(gap);
   }
   walk.moving = direction !== 0;
   if (direction) walk.facing = direction;
-  const next = clamp(walk.x + direction * WALK_SPEED * dt, walk.place.length);
+  const distance = Math.min(WALK_SPEED * dt, goal === null ? Infinity : Math.abs(goal - walk.x));
+  const next = clamp(walk.x + direction * distance, walk.place.length);
   const wall = wallBetween(walk, walk.x, next);
   walk.x = wall ? wall.x - direction * (wall.w / 2 + HALF) : next;
   // A walk to a tapped spot hops over a log in the way.
