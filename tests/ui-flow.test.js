@@ -301,7 +301,7 @@ try {
     click('players-close');
   });
 
-  test('a Field Guide card keeps a photo of the animal seen for real, with the day and a sticker', () => {
+  test('a Field Guide camera reports a failed photo without marking it seen; trail cards have no camera', async () => {
     click('start-guide-button');
     const cardinal = () => $('guide-grid').children.find(slot => slot.attributes['aria-label'].startsWith(ANIMALS.cardinal.name));
     assert.equal(cardinal().classList.contains('seen'), false);
@@ -314,13 +314,12 @@ try {
     assert.equal(opened, 1, 'the button opens the camera or photo library');
     $('seen-camera').files = [new Blob(['photo'], { type: 'image/jpeg' })];
     $('seen-camera').trigger('change');
-    assert.equal($('card-seen').hidden, false);
-    assert.match($('card-seen-date').textContent, /^Seen for real! \S/);
-    assert.match($('card-seen-image').src, /^blob:/, 'the photo shows at once');
-    assert.equal(typeof JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.seen.cardinal, 'number');
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal($('card-seen').hidden, true, 'a failed photo is never marked seen');
+    assert.match($('card-seen-status').textContent, /could not be saved/);
+    assert.equal(JSON.parse(saved.get('wildlife-players-v1')).list.Explorer.seen?.cardinal, undefined);
     click('card-close');
-    assert.equal(cardinal().classList.contains('seen'), true, 'a gold sticker in the Field Guide');
-    assert.equal(cardinal().attributes['aria-label'], `${ANIMALS.cardinal.name}, seen for real`);
+    assert.equal(cardinal().classList.contains('seen'), false, 'no sticker for a photo that was not kept');
     click('guide-close');
     // On the trail, the card has no camera button and no polaroid.
     click(`place-${level1}`); frame();

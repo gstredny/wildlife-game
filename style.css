@@ -348,6 +348,8 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid
   opacity: 1;
 }
 .camera-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+#card-seen-button:disabled { opacity: 0.6; cursor: wait; }
+#card-seen-status:empty { display: none; }
 .card-words p { margin: 0 0 10px; font-size: clamp(15px, 2.6vmin, 19px); line-height: 1.35; }
 .card-facts {
   display: grid;
