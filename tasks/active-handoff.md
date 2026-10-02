@@ -1,13 +1,23 @@
 # Active handoff — Wildlife Game
 
-2026-10-02. Branch main, pushed. Live on GitHub Pages: https://gstredny.github.io/wildlife-game/
-(cache wildlife-habitats-v13; live browser-seen PASS, live backyard walk PASS on desktop and phone).
+2026-10-02. Branch main. Task 009 fixes committed (4176506, ddcecc7, 8e38f85), pushed,
+and Pages-deployed: status built for 8e38f85, all 3 deployment checks success.
+Site: https://gstredny.github.io/wildlife-game/. Live HTTP/browser verification remains blocked.
 
-Active task: [008-seen-for-real.md](008-seen-for-real.md), done and live; not yet tried on a
+Active task: [009-review-recent-changes.md](009-review-recent-changes.md), fixes verified by
+`npm test` (99 passed, 0 failed, 0 skipped), `git diff --check` exit 0. Real photos are marked after
+storage succeeds; failures show a retry message; stale loads cannot overwrite replacement photos.
+Retry resets the goal completion flag. Tapping a goal reaches it exactly. Cache v14 is pushed.
+Task remains open for browser screenshots/smoke tests and public HTTP cache verification.
+Chrome runtime unavailable, server bind denied, browser page creation rejected by approval policy
+never; public-site curl/web reads unavailable. Code and Pages deployment are verified; UI is not.
+
+Previous task: [008-seen-for-real.md](008-seen-for-real.md), done and live; not yet tried on a
 real iPhone. A Field Guide card has "📷 I saw one for real!": the child's own photo shows as a polaroid
 with the day, a gold 📷 sticker goes on the Field Guide square, the photo is kept shrunk in IndexedDB
 per player. `npm test` 88/0/0; `node tools/browser-seen.mjs desktop phone` PASS; habitats 12 of 12
 PASS. Cache name bumped to wildlife-habitats-v13. Not tried on a real iPhone yet.
+Task 008's live browser-seen and backyard walk checks passed on desktop and phone before task 009.
 
 Before that: [007-name-the-animal.md](007-name-the-animal.md), done and live. Every animal met on a
 walk asks "What is this?" with three names (the right one plus two random animals, mixed up every
