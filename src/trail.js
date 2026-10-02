@@ -201,7 +201,7 @@ function tumble(walk, dt) {
 // Try again after the last heart is lost: back at the last bush reached, blinking, with every heart.
 // The animals met and the stars caught on this walk stay.
 export function tryAgain(walk) {
-  Object.assign(walk, { lives: LIVES, dying: 0, x: walk.checkpoint, y: 0, vy: 0, facing: 1, safe: SAFE, target: null });
+  Object.assign(walk, { lives: LIVES, dying: 0, x: walk.checkpoint, y: 0, vy: 0, facing: 1, safe: SAFE, target: null, endedAt: null });
 }
 
 function catchStars(walk) {

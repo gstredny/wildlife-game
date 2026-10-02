@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { PLACES, placeKinds } from "../src/places.js";
 import { animalAtPoint, baseY } from "../src/layout.js";
 import { cycle, FALL, hazardAt, HAZARDS } from "../src/hazards.js";
-import { animalAt, createWalk, EDGE, jump, LIVES, REACH, snap, snapTarget, SPOT, stepWalk, walkTo, WALK_SPEED } from "../src/trail.js";
+import { animalAt, createWalk, EDGE, jump, LIVES, REACH, snap, snapTarget, SPOT, stepWalk, tryAgain, walkTo, WALK_SPEED } from "../src/trail.js";
 
 const bayou = PLACES.bayou;
 const heron = bayou.animals.find(animal => animal.kind === "heron");
@@ -204,4 +204,24 @@ test("on the later levels, landing on a hazard still costs a heart", () => {
     assert.equal(results.filter(result => result.died).length, 1, `${key}: a heart lost`);
     assert.equal(results.filter(result => result.stomped).length, 0, `${key}: nothing squished`);
   }
+});
+
+test("retrying after a finished walk can raise the goal flag again, keeping finds and stars", () => {
+  const walk = createWalk(PLACES.woods);
+  for (const animal of walk.place.animals) snap(walk, animal);
+  walk.stars.add(0);
+  walk.x = walk.place.length - EDGE;
+  assert.equal(stepWalk(walk, 1 / 60).end, true, "the first crossing beats the level");
+  const met = [...walk.met];
+  const found = [...walk.found];
+  walk.lives = 0; // the player continued walking after dismissing the cheer, then lost their hearts
+  tryAgain(walk);
+  assert.equal(walk.x, walk.checkpoint);
+  assert.equal(walk.lives, LIVES);
+  assert.deepEqual([...walk.met], met);
+  assert.deepEqual([...walk.found], found);
+  assert.deepEqual([...walk.stars], [0]);
+  let finishes = 0;
+  for (let frame = 0; frame < 180; frame++) if (stepWalk(walk, 1 / 60, 1).end) finishes++;
+  assert.equal(finishes, 1, "the retried walk raises the flag once");
 });
