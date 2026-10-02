@@ -1,4 +1,4 @@
-const CACHE = "wildlife-habitats-v12";
+const CACHE = "wildlife-habitats-v13";
 const FILES = [
   "./",
   "./index.html",
@@ -49,6 +49,7 @@ const FILES = [
   "./src/places.js",
   "./src/players-view.js",
   "./src/players.js",
+  "./src/real-photos.js",
   "./src/render.js",
   "./src/scenery.js",
   "./src/sound.js",
