@@ -1,7 +1,7 @@
 # I saw it for real!
 
 Date: 2026-10-02
-Status: built and verified locally; not committed or live yet (waiting on George: ship?)
+Status: live (pushed to main; GitHub Pages https://gstredny.github.io/wildlife-game/). Not yet tried on a real iPhone.
 
 ## Intent contract
 
@@ -37,7 +37,7 @@ tapping the polaroid to see it big.
 - [x] `node tools/browser-seen.mjs desktop phone`: in real Chrome, a photo picked through the real file
   input shows on the card, is saved shrunk in IndexedDB, is still there after a reload, and is gone
   after its player is removed; screenshots of the card and the Field Guide sticker.
-- [ ] Live on GitHub Pages after George says ship, with the cache name bumped.
+- [x] Live on GitHub Pages after George says ship, with the cache name bumped.
 
 ## Attempt log
 
@@ -57,3 +57,8 @@ tapping the polaroid to see it big.
 - Not checked: a real iPhone (camera, photo library, and a photo's EXIF turn). Chrome only.
   Known small gaps: if the device is out of space, the date and sticker save but the photo does not;
   reopening the card in the moment a new photo is still saving shows the old one that once.
+- George said ship. Pushed bff2229..ed0d44e; live sw.js served wildlife-habitats-v13 after 70s.
+  Live checks: `GAME=https://gstredny.github.io/wildlife-game/ node tools/browser-seen.mjs desktop
+  phone` PASS; `browser-walk.mjs desktop backyard` and `phone backyard` against the live site both
+  PASS (11 animals, Junior Ranger, no page errors).
+- Open: George tries the button on his iPhone (Take Photo and Photo Library, photo the right way up).

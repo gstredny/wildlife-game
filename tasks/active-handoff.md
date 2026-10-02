@@ -1,10 +1,10 @@
 # Active handoff — Wildlife Game
 
-2026-10-02. Branch main; task 008 uncommitted. Last push 2026-10-01. Live on GitHub Pages: https://gstredny.github.io/wildlife-game/
-(cache wildlife-habitats-v12; live browser check 12 of 12 PASS).
+2026-10-02. Branch main, pushed. Live on GitHub Pages: https://gstredny.github.io/wildlife-game/
+(cache wildlife-habitats-v13; live browser-seen PASS, live backyard walk PASS on desktop and phone).
 
-Active task: [008-seen-for-real.md](008-seen-for-real.md), built and verified locally, NOT committed
-or live. A Field Guide card has "📷 I saw one for real!": the child's own photo shows as a polaroid
+Active task: [008-seen-for-real.md](008-seen-for-real.md), done and live; not yet tried on a
+real iPhone. A Field Guide card has "📷 I saw one for real!": the child's own photo shows as a polaroid
 with the day, a gold 📷 sticker goes on the Field Guide square, the photo is kept shrunk in IndexedDB
 per player. `npm test` 88/0/0; `node tools/browser-seen.mjs desktop phone` PASS; habitats 12 of 12
 PASS. Cache name bumped to wildlife-habitats-v13. Not tried on a real iPhone yet.
